@@ -1,24 +1,18 @@
 import React from "react";
 import logo from "../logo.svg";
 
-export default function Test() {
-    return (
-        <div className="App">
-            {/* htest commit and push */}
-            <header className="App-header">
-                <img src={logo} className="App-logo" alt="logo" />
-                <p>
-                    Edit <code>src/App.js</code> and save to reload.
-                </p>
-                <a
-                    className="App-link"
-                    href="https://reactjs.org"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    Learn React
-                </a>
-            </header>
-        </div>
-    );
+export default class Test extends React.Component{
+    onSubmitForm = () => {
+        console.log("hello")
+        //send data here to the backend
+    }
+    
+    render(){
+        return (
+            <form >
+                <input type="text" />
+                <button onClick={this.onSubmitForm}></button>
+            </form>
+        );
+    }
 }

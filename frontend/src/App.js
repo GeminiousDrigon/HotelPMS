@@ -3,7 +3,10 @@ import { Switch, Route, Router } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import _ from "lodash";
 import queryString from "query-string";
+
+//pages
 import Test from "./pages/Test";
+import Component from "./pages/Component";
 
 import "./App.css";
 
@@ -25,6 +28,7 @@ function App() {
             <Switch>
                 {/* add route component if you want to add another page */}
                 <Route path="/" component={Test} exact />
+                <Route path="/component" component={Component} exact />
             </Switch>
         </Router>
     );
