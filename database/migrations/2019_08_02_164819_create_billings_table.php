@@ -14,7 +14,10 @@ class CreateBillingsTable extends Migration
     public function up()
     {
         Schema::create('billings', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->uuid('id');
+            $table->string('type');
+            $table->integer('amount');
+            $table->foreign('booking_id')->references('id')->on('bookings');
             $table->timestamps();
         });
     }

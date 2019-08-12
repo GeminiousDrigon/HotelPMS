@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAmenitiesTable extends Migration
+class CreateRoomAmenitiesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,10 @@ class CreateAmenitiesTable extends Migration
      */
     public function up()
     {
-        Schema::create('amenities', function (Blueprint $table) {
+        Schema::create('room_amenities', function (Blueprint $table) {
             $table->uuid('id');
-            $table->string('name');
-            $table->string('icon');
-            $table->boolean('featured');
-            $table->integer('order');
+            $table->foreign('room_id')->references('id')->on('rooms');
+            $table->foreign('amenity_id')->references('id')->on('amenities');
             $table->timestamps();
         });
     }
@@ -30,6 +28,6 @@ class CreateAmenitiesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('amenities');
+        Schema::dropIfExists('room_amenities');
     }
 }
