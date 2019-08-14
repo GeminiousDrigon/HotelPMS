@@ -27,8 +27,8 @@ function App() {
         <Router history={history}>
             <Switch>
                 {/* add route component if you want to add another page */}
-                <Route path="/" component={Test} exact />
-                <Route path="/component" component={Component} exact />
+                <Route path="/Test" component={Test} exact />
+                <Route path="/" component={Component} exact />
             </Switch>
         </Router>
     );
