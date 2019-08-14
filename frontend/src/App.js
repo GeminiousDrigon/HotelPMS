@@ -7,6 +7,11 @@ import queryString from "query-string";
 //pages
 import Test from "./pages/Test";
 import Component from "./pages/Component";
+import Walkin from "./pages/WalkIn";
+import Reservation from "./pages/Reservation";
+import Room from "./pages/Room";
+import Settings from "./pages/Settings";
+import RoomFacilities from "./pages/RoomFacilities";
 
 import "./App.css";
 
@@ -29,6 +34,11 @@ function App() {
                 {/* add route component if you want to add another page */}
                 <Route path="/Test" component={Test} exact />
                 <Route path="/" component={Component} exact />
+                <Route path="/walkin" component={Walkin} exact />
+                <Route path="/reservation" component={Reservation} exact />
+                <Route path="/room" component={Room} exact />
+                <Route path="/roomfacilities" component={RoomFacilities} exact />
+                <Route path="/settings" component={Settings} exact />
             </Switch>
         </Router>
     );
