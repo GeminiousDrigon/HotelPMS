@@ -25,14 +25,14 @@ const useStyles = makeStyles(theme => ({
         display: "flex"
     },
     appBar: {
-        zIndex: theme.zIndex.drawer + 5,
+        zIndex: theme.zIndex.drawer + 5
         // transition: theme.transitions.create(["width", "margin"], {
         //     easing: theme.transitions.easing.sharp,
         //     duration: theme.transitions.duration.leavingScreen
         // })
     },
     appBarShift: {
-        marginLeft: drawerWidth,
+        marginLeft: drawerWidth
         // width: `calc(100% - ${drawerWidth}px)`,
         // transition: theme.transitions.create(["width", "margin"], {
         //     easing: theme.transitions.easing.sharp,
@@ -94,38 +94,42 @@ export default function AdminLayout(props) {
         setOpen(false);
     }
 
-    const goToPage = (path) => {
-        props.history.push(path)
-    }
-    
+    const goToPage = path => {
+        props.history.push(path);
+    };
 
     const menus = [
         {
             name: "Walk-in",
             icon: <InboxIcon />,
-            path: "/walkin",
+            path: "/walkin"
         },
         {
             name: "Reservation",
             icon: <MailIcon />,
-            path: "/reservation",
+            path: "/reservation"
+        },
+        {
+            name: "Accounts",
+            icon: <InboxIcon />,
+            path: "/account"
         },
         {
             name: "Rooms",
             icon: <InboxIcon />,
-            path: "/room",
+            path: "/room"
         },
         {
             name: "Room Facilities",
             icon: <InboxIcon />,
-            path: "/roomfacilities",
+            path: "/roomfacilities"
         },
         {
             name: "Settings",
             icon: <MailIcon />,
-            path: "/settings",
-        },
-    ]
+            path: "/settings"
+        }
+    ];
 
     return (
         <div className={classes.root}>
@@ -147,7 +151,7 @@ export default function AdminLayout(props) {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" className={classes.title}>
-                        News
+                        Bluepool Garden
                     </Typography>
                 </Toolbar>
             </AppBar>
@@ -167,16 +171,16 @@ export default function AdminLayout(props) {
             >
                 <Divider />
                 <List style={{ marginTop: 70 }}>
-                    {menus.map(
-                        (text, index) => (
-                            <ListItem button key={text.name} onClick={()=>goToPage(text.path)}>
-                                <ListItemIcon>
-                                    {text.icon}
-                                </ListItemIcon>
-                                <ListItemText primary={text.name} />
-                            </ListItem>
-                        )
-                    )}
+                    {menus.map((text, index) => (
+                        <ListItem
+                            button
+                            key={text.name}
+                            onClick={() => goToPage(text.path)}
+                        >
+                            <ListItemIcon>{text.icon}</ListItemIcon>
+                            <ListItemText primary={text.name} />
+                        </ListItem>
+                    ))}
                 </List>
                 <Divider />
             </Drawer>
