@@ -10,9 +10,7 @@ import AddIcon from "@material-ui/icons/Add";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import { makeStyles } from "@material-ui/core/styles";
-import Icon from "@material-ui/core/Icon";
 import Button from "@material-ui/core/Button";
-import SaveIcon from "@material-ui/icons/Save";
 
 const useStyles = makeStyles(theme => ({
     fab: {
@@ -23,7 +21,7 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-export default class Reservation extends Component {
+export default class Pending extends Component {
     render() {
         return (
             <AdminLayout {...this.props}>
@@ -39,7 +37,7 @@ export default class Reservation extends Component {
                             float: "left"
                         }}
                     >
-                        Reservations
+                        Reservations / Pending
                     </h3>
                     <Button
                         href="/reservation"
@@ -70,51 +68,57 @@ export default class Reservation extends Component {
                     >
                         Check-out
                     </Button>
+
                     <Table>
                         <TableHead>
                             <TableRow>
+                                <TableCell align="right">ID</TableCell>
                                 <TableCell align="left">Name</TableCell>
-                                <TableCell align="left">Room Type</TableCell>
                                 <TableCell align="left">Gmail</TableCell>
-                                <TableCell align="left">Contact No</TableCell>
-                                <TableCell align="left">Reserve Date</TableCell>
-                                <TableCell align="left">Status</TableCell>
+                                <TableCell align="left">Password</TableCell>
                                 <TableCell align="left">Action</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
+                            <TableCell align="right">1</TableCell>
                             <TableCell align="left">Dominic Vega</TableCell>
-                            <TableCell align="left">Deluxe</TableCell>
                             <TableCell align="left">
                                 davega12.dv@gmail.com
                             </TableCell>
-                            <TableCell align="left">09361180320</TableCell>
                             <TableCell align="left">
-                                August 17,2019 @ 7:00 AM
-                            </TableCell>
-                            <TableCell align="left" style={{ color: "blue" }}>
-                                Pending
+                                e1sknfd123jksfj423
                             </TableCell>
                             <TableCell align="left">
-                                <Button
-                                    href="/pending"
-                                    variant="contained"
-                                    style={{ backgroundColor: "green" }}
-                                    color="primary"
+                                <Fab
+                                    style={{ marginRight: "10px" }}
+                                    size="small"
+                                    aria-label="add"
                                 >
-                                    Check-in
-                                </Button>
+                                    <EditIcon />
+                                </Fab>
                                 <Fab
                                     size="small"
                                     aria-label="delete"
                                     color="secondary"
-                                    style={{ marginLeft: "10px" }}
                                 >
                                     <DeleteIcon />
                                 </Fab>
                             </TableCell>
                         </TableBody>
                     </Table>
+                    <Fab
+                        style={{
+                            float: "right",
+                            marginTop: "250px",
+                            marginRight: "80px"
+                        }}
+                        size="large"
+                        color="primary"
+                        aria-label="add"
+                        href="/AddAccount"
+                    >
+                        <AddIcon />
+                    </Fab>
                 </div>
             </AdminLayout>
         );

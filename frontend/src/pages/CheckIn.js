@@ -23,7 +23,7 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-export default class Reservation extends Component {
+export default class CheckIn extends Component {
     render() {
         return (
             <AdminLayout {...this.props}>
@@ -39,7 +39,7 @@ export default class Reservation extends Component {
                             float: "left"
                         }}
                     >
-                        Reservations
+                        Reservations / Check-in
                     </h3>
                     <Button
                         href="/reservation"
@@ -75,35 +75,43 @@ export default class Reservation extends Component {
                             <TableRow>
                                 <TableCell align="left">Name</TableCell>
                                 <TableCell align="left">Room Type</TableCell>
-                                <TableCell align="left">Gmail</TableCell>
-                                <TableCell align="left">Contact No</TableCell>
-                                <TableCell align="left">Reserve Date</TableCell>
+                                <TableCell align="left">Room No</TableCell>
+                                <TableCell align="left">
+                                    Check-in Days
+                                </TableCell>
+                                <TableCell align="left">Check-out</TableCell>
                                 <TableCell align="left">Status</TableCell>
+                                <TableCell align="left">Bill</TableCell>
                                 <TableCell align="left">Action</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             <TableCell align="left">Dominic Vega</TableCell>
                             <TableCell align="left">Deluxe</TableCell>
+                            <TableCell align="left">1</TableCell>
+                            <TableCell align="left">2</TableCell>
                             <TableCell align="left">
-                                davega12.dv@gmail.com
+                                August 28,2019 @ 7:00 AM
                             </TableCell>
-                            <TableCell align="left">09361180320</TableCell>
-                            <TableCell align="left">
-                                August 17,2019 @ 7:00 AM
+                            <TableCell align="left" style={{ color: "orange" }}>
+                                Check-in
                             </TableCell>
-                            <TableCell align="left" style={{ color: "blue" }}>
-                                Pending
-                            </TableCell>
+                            <TableCell align="left">1000</TableCell>
                             <TableCell align="left">
                                 <Button
                                     href="/pending"
                                     variant="contained"
-                                    style={{ backgroundColor: "green" }}
+                                    style={{
+                                        backgroundColor: "red",
+                                        marginRight: "10px"
+                                    }}
                                     color="primary"
                                 >
-                                    Check-in
+                                    Check-out
                                 </Button>
+                                <Fab size="small" aria-label="add">
+                                    <EditIcon />
+                                </Fab>
                                 <Fab
                                     size="small"
                                     aria-label="delete"
