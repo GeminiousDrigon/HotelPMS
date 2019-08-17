@@ -9,11 +9,16 @@ import Test from "./pages/Test";
 import Component from "./pages/Component";
 import Walkin from "./pages/WalkIn";
 import Reservation from "./pages/Reservation";
-import Room from "./pages/Room";
 import Settings from "./pages/Settings";
+
+import Room from "./pages/Room";
+import AddRoom from "./pages/AddRoom";
+
 import Account from "./pages/Account";
 import AddAccount from "./pages/AddAccount";
+
 import RoomFacilities from "./pages/RoomFacilities";
+import AddFacilities from "./pages/AddFacilities";
 
 import "./App.css";
 
@@ -39,11 +44,13 @@ function App() {
                 <Route path="/walkin" component={Walkin} exact />
                 <Route path="/reservation" component={Reservation} exact />
                 <Route path="/room" component={Room} exact />
+                <Route path="/addroom" component={AddRoom} exact />
                 <Route
                     path="/roomfacilities"
                     component={RoomFacilities}
                     exact
                 />
+                <Route path="/addfacilities" component={AddFacilities} exact />
                 <Route path="/settings" component={Settings} exact />
                 <Route path="/account" component={Account} exact />
                 <Route path="/addaccount" component={AddAccount} exact />
