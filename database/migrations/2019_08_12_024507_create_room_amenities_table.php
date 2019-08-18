@@ -14,7 +14,10 @@ class CreateRoomAmenitiesTable extends Migration
     public function up()
     {
         Schema::create('room_amenities', function (Blueprint $table) {
-            $table->uuid('id');
+            $table->uuid('id')->primary();
+            $table->integer('order');
+            $table->uuid('room_id');
+            $table->uuid('amenity_id');
             $table->foreign('room_id')->references('id')->on('rooms');
             $table->foreign('amenity_id')->references('id')->on('amenities');
             $table->timestamps();
