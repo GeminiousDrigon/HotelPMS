@@ -14,11 +14,10 @@ class CreateAmenitiesTable extends Migration
     public function up()
     {
         Schema::create('amenities', function (Blueprint $table) {
-            $table->uuid('id');
+            $table->uuid('id')->primary();
             $table->string('name');
             $table->string('icon');
             $table->boolean('featured');
-            $table->integer('order');
             $table->timestamps();
         });
     }

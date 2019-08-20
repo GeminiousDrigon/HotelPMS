@@ -28,7 +28,6 @@ export default class Account extends Component {
                     <h3
                         style={{
                             width: "100%",
-                            backgroundColor: "yellow",
                             height: "50px",
                             marginTop: "-5px",
                             paddingTop: "11px",
@@ -78,9 +77,9 @@ export default class Account extends Component {
                     </Table>
                     <Fab
                         style={{
-                            float: "right",
-                            marginTop: "250px",
-                            marginRight: "80px"
+                            position: "absolute",
+                            bottom: "50px",
+                            right: 50
                         }}
                         size="large"
                         color="primary"

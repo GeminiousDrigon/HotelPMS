@@ -5,10 +5,11 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Uuid;
 
 class User extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable,Uuid;
 
     /**
      * The attributes that are mass assignable.
@@ -40,4 +41,6 @@ class User extends Authenticatable
     public function bookings(){
         return $this->hasMany('App\Bookings');
     }
+
+    public $incrementing = false;
 }

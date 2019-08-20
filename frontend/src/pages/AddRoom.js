@@ -16,12 +16,7 @@ export default class AddRoom extends Component {
                     <h3
                         style={{
                             width: "100%",
-                            backgroundColor: "yellow",
-                            height: "50px",
-                            marginTop: "-5px",
-                            paddingTop: "11px",
-                            paddingLeft: "20px",
-                            float: "left"
+                            marginTop: "-5px"
                         }}
                     >
                         Rooms/Add Room
