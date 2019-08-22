@@ -23,6 +23,9 @@ import AddAccount from "./pages/AddAccount";
 import RoomFacilities from "./pages/RoomFacilities";
 import AddFacilities from "./pages/AddFacilities";
 
+//booking
+import Booking from "./booking/Booking";
+
 import "./App.css";
 
 export const history = createBrowserHistory({
@@ -59,6 +62,8 @@ function App() {
                 <Route path="/addfacilities" component={AddFacilities} exact />
                 <Route path="/account" component={Account} exact />
                 <Route path="/addaccount" component={AddAccount} exact />
+
+                <Route path="/booking" component={Booking} exact />
             </Switch>
         </Router>
     );
