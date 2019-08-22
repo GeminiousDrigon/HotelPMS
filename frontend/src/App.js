@@ -25,6 +25,9 @@ import AddFacilities from "./pages/AddFacilities";
 
 //booking
 import Booking from "./booking/Booking";
+import RoomInfo from "./booking/RoomInfo";
+import GuestInfo from "./booking/GuestInfo";
+import Confirmation from "./booking/Confirmation";
 
 import "./App.css";
 
@@ -44,7 +47,7 @@ function App() {
     return (
         <Router history={history}>
             <Switch>
-                {/* add route component if you want to add another page */}
+                {/* Admin */}
                 <Route path="/Test" component={Test} exact />
                 <Route path="/" component={Component} exact />
                 <Route path="/settings" component={Settings} exact />
@@ -62,8 +65,11 @@ function App() {
                 <Route path="/addfacilities" component={AddFacilities} exact />
                 <Route path="/account" component={Account} exact />
                 <Route path="/addaccount" component={AddAccount} exact />
-
+                {/* Booking */}
                 <Route path="/booking" component={Booking} exact />
+                <Route path="/roominfo" component={RoomInfo} exact />
+                <Route path="/guestinfo" component={GuestInfo} exact />
+                <Route path="/confirmation" component={Confirmation} exact />
             </Switch>
         </Router>
     );
