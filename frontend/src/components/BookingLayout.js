@@ -9,7 +9,6 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import MoreIcon from "@material-ui/icons/MoreVert";
-import Paper from "@material-ui/core/Paper";
 
 const useStyles = makeStyles(theme => ({
     grow: {

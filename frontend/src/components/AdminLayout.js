@@ -15,6 +15,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
 import MailIcon from "@material-ui/icons/Mail";
+import Paper from "@material-ui/core/Paper";
 
 const drawerWidth = 240;
 
@@ -184,7 +185,7 @@ export default function AdminLayout(props) {
             </Drawer>
 
             <main className={classes.content} style={{ marginTop: 64 }}>
-                {props.children}
+                <Paper>{props.children}</Paper>
             </main>
         </div>
     );
