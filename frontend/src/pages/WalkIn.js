@@ -3,6 +3,7 @@ import AdminLayout from "../components/AdminLayout";
 import { makeStyles } from "@material-ui/core/styles";
 import Input from "@material-ui/core/Input";
 import TextField from "@material-ui/core/TextField";
+import DatePicker from "../components/DatePicker";
 
 const useStyles = makeStyles(theme => ({
     container: {
@@ -19,6 +20,7 @@ export default class Walkin extends Component {
         return (
             <AdminLayout {...this.props}>
                 <div>
+                    <DatePicker />
                     <h3 />
                     <TextField
                         id="outlined-with-placeholder"

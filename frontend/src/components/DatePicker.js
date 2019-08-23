@@ -20,33 +20,35 @@ export default function MaterialUIPickers() {
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <Grid container justify="space-around">
                 <KeyboardDatePicker
-                    disableToolbar
-                    variant="inline"
-                    format="MM/dd/yyyy"
                     margin="normal"
-                    id="date-picker-inline"
-                    label="Date picker inline"
+                    id="date-picker-dialog"
+                    label="Check-in"
+                    format="MM/dd/yyyy"
                     value={selectedDate}
                     onChange={handleDateChange}
                     KeyboardButtonProps={{
                         "aria-label": "change date"
                     }}
+                    minDate={new Date()}
+                    showDisabledMonthNavigation
                 />
                 <KeyboardDatePicker
                     margin="normal"
                     id="date-picker-dialog"
-                    label="Date picker dialog"
+                    label="Check-out"
                     format="MM/dd/yyyy"
                     value={selectedDate}
                     onChange={handleDateChange}
                     KeyboardButtonProps={{
                         "aria-label": "change date"
                     }}
+                    minDate={new Date()}
+                    showDisabledMonthNavigation
                 />
                 <KeyboardTimePicker
                     margin="normal"
                     id="time-picker"
-                    label="Time picker"
+                    label="Time Arrival"
                     value={selectedDate}
                     onChange={handleDateChange}
                     KeyboardButtonProps={{

@@ -73,7 +73,10 @@ export default function BookingLayout(props) {
     const mobileMenuId = "primary-search-account-menu-mobile";
 
     return (
-        <div className={classes.grow} style={{ backgroundColor: "#D3D3D3" }}>
+        <div
+            className={classes.grow}
+            style={{ backgroundColor: "#D3D3D3", height: "1000px" }}
+        >
             <AppBar position="static">
                 <Toolbar>
                     <Typography className={classes.title} variant="h6" noWrap>
