@@ -13,9 +13,14 @@ import MenuIcon from "@material-ui/icons/Menu";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
 import MailIcon from "@material-ui/icons/Mail";
 import Paper from "@material-ui/core/Paper";
+import HotelTwoToneIcon from "@material-ui/icons/HotelTwoTone";
+import EventTwoToneIcon from "@material-ui/icons/EventTwoTone";
+import GroupTwoToneIcon from "@material-ui/icons/GroupTwoTone";
+import MeetingRoomTwoToneIcon from "@material-ui/icons/MeetingRoomTwoTone";
+import FastfoodTwoToneIcon from "@material-ui/icons/FastfoodTwoTone";
+import DescriptionTwoToneIcon from "@material-ui/icons/DescriptionTwoTone";
 
 const drawerWidth = 240;
 
@@ -100,33 +105,33 @@ export default function AdminLayout(props) {
     const menus = [
         {
             name: "Walk-in",
-            icon: <InboxIcon />,
+            icon: <HotelTwoToneIcon />,
             path: "/walkin"
         },
         {
             name: "Reservation",
-            icon: <MailIcon />,
+            icon: <EventTwoToneIcon />,
             path: "/reservation"
         },
         {
             name: "Accounts",
-            icon: <InboxIcon />,
+            icon: <GroupTwoToneIcon />,
             path: "/account"
         },
         {
             name: "Rooms",
-            icon: <InboxIcon />,
+            icon: <MeetingRoomTwoToneIcon />,
             path: "/room"
         },
         {
             name: "Room Facilities",
-            icon: <InboxIcon />,
+            icon: <FastfoodTwoToneIcon />,
             path: "/roomfacilities"
         },
         {
-            name: "Settings",
-            icon: <MailIcon />,
-            path: "/settings"
+            name: "Reports",
+            icon: <DescriptionTwoToneIcon />,
+            path: "/reports"
         }
     ];
 

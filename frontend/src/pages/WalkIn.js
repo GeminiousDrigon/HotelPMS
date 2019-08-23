@@ -19,37 +19,51 @@ export default class Walkin extends Component {
     render() {
         return (
             <AdminLayout {...this.props}>
-                <div>
+                <h3
+                    style={{
+                        width: "100%",
+                        backgroundColor: "yellow",
+                        height: "50px",
+                        marginTop: "-5px",
+                        paddingTop: "11px",
+                        paddingLeft: "20px",
+                        float: "left"
+                    }}
+                >
+                    Walk-in
+                </h3>
+                <div style={{ marginLeft: "20px" }}>
                     <DatePicker />
-                    <h3 />
                     <TextField
                         id="outlined-with-placeholder"
                         label="First Name"
                         placeholder="Placeholder"
                         margin="normal"
                         variant="outlined"
+                        style={{ width: "25%" }}
                     />
                     <TextField
-                        style={{ marginLeft: 20 }}
                         id="outlined-with-placeholder"
                         label="Last Name"
                         placeholder="Placeholder"
                         margin="normal"
                         variant="outlined"
+                        style={{ width: "25%", marginLeft: "20px" }}
                     />
                     <br />
                     <TextField
                         id="outlined-with-placeholder"
-                        label="With placeholder"
-                        placeholder="Placeholder"
+                        label="Gmail"
+                        placeholder="Gmail"
                         margin="normal"
                         variant="outlined"
+                        style={{ width: "51.7%" }}
                     />
                     <TextField
                         style={{ marginLeft: 20 }}
                         id="outlined-with-placeholder"
-                        label="With placeholder"
-                        placeholder="Placeholder"
+                        label="Contact Number"
+                        placeholder="Contact Number"
                         margin="normal"
                         variant="outlined"
                     />
