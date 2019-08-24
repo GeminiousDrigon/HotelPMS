@@ -111,7 +111,6 @@ export default function BookingLayout(props) {
             </AppBar>
             <main
                 className={classes.content}
-                style={{ marginLeft: "18%", marginTop: "10px" }}
             >
                 {props.children}
             </main>

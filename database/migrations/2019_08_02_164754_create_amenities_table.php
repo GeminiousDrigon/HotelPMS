@@ -17,7 +17,6 @@ class CreateAmenitiesTable extends Migration
             $table->uuid('id')->primary();
             $table->string('name');
             $table->string('icon');
-            $table->boolean('featured');
             $table->timestamps();
         });
     }

@@ -8,45 +8,65 @@ import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import Paper from "@material-ui/core/Paper";
+import MenuItem from "@material-ui/core/MenuItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import Switch from "@material-ui/core/Switch";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import { faUtensils} from '@fortawesome/free-solid-svg-icons'
+import CalendarTodayOutlinedIcon from "@material-ui/icons/CalendarTodayOutlined";
+import HotelOutlinedIcon from "@material-ui/icons/HotelOutlined";
+import PersonOutlinedIcon from "@material-ui/icons/PersonOutlined";
+import CheckOutlinedIcon from "@material-ui/icons/CheckOutlined";
 
-import axios from 'axios'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUtensils } from "@fortawesome/free-solid-svg-icons";
+
+import axios from "axios";
 
 export default class AddFacilities extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-          name: '',
-          icon: '',
+            name: "",
+            icon: "",
+            featured: false,
             iconLabelWidth: 0
         };
     }
 
-    onChange= (e) => {
-      this.setState({[e.target.id]: e.target.value})
-    }
-    
+    onChange = e => {
+        console.log(e.target.id, e.target.value);
+        this.setState({ [e.target.id]: e.target.value });
+    };
+
+    onChangeFeature = () => {
+        this.setState({ featured: !this.state.featured });
+    };
 
     componentDidMount() {
         this.setState({ iconLabelWidth: this.inputLabel.offsetWidth });
     }
 
-    onSave = async () => {
-      try {
-        let facility = await axios.post('/api/amenity',{
-          name: this.state.name,
-          icon: this.state.icon,
-          featured: true
-        })
-        console.log(facility)
-      } catch (err) {
-        console.log(err)        
-      }
+    onChangeSelect= (e) => {
+        this.setState({icon: e.target.value})
     }
     
+
+    onSave = async () => {
+        try {
+            let facility = await axios.post("/api/amenity", {
+                name: this.state.name,
+                icon: this.state.icon,
+                featured: this.state.featured
+            });
+            this.props.history.push("/roomfacilities");
+            console.log(facility);
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
     render() {
         return (
@@ -60,7 +80,6 @@ export default class AddFacilities extends Component {
                         flexDirection: "column"
                     }}
                 >
-                        
                     <h2>Add Room Facilities</h2>
 
                     <Paper style={{ padding: 20 }}>
@@ -85,19 +104,38 @@ export default class AddFacilities extends Component {
                                 Icon
                             </InputLabel>
                             <Select
-                                native
+                                value={this.state.icon}
                                 input={
                                     <OutlinedInput
-                                        onChange={this.onChange}
-                                        id="icon"
+                                        onChange={this.onChangeSelect}
                                         labelWidth={this.state.iconLabelWidth}
                                     />
                                 }
+                                SelectDisplayProps={{
+                                    style: { display: "flex" }
+                                }}
                             >
-                                <option value="" />
-                                <option value={"test-icon"}>test-icon</option>
-                                <option value={"test-icon"}>test-icon</option>
-                                <option value={"test-icon"}>test-icon</option>
+                                <MenuItem value="">
+                                    <em>None</em>
+                                </MenuItem>
+                                <MenuItem value={"calendar"}>
+                                    <ListItemIcon>
+                                        <CalendarTodayOutlinedIcon />
+                                    </ListItemIcon>
+                                    <ListItemText>Ten</ListItemText>
+                                </MenuItem>
+                                <MenuItem value={"hotel"}>
+                                    <ListItemIcon>
+                                        <HotelOutlinedIcon />
+                                    </ListItemIcon>
+                                    <ListItemText>Twenty</ListItemText>
+                                </MenuItem>
+                                <MenuItem value={"person"}>
+                                    <ListItemIcon>
+                                        <PersonOutlinedIcon />
+                                    </ListItemIcon>
+                                    <ListItemText>Thirty</ListItemText>
+                                </MenuItem>
                             </Select>
                         </FormControl>
                         <br />
@@ -109,7 +147,11 @@ export default class AddFacilities extends Component {
                                 justifyContent: "flex-end"
                             }}
                         >
-                            <Button variant="contained" color="primary" onClick={this.onSave}>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={this.onSave}
+                            >
                                 {/* This Button uses a Font Icon, see the installation instructions in the docs. */}
                                 <SaveIcon style={{ marginRight: "10px" }} />
                                 Save

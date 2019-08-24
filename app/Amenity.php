@@ -10,7 +10,7 @@ class Amenity extends Model
     use Uuid;
 
     protected $fillable = [
-        'name', 'icon', 'featured'
+        'name', 'icon'
     ];
 
     public function rooms(){

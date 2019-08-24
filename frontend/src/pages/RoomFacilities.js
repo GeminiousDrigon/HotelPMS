@@ -11,6 +11,8 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import { makeStyles } from "@material-ui/core/styles";
 
+import axios from "axios";
+
 const useStyles = makeStyles(theme => ({
     fab: {
         margin: theme.spacing(1)
@@ -21,6 +23,28 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default class RoomFacilities extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            facilities: []
+        };
+    }
+
+    componentDidMount() {
+        this.getAllFacilities();
+    }
+
+    getAllFacilities = async () => {
+        try {
+            let { data } = await axios.get("/api/amenity");
+            console.log(data);
+            this.setState({ facilities: data });
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
     render() {
         return (
             <AdminLayout {...this.props}>
@@ -42,34 +66,38 @@ export default class RoomFacilities extends Component {
                     <Table>
                         <TableHead>
                             <TableRow>
-                                <TableCell align="right">ID</TableCell>
+                                <TableCell align="left">ID</TableCell>
                                 <TableCell align="left">Name</TableCell>
                                 <TableCell align="left">Icon</TableCell>
-                                <TableCell align="left">Price</TableCell>
                                 <TableCell align="left">Action</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            <TableCell align="right">1</TableCell>
-                            <TableCell align="left">Meal</TableCell>
-                            <TableCell align="left">none</TableCell>
-                            <TableCell align="left">100</TableCell>
-                            <TableCell align="left">
-                                <Fab
-                                    style={{ marginRight: "10px" }}
-                                    size="small"
-                                    aria-label="add"
-                                >
-                                    <EditIcon />
-                                </Fab>
-                                <Fab
-                                    size="small"
-                                    aria-label="delete"
-                                    color="secondary"
-                                >
-                                    <DeleteIcon />
-                                </Fab>
-                            </TableCell>
+                            {this.state.facilities.map((data, i) => {
+                                return (
+                                    <TableRow>
+                                        <TableCell align="left">{data.id}</TableCell>
+                                        <TableCell align="left">{data.name}</TableCell>
+                                        <TableCell align="left">{data.icon}</TableCell>
+                                        <TableCell align="left">
+                                            <Fab
+                                                style={{ marginRight: "10px" }}
+                                                size="small"
+                                                aria-label="add"
+                                            >
+                                                <EditIcon />
+                                            </Fab>
+                                            <Fab
+                                                size="small"
+                                                aria-label="delete"
+                                                color="secondary"
+                                            >
+                                                <DeleteIcon />
+                                            </Fab>
+                                        </TableCell>
+                                    </TableRow>
+                                );
+                            })}
                         </TableBody>
                     </Table>
                     <Fab

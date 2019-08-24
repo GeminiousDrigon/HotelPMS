@@ -50,7 +50,7 @@ function App() {
                 {/* Admin */}
                 <Route path="/" component={Component} exact />
                 <Route path="/Test" component={Test} exact />
-                <Route path="/report" component={Report} exact />
+                <Route path="/reports" component={Report} exact />
                 <Route path="/walkin" component={Walkin} exact />
                 <Route path="/reservation" component={Reservation} exact />
                 <Route path="/pending" component={Pending} exact />

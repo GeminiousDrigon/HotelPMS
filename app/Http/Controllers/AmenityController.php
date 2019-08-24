@@ -45,7 +45,6 @@ class AmenityController extends Controller
             $amenity->fill([
                 'name' => $request->name,
                 'icon' => $request->icon,
-                'featured' => $request->featured,
             ]);
             $amenity->save();
             return response()->json($amenity);

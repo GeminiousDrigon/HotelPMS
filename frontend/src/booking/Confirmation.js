@@ -11,47 +11,7 @@ export default class Confirmation extends Component {
     render() {
         return (
             <div>
-                <BookingLayout {...this.props}>
-                    <Table border="0">
-                        <tr align="center">
-                            <td width="20%">
-                                <Fab size="medium" color="primary">
-                                    <CalendarTodayOutlinedIcon />
-                                </Fab>
-                            </td>
-                            <td width="20%">
-                                <Fab size="medium" color="primary">
-                                    <HotelOutlinedIcon />
-                                </Fab>
-                            </td>
-                            <td width="20%">
-                                <Fab size="medium" color="primary">
-                                    <PersonOutlinedIcon />
-                                </Fab>
-                            </td>
-                            <td width="20%">
-                                <Fab size="medium" color="primary">
-                                    <CheckOutlinedIcon />
-                                </Fab>
-                            </td>
-                            <td />
-                        </tr>
-                        <tr align="center">
-                            <td>
-                                Check-in & <br /> Check-out Date
-                            </td>
-                            <td>
-                                Select <br /> Rooms & Rates
-                            </td>
-                            <td>
-                                Guest <br /> Information
-                            </td>
-                            <td>
-                                Booking <br /> Confirmation
-                            </td>
-                        </tr>
-                    </Table>
-                </BookingLayout>
+                {/* start designing here */}
             </div>
         );
     }
