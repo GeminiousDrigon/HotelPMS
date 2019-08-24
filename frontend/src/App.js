@@ -48,8 +48,8 @@ function App() {
         <Router history={history}>
             <Switch>
                 {/* Admin */}
-                <Route path="/Test" component={Test} exact />
                 <Route path="/" component={Component} exact />
+                <Route path="/Test" component={Test} exact />
                 <Route path="/settings" component={Settings} exact />
                 <Route path="/walkin" component={Walkin} exact />
                 <Route path="/reservation" component={Reservation} exact />

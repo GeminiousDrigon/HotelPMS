@@ -185,7 +185,7 @@ export default function AdminLayout(props) {
             </Drawer>
 
             <main className={classes.content} style={{ marginTop: 64 }}>
-                <Paper>{props.children}</Paper>
+                {props.children}
             </main>
         </div>
     );
