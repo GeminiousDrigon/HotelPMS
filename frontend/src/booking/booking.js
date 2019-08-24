@@ -6,6 +6,8 @@ import CheckOutlinedIcon from "@material-ui/icons/CheckOutlined";
 import Fab from "@material-ui/core/Fab";
 import Table from "@material-ui/core/Table";
 import BookingLayout from "../components/BookingLayout";
+import DatePicker from "../components/DatePicker";
+import Paper from "@material-ui/core/Paper";
 
 export default class Booking extends Component {
     render() {
@@ -51,6 +53,11 @@ export default class Booking extends Component {
                             </td>
                         </tr>
                     </Table>
+                    <div style={{ marginLeft: "-22%", width: "125%" }}>
+                        <Paper>
+                            <DatePicker />
+                        </Paper>
+                    </div>
                 </BookingLayout>
             </div>
         );
