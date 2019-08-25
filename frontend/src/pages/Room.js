@@ -31,6 +31,7 @@ export default class Room extends Component {
                                     <TableCell align="left">
                                         Room Type
                                     </TableCell>
+                                    <TableCell align="left">Photo</TableCell>
                                     <TableCell align="left">
                                         Description
                                     </TableCell>
@@ -41,6 +42,7 @@ export default class Room extends Component {
                             <TableBody>
                                 <TableCell align="left">1</TableCell>
                                 <TableCell align="left">Deluxe</TableCell>
+                                <TableCell align="left">PhotoExample</TableCell>
                                 <TableCell align="left">Secret</TableCell>
                                 <TableCell align="left">1000</TableCell>
                                 <TableCell align="left">
