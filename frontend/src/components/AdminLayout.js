@@ -189,7 +189,10 @@ export default function AdminLayout(props) {
                 <Divider />
             </Drawer>
 
-            <main className={classes.content} style={{ marginTop: 64 }}>
+            <main
+                className={classes.content}
+                style={{ marginTop: 60, backgroundColor: "#DCDCDC" }}
+            >
                 {props.children}
             </main>
         </div>

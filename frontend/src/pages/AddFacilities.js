@@ -49,10 +49,9 @@ export default class AddFacilities extends Component {
         this.setState({ iconLabelWidth: this.inputLabel.offsetWidth });
     }
 
-    onChangeSelect= (e) => {
-        this.setState({icon: e.target.value})
-    }
-    
+    onChangeSelect = e => {
+        this.setState({ icon: e.target.value });
+    };
 
     onSave = async () => {
         try {
