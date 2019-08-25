@@ -70,101 +70,58 @@ export default class Booking extends Component {
         return (
             <div>
                 <BookingLayout {...this.props}>
-                    {/* <Table border="0">
-                        <tr align="center">
-                            <td width="20%">
-                                <Fab size="medium" color="primary">
-                                    <CalendarTodayOutlinedIcon />
-                                </Fab>
-                            </td>
-                            <td width="20%">
-                                <Fab size="medium" disabled>
-                                    <HotelOutlinedIcon />
-                                </Fab>
-                            </td>
-                            <td width="20%">
-                                <Fab size="medium" disabled>
-                                    <PersonOutlinedIcon />
-                                </Fab>
-                            </td>
-                            <td width="20%">
-                                <Fab size="medium" disabled>
-                                    <CheckOutlinedIcon />
-                                </Fab>
-                            </td>
-                            <td />
-                        </tr>
-                        <tr align="center">
-                            <td>
-                                Check-in & <br /> Check-out Date
-                            </td>
-                            <td>
-                                Select <br /> Rooms & Rates
-                            </td>
-                            <td>
-                                Guest <br /> Information
-                            </td>
-                            <td>
-                                Booking <br /> Confirmation
-                            </td>
-                        </tr>
-                    </Table>
-                    <div style={{ marginLeft: "-22%", width: "125%" }}>
-                        <Paper>
-                            <DatePicker />
-                        </Paper>
-                    </div> */}
-
-                    <Paper style={{ padding: "0 20px 10px" }}>
-                        <Stepper activeStep={activeStep} alternativeLabel>
-                            {steps.map(label => (
-                                <Step key={label.title}>
-                                    <StepLabel>
-                                        <div
-                                            style={{
-                                                display: "flex",
-                                                flexDirection: "column",
-                                                justifyContent: "center",
-                                                alignItems: "center"
-                                            }}
-                                        >
-                                            {label.icon}
-                                            {label.title}
-                                        </div>
-                                    </StepLabel>
-                                </Step>
-                            ))}
-                        </Stepper>
-                        <div>{this.getContents(activeStep)}</div>
-                        <div
-                            style={{
-                                display: "flex",
-                                flexDirection: "row",
-                                justifyContent: "flex-end",
-                                margin: "100px 0 50px"
-                            }}
-                        >
-                            <div>
-                                <Button
-                                    style={{ marginRight: 20 }}
-                                    disabled={activeStep === 0}
-                                    onClick={this.handleBack}
-                                >
-                                    Back
-                                </Button>
-                                <Button
-                                    style={{ marginLeft: 20 }}
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={this.handleNext}
-                                >
-                                    {activeStep === steps.length - 1
-                                        ? "Finish"
-                                        : "Next"}
-                                </Button>
-                            </div>
+                    <Stepper
+                        activeStep={activeStep}
+                        alternativeLabel
+                        style={{ backgroundColor: "#DCDCDC" }}
+                    >
+                        {steps.map(label => (
+                            <Step key={label.title}>
+                                <StepLabel>
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            justifyContent: "center",
+                                            alignItems: "center"
+                                        }}
+                                    >
+                                        {label.icon}
+                                        {label.title}
+                                    </div>
+                                </StepLabel>
+                            </Step>
+                        ))}
+                    </Stepper>
+                    <div>{this.getContents(activeStep)}</div>
+                    <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            justifyContent: "flex-end",
+                            margin: "100px 100px 50px"
+                        }}
+                    >
+                        <div>
+                            <Button
+                                style={{ marginRight: 20 }}
+                                disabled={activeStep === 0}
+                                onClick={this.handleBack}
+                            >
+                                Back
+                            </Button>
+                            <Button
+                                style={{ marginLeft: 20 }}
+                                variant="contained"
+                                color="primary"
+                                onClick={this.handleNext}
+                            >
+                                {activeStep === steps.length - 1
+                                    ? "Finish"
+                                    : "Next"}
+                            </Button>
                         </div>
-                    </Paper>
+                    </div>
                 </BookingLayout>
             </div>
         );

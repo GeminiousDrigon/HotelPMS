@@ -73,10 +73,7 @@ export default function BookingLayout(props) {
     const mobileMenuId = "primary-search-account-menu-mobile";
 
     return (
-        <div
-            className={classes.grow}
-            style={{ backgroundColor: "#D3D3D3", height: "1000px" }}
-        >
+        <div className={classes.grow} style={{ height: "auto" }}>
             <AppBar position="static">
                 <Toolbar>
                     <Typography className={classes.title} variant="h6" noWrap>
@@ -109,11 +106,7 @@ export default function BookingLayout(props) {
                     </div>
                 </Toolbar>
             </AppBar>
-            <main
-                className={classes.content}
-            >
-                {props.children}
-            </main>
+            <main className={classes.content}>{props.children}</main>
             {renderMenu}
         </div>
     );
