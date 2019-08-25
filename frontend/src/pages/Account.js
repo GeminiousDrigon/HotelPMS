@@ -10,6 +10,7 @@ import AddIcon from "@material-ui/icons/Add";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import { makeStyles } from "@material-ui/core/styles";
+import Paper from "@material-ui/core/Paper";
 
 const useStyles = makeStyles(theme => ({
     fab: {
@@ -24,71 +25,68 @@ export default class Account extends Component {
     render() {
         return (
             <AdminLayout {...this.props}>
-                <div>
-                    <h3
-                        style={{
-                            width: "100%",
-                            height: "50px",
-                            marginTop: "-5px",
-                            paddingTop: "11px",
-                            paddingLeft: "20px",
-                            float: "left",
-                            backgroundColor: "yellow"
-                        }}
-                    >
-                        Accounts
-                    </h3>
+                <div
+                    style={{
+                        margin: "auto",
+                        display: "flex",
+                        justifyContent: "center",
+                        flexDirection: "column"
+                    }}
+                >
+                    <Paper style={{ backgroundColor: "white", padding: 20 }}>
+                        <h1>Account(s)</h1>
 
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell align="right">ID</TableCell>
-                                <TableCell align="left">Name</TableCell>
-                                <TableCell align="left">Gmail</TableCell>
-                                <TableCell align="left">Password</TableCell>
-                                <TableCell align="left">Action</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            <TableCell align="right">1</TableCell>
-                            <TableCell align="left">Dominic Vega</TableCell>
-                            <TableCell align="left">
-                                davega12.dv@gmail.com
-                            </TableCell>
-                            <TableCell align="left">
-                                e1sknfd123jksfj423
-                            </TableCell>
-                            <TableCell align="left">
-                                <Fab
-                                    style={{ marginRight: "10px" }}
-                                    size="small"
-                                    aria-label="add"
-                                >
-                                    <EditIcon />
-                                </Fab>
-                                <Fab
-                                    size="small"
-                                    aria-label="delete"
-                                    color="secondary"
-                                >
-                                    <DeleteIcon />
-                                </Fab>
-                            </TableCell>
-                        </TableBody>
-                    </Table>
-                    <Fab
-                        style={{
-                            position: "absolute",
-                            bottom: "50px",
-                            right: 50
-                        }}
-                        size="large"
-                        color="primary"
-                        aria-label="add"
-                        href="/AddAccount"
-                    >
-                        <AddIcon />
-                    </Fab>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell align="left">ID</TableCell>
+                                    <TableCell align="left">Name</TableCell>
+                                    <TableCell align="left">Gmail</TableCell>
+                                    <TableCell align="left">Password</TableCell>
+                                    <TableCell align="left">Action</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                <TableCell align="left">1</TableCell>
+                                <TableCell align="left">Dominic Vega</TableCell>
+                                <TableCell align="left">
+                                    davega12.dv@gmail.com
+                                </TableCell>
+                                <TableCell align="left">
+                                    e1sknfd123jksfj423
+                                </TableCell>
+                                <TableCell align="left">
+                                    <Fab
+                                        style={{ marginRight: "10px" }}
+                                        size="small"
+                                        aria-label="add"
+                                    >
+                                        <EditIcon />
+                                    </Fab>
+                                    <Fab
+                                        size="small"
+                                        aria-label="delete"
+                                        color="secondary"
+                                    >
+                                        <DeleteIcon />
+                                    </Fab>
+                                </TableCell>
+                            </TableBody>
+                        </Table>
+                        <Fab
+                            style={{
+                                position: "absolute",
+                                bottom: "50px",
+                                right: 50
+                            }}
+                            size="large"
+                            color="primary"
+                            aria-label="add"
+                            href="/AddAccount"
+                        >
+                            <AddIcon />
+                        </Fab>
+                    </Paper>
                 </div>
             </AdminLayout>
         );

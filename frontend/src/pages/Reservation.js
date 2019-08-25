@@ -37,7 +37,7 @@ export default class Reservation extends Component {
                     }}
                 >
                     <Paper style={{ backgroundColor: "white", padding: 20 }}>
-                        <h1>Reservation</h1>
+                        <h1>Reservation(s)</h1>
                         <Button
                             href="/reservation"
                             variant="contained"

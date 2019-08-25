@@ -7,98 +7,100 @@ import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
+import Paper from "@material-ui/core/Paper";
 
 export default class AddRoom extends Component {
     render() {
         return (
             <AdminLayout {...this.props}>
-                <div>
-                    <h3
+                <div
+                    style={{
+                        margin: "auto",
+                        display: "flex",
+                        justifyContent: "center",
+                        flexDirection: "column"
+                    }}
+                >
+                    <Paper
                         style={{
-                            width: "100%",
-                            marginTop: "-5px"
+                            backgroundColor: "white",
+                            padding: 20,
+                            width: "70%"
                         }}
                     >
-                        Rooms/Add Room
-                    </h3>
-                    <FormControl
-                        variant="outlined"
-                        id="outlined-with-placeholder"
-                        margin="normal"
-                        style={{ width: "25%" }}
-                    >
-                        <InputLabel htmlFor="outlined-age-native-simple">
-                            Room Type
-                        </InputLabel>
-                        <Select
-                            native
-                            input={
-                                <OutlinedInput
-                                    name="roomtype"
-                                    id="outlined-age-native-simple"
-                                />
-                            }
+                        <h1 style={{ marginLeft: "35px" }}>Add Room</h1>
+                        <table
+                            border="0"
+                            width="95%"
+                            style={{ marginLeft: "35px" }}
                         >
-                            <option value="" />
-                            <option value={10}>Regular</option>
-                            <option value={20}>Deluxe</option>
-                            <option value={30}>Payag</option>
-                        </Select>
-                    </FormControl>
-                    <FormControl
-                        variant="outlined"
-                        id="outlined-with-placeholder"
-                        margin="normal"
-                        style={{ marginLeft: 20, width: "25%" }}
-                    >
-                        <InputLabel htmlFor="outlined-age-native-simple">
-                            Room Number
-                        </InputLabel>
-                        <Select
-                            native
-                            input={
-                                <OutlinedInput
-                                    name="roomno"
-                                    id="outlined-age-native-simple"
-                                />
-                            }
+                            <tr>
+                                <td>
+                                    <TextField
+                                        style={{ width: "90%" }}
+                                        id="Type of Room"
+                                        placeholder="Type of Room"
+                                        variant="filled"
+                                        margin="dense"
+                                        hiddenLabel
+                                        required
+                                    />
+                                </td>
+                                <td>
+                                    <TextField
+                                        style={{ width: "90%" }}
+                                        id="Number of Room"
+                                        placeholder="Number of Room"
+                                        variant="filled"
+                                        margin="dense"
+                                        hiddenLabel
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colSpan="2">
+                                    <TextField
+                                        style={{ width: "95%" }}
+                                        id="description"
+                                        placeholder="Description"
+                                        multiline
+                                        rows="5"
+                                        margin="normal"
+                                        variant="filled"
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <TextField
+                                        style={{ width: "90%" }}
+                                        id="price"
+                                        placeholder="Price"
+                                        variant="filled"
+                                        margin="dense"
+                                        hiddenLabel
+                                    />
+                                </td>
+                            </tr>
+                        </table>
+                        <div
+                            style={{
+                                display: "flex",
+                                width: "94%",
+                                justifyContent: "flex-end"
+                            }}
                         >
-                            <option value="" />
-                            <option value={1}>1</option>
-                            <option value={2}>2</option>
-                            <option value={3}>3</option>
-                        </Select>
-                    </FormControl>
-                    <br />
-                    <TextField
-                        id="outlined-with-placeholder"
-                        label="Description"
-                        placeholder="Description"
-                        margin="normal"
-                        variant="outlined"
-                        style={{ width: "51.6%" }}
-                    />
-                    <br />
-                    <TextField
-                        id="outlined-with-placeholder"
-                        label="Price"
-                        placeholder="Price"
-                        margin="normal"
-                        variant="outlined"
-                        style={{ width: "25%" }}
-                    />
-
-                    <br />
-                    <br />
-                    <Button
-                        variant="contained"
-                        style={{ backgroundColor: "green" }}
-                        color="primary"
-                    >
-                        {/* This Button uses a Font Icon, see the installation instructions in the docs. */}
-                        <SaveIcon style={{ marginRight: "10px" }} />
-                        Save
-                    </Button>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={this.onSave}
+                            >
+                                {/* This Button uses a Font Icon, see the installation instructions in the docs. */}
+                                <SaveIcon style={{ marginRight: "10px" }} />
+                                Save
+                            </Button>
+                        </div>
+                    </Paper>
                 </div>
             </AdminLayout>
         );

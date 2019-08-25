@@ -10,6 +10,7 @@ import AddIcon from "@material-ui/icons/Add";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import { makeStyles } from "@material-ui/core/styles";
+import Paper from "@material-ui/core/Paper";
 
 import axios from "axios";
 
@@ -48,71 +49,76 @@ export default class RoomFacilities extends Component {
     render() {
         return (
             <AdminLayout {...this.props}>
-                <div>
-                    <h3
-                        style={{
-                            width: "100%",
-                            backgroundColor: "yellow",
-                            height: "50px",
-                            marginTop: "-5px",
-                            paddingTop: "11px",
-                            paddingLeft: "20px",
-                            float: "left"
-                        }}
-                    >
-                        Room Facilities
-                    </h3>
+                <div
+                    style={{
+                        margin: "auto",
+                        display: "flex",
+                        justifyContent: "center",
+                        flexDirection: "column"
+                    }}
+                >
+                    <Paper style={{ backgroundColor: "white", padding: 20 }}>
+                        <h1>Facilities</h1>
 
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell align="left">ID</TableCell>
-                                <TableCell align="left">Name</TableCell>
-                                <TableCell align="left">Icon</TableCell>
-                                <TableCell align="left">Action</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {this.state.facilities.map((data, i) => {
-                                return (
-                                    <TableRow>
-                                        <TableCell align="left">{data.id}</TableCell>
-                                        <TableCell align="left">{data.name}</TableCell>
-                                        <TableCell align="left">{data.icon}</TableCell>
-                                        <TableCell align="left">
-                                            <Fab
-                                                style={{ marginRight: "10px" }}
-                                                size="small"
-                                                aria-label="add"
-                                            >
-                                                <EditIcon />
-                                            </Fab>
-                                            <Fab
-                                                size="small"
-                                                aria-label="delete"
-                                                color="secondary"
-                                            >
-                                                <DeleteIcon />
-                                            </Fab>
-                                        </TableCell>
-                                    </TableRow>
-                                );
-                            })}
-                        </TableBody>
-                    </Table>
-                    <Fab
-                        style={{
-                            float: "right",
-                            marginTop: "250px",
-                            marginRight: "80px"
-                        }}
-                        size="large"
-                        color="primary"
-                        aria-label="add"
-                        href="/AddFacilities"
-                    >
-                        <AddIcon />
-                    </Fab>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell align="left">ID</TableCell>
+                                    <TableCell align="left">Name</TableCell>
+                                    <TableCell align="left">Icon</TableCell>
+                                    <TableCell align="left">Action</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {this.state.facilities.map((data, i) => {
+                                    return (
+                                        <TableRow>
+                                            <TableCell align="left">
+                                                {data.id}
+                                            </TableCell>
+                                            <TableCell align="left">
+                                                {data.name}
+                                            </TableCell>
+                                            <TableCell align="left">
+                                                {data.icon}
+                                            </TableCell>
+                                            <TableCell align="left">
+                                                <Fab
+                                                    style={{
+                                                        marginRight: "10px"
+                                                    }}
+                                                    size="small"
+                                                    aria-label="add"
+                                                >
+                                                    <EditIcon />
+                                                </Fab>
+                                                <Fab
+                                                    size="small"
+                                                    aria-label="delete"
+                                                    color="secondary"
+                                                >
+                                                    <DeleteIcon />
+                                                </Fab>
+                                            </TableCell>
+                                        </TableRow>
+                                    );
+                                })}
+                            </TableBody>
+                        </Table>
+                        <Fab
+                            style={{
+                                position: "absolute",
+                                bottom: "50px",
+                                right: 50
+                            }}
+                            size="large"
+                            color="primary"
+                            aria-label="add"
+                            href="/AddFacilities"
+                        >
+                            <AddIcon />
+                        </Fab>
+                    </Paper>
                 </div>
             </AdminLayout>
         );

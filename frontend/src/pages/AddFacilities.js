@@ -79,9 +79,8 @@ export default class AddFacilities extends Component {
                         flexDirection: "column"
                     }}
                 >
-                    <h2>Add Room Facilities</h2>
-
                     <Paper style={{ padding: 20 }}>
+                        <h2>Add Room Facilities</h2>
                         <TextField
                             id="name"
                             label="Name"
