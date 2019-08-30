@@ -67,6 +67,7 @@ export default class Room extends Component {
                                     <TableCell align="left">
                                         Room Type
                                     </TableCell>
+                                    <TableCell align="left">Photo</TableCell>
                                     <TableCell align="left">
                                         Description
                                     </TableCell>

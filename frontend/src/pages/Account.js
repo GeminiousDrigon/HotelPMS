@@ -60,6 +60,7 @@ export default class Account extends Component {
                                         style={{ marginRight: "10px" }}
                                         size="small"
                                         aria-label="add"
+                                        href="/AddAccount"
                                     >
                                         <EditIcon />
                                     </Fab>
