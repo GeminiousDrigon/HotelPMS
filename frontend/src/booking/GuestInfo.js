@@ -12,7 +12,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
-import { Paper } from "react-md";
+import Paper from "@material-ui/core/Paper";
 import DatePicker from "../components/DatePicker";
 
 export default class GuestInfo extends Component {

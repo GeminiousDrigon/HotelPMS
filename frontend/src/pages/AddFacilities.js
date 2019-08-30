@@ -21,8 +21,12 @@ import CheckOutlinedIcon from "@material-ui/icons/CheckOutlined";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUtensils } from "@fortawesome/free-solid-svg-icons";
+import Icon from "@material-ui/core/Icon";
+import Grid from "@material-ui/core/Grid";
 
 import axios from "axios";
+import icons from "../icons.json";
+import IconsItem from "../components/IconsItem";
 
 export default class AddFacilities extends Component {
     constructor(props) {
@@ -46,7 +50,10 @@ export default class AddFacilities extends Component {
     };
 
     componentDidMount() {
-        this.setState({ iconLabelWidth: this.inputLabel.offsetWidth });
+        // this.setState({ iconLabelWidth: this.inputLabel.offsetWidth });
+        if (this.props.match.params.id) {
+            this.getFacilities(this.props.match.params.id);
+        }
     }
 
     onChangeSelect = e => {
@@ -55,17 +62,43 @@ export default class AddFacilities extends Component {
 
     onSave = async () => {
         try {
-            let facility = await axios.post("/api/amenity", {
-                name: this.state.name,
-                icon: this.state.icon,
-                featured: this.state.featured
-            });
-            this.props.history.push("/roomfacilities");
-            console.log(facility);
+            if (this.props.match.params.id) {
+                console.log("here");
+                let { id } = this.props.match.params;
+                let facility = await axios.put(`/api/amenity/${id}`, {
+                    name: this.state.name,
+                    icon: this.state.icon
+                });
+                this.props.history.goBack();
+            } else {
+                let facility = await axios.post("/api/amenity", {
+                    name: this.state.name,
+                    icon: this.state.icon
+                });
+                this.props.history.push("/roomfacilities");
+                console.log(facility);
+            }
         } catch (err) {
             console.log(err);
         }
     };
+
+    getFacilities = async id => {
+        try {
+            let { data } = await axios.get(`/api/amenity/${id}`);
+            this.setState({
+                name: data.name,
+                icon: data.icon
+            });
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    onSelectIcon = (value) => {
+        this.setState({icon: value})
+    }
+    
 
     render() {
         return (
@@ -81,6 +114,10 @@ export default class AddFacilities extends Component {
                 >
                     <Paper style={{ padding: 20 }}>
                         <h2>Add Room Facilities</h2>
+                        <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
+                            {this.state.icon !== "" && <Icon fontSize="large">{this.state.icon}</Icon>}
+                            <h1 style={{ margin: 0, marginLeft: 5 }}>{this.state.name}</h1>
+                        </div>
                         <TextField
                             id="name"
                             label="Name"
@@ -88,73 +125,33 @@ export default class AddFacilities extends Component {
                             margin="normal"
                             variant="outlined"
                             onChange={this.onChange}
+                            value={this.state.name}
                             fullWidth
                         />
-                        <FormControl
-                            variant="outlined"
-                            margin="normal"
-                            fullWidth
-                        >
-                            <InputLabel
-                                htmlFor="outlined-age-native-simple"
-                                ref={el => (this.inputLabel = el)}
-                            >
-                                Icon
-                            </InputLabel>
-                            <Select
-                                value={this.state.icon}
-                                input={
-                                    <OutlinedInput
-                                        onChange={this.onChangeSelect}
-                                        labelWidth={this.state.iconLabelWidth}
-                                    />
-                                }
-                                SelectDisplayProps={{
-                                    style: { display: "flex" }
-                                }}
-                            >
-                                <MenuItem value="">
-                                    <em>None</em>
-                                </MenuItem>
-                                <MenuItem value={"calendar"}>
-                                    <ListItemIcon>
-                                        <CalendarTodayOutlinedIcon />
-                                    </ListItemIcon>
-                                    <ListItemText>Ten</ListItemText>
-                                </MenuItem>
-                                <MenuItem value={"hotel"}>
-                                    <ListItemIcon>
-                                        <HotelOutlinedIcon />
-                                    </ListItemIcon>
-                                    <ListItemText>Twenty</ListItemText>
-                                </MenuItem>
-                                <MenuItem value={"person"}>
-                                    <ListItemIcon>
-                                        <PersonOutlinedIcon />
-                                    </ListItemIcon>
-                                    <ListItemText>Thirty</ListItemText>
-                                </MenuItem>
-                            </Select>
-                        </FormControl>
-                        <br />
-                        <br />
                         <div
                             style={{
-                                display: "flex",
                                 width: "100%",
-                                justifyContent: "flex-end"
                             }}
                         >
                             <Button
                                 variant="contained"
                                 color="primary"
                                 onClick={this.onSave}
+                                fullWidth
+                                size="large"
                             >
                                 {/* This Button uses a Font Icon, see the installation instructions in the docs. */}
                                 <SaveIcon style={{ marginRight: "10px" }} />
                                 Save
                             </Button>
                         </div>
+                        <h1>Select Icon</h1>
+                        {icons.map((icon, i) => {
+                            return (
+                                <IconsItem {...icon} onSelectIcon={this.onSelectIcon} />
+                            );
+                        })}
+                        
                     </Paper>
                 </div>
             </AdminLayout>

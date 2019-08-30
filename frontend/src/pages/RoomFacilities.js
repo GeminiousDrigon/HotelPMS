@@ -46,6 +46,16 @@ export default class RoomFacilities extends Component {
         }
     };
 
+    deleteFacility = async (id) => {
+        try {
+            await axios.delete(`/api/amenity/${id}`);
+            this.getAllFacilities();
+        } catch (err) {
+            console.log(err)
+        }
+    }
+    
+
     render() {
         return (
             <AdminLayout {...this.props}>
@@ -89,6 +99,7 @@ export default class RoomFacilities extends Component {
                                                     }}
                                                     size="small"
                                                     aria-label="add"
+                                                    onClick={()=> this.props.history.push(`/roomfacilities/${data.id}`)}
                                                 >
                                                     <EditIcon />
                                                 </Fab>
@@ -96,6 +107,7 @@ export default class RoomFacilities extends Component {
                                                     size="small"
                                                     aria-label="delete"
                                                     color="secondary"
+                                                    onClick={()=>this.deleteFacility(data.id)}
                                                 >
                                                     <DeleteIcon />
                                                 </Fab>
