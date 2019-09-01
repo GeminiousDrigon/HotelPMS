@@ -8,6 +8,7 @@ import {
     KeyboardTimePicker,
     KeyboardDatePicker
 } from "@material-ui/pickers";
+import { Paper } from "@material-ui/core";
 
 export default function MaterialUIPickers() {
     // The first commit of Material-UI
