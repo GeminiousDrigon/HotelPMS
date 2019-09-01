@@ -21,6 +21,7 @@ import GroupTwoToneIcon from "@material-ui/icons/GroupTwoTone";
 import MeetingRoomTwoToneIcon from "@material-ui/icons/MeetingRoomTwoTone";
 import FastfoodTwoToneIcon from "@material-ui/icons/FastfoodTwoTone";
 import DescriptionTwoToneIcon from "@material-ui/icons/DescriptionTwoTone";
+import Button from "@material-ui/core/Button";
 
 const drawerWidth = 240;
 
@@ -157,6 +158,9 @@ export default function AdminLayout(props) {
                     <Typography variant="h6" className={classes.title}>
                         Bluepool Garden
                     </Typography>
+                    <div style={{ marginLeft: "70%" }}>
+                        <Button color="inherit">Logout</Button>
+                    </div>
                 </Toolbar>
             </AppBar>
             <Drawer

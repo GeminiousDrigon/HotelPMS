@@ -55,7 +55,11 @@ export default class Booking extends Component {
     getContents = activeStep => {
         switch (activeStep) {
             case 0:
-                return <DatePicker />;
+                return (
+                    <Paper style={{ width: "90%", marginLeft: "5%" }}>
+                        <DatePicker />
+                    </Paper>
+                );
             case 1:
                 return <RoomInfo />;
             case 2:
