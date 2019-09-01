@@ -5,14 +5,12 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App\Uuid;
 
-class RoomAmenities extends Model
+class AmenityRoomType extends Model
 {
     use Uuid;
-    //
 
     protected $fillable = [
-        'room_id', 'amenity_id'
+        'room_type_id',
+        'amenity_id'
     ];
-
-    public $incrementing = false;
 }

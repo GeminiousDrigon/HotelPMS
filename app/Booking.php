@@ -21,6 +21,10 @@ class Booking extends Model
         return $this->belongsTo('App\Room', 'room_id');
     }
 
+    public function roomType(){
+        return $this->belongsTo('App\RoomType');
+    }
+
     public function billings(){
         return $this->hasMany('App\Billing');
     }

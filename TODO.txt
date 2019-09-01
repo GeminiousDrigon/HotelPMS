@@ -1,0 +1,5 @@
+Add Room
+  1. Need to check if the room type and the room type of the room are equal
+
+
+Add the routes for the relationships in Booking
