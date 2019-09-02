@@ -29,6 +29,9 @@ import RoomInfo from "./booking/RoomInfo";
 import GuestInfo from "./booking/GuestInfo";
 import Confirmation from "./booking/Confirmation";
 
+//Login
+import Signin from "./login/Signin";
+
 import "./App.css";
 import ViewRoom from "./pages/ViewRoom";
 import RoomType from "./pages/RoomType";
@@ -78,6 +81,8 @@ function App() {
                 <Route path="/roominfo" component={RoomInfo} exact />
                 <Route path="/guestinfo" component={GuestInfo} exact />
                 <Route path="/confirmation" component={Confirmation} exact />
+                {/* Log-in */}
+                <Route path="/sign-in" component={Signin} exact />
             </Switch>
         </Router>
     );

@@ -11,6 +11,15 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import ListItemText from "@material-ui/core/ListItemText";
+import Checkbox from "@material-ui/core/Checkbox";
+import FolderIcon from "@material-ui/icons/Folder";
+import IconButton from "@material-ui/core/IconButton";
+import InputBase from "@material-ui/core/InputBase";
+import SearchIcon from "@material-ui/icons/Search";
 
 import axios from "axios";
 
@@ -46,15 +55,14 @@ export default class RoomFacilities extends Component {
         }
     };
 
-    deleteFacility = async (id) => {
+    deleteFacility = async id => {
         try {
             await axios.delete(`/api/amenity/${id}`);
             this.getAllFacilities();
         } catch (err) {
-            console.log(err)
+            console.log(err);
         }
-    }
-    
+    };
 
     render() {
         return (
@@ -69,8 +77,57 @@ export default class RoomFacilities extends Component {
                 >
                     <Paper style={{ backgroundColor: "white", padding: 20 }}>
                         <h1>Facilities</h1>
+                        <div style={{ width: "20%" }}>
+                            <div>
+                                <InputBase
+                                    placeholder="Search icon"
+                                    classes={{}}
+                                    inputProps={{ "aria-label": "search" }}
+                                />
+                                <div
+                                    style={{
+                                        marginTop: "-30px",
+                                        marginLeft: "80%"
+                                    }}
+                                >
+                                    <SearchIcon />
+                                </div>
+                            </div>
+                            <List>
+                                <ListItem>
+                                    <ListItemText
+                                        id={""}
+                                        primary="Select All"
+                                    />
+                                    <ListItemSecondaryAction>
+                                        <IconButton
+                                            edge="end"
+                                            aria-label="delete"
+                                        >
+                                            <DeleteIcon />
+                                        </IconButton>
+                                        <Checkbox edge="end" inputProps={{}} />
+                                    </ListItemSecondaryAction>
 
-                        <Table>
+                                    {/* List of Facilities */}
+                                </ListItem>
+                                <ListItem button>
+                                    <FolderIcon />
+                                    <ListItemText id={""} primary=" Folder" />
+                                    <ListItemSecondaryAction>
+                                        <Checkbox edge="end" inputProps={{}} />
+                                    </ListItemSecondaryAction>
+                                </ListItem>
+                                <ListItem button>
+                                    <FolderIcon />
+                                    <ListItemText id={""} primary=" Test" />
+                                    <ListItemSecondaryAction>
+                                        <Checkbox edge="end" inputProps={{}} />
+                                    </ListItemSecondaryAction>
+                                </ListItem>
+                            </List>
+                        </div>
+                        {/* <Table>
                             <TableHead>
                                 <TableRow>
                                     <TableCell align="left">ID</TableCell>
@@ -99,7 +156,11 @@ export default class RoomFacilities extends Component {
                                                     }}
                                                     size="small"
                                                     aria-label="add"
-                                                    onClick={()=> this.props.history.push(`/roomfacilities/${data.id}`)}
+                                                    onClick={() =>
+                                                        this.props.history.push(
+                                                            `/roomfacilities/${data.id}`
+                                                        )
+                                                    }
                                                 >
                                                     <EditIcon />
                                                 </Fab>
@@ -107,7 +168,11 @@ export default class RoomFacilities extends Component {
                                                     size="small"
                                                     aria-label="delete"
                                                     color="secondary"
-                                                    onClick={()=>this.deleteFacility(data.id)}
+                                                    onClick={() =>
+                                                        this.deleteFacility(
+                                                            data.id
+                                                        )
+                                                    }
                                                 >
                                                     <DeleteIcon />
                                                 </Fab>
@@ -116,7 +181,7 @@ export default class RoomFacilities extends Component {
                                     );
                                 })}
                             </TableBody>
-                        </Table>
+                        </Table> */}
                         <Fab
                             style={{
                                 position: "absolute",
