@@ -121,16 +121,6 @@ export default function AdminLayout(props) {
             path: "/account"
         },
         {
-            name: "Rooms",
-            icon: <MeetingRoomTwoToneIcon />,
-            path: "/room"
-        },
-        {
-            name: "Room Facilities",
-            icon: <FastfoodTwoToneIcon />,
-            path: "/roomfacilities"
-        },
-        {
             name: "Property",
             icon: <Icon>apartment</Icon>,
             path: "/property"
