@@ -58,7 +58,7 @@ export default class RoomFacilities extends Component {
 
     render() {
         return (
-            <AdminLayout {...this.props}>
+            <>
                 <div
                     style={{
                         margin: "auto",
@@ -132,7 +132,7 @@ export default class RoomFacilities extends Component {
                         </Fab>
                     </Paper>
                 </div>
-            </AdminLayout>
+            </>
         );
     }
 }

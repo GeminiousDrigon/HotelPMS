@@ -30,6 +30,11 @@ import GuestInfo from "./booking/GuestInfo";
 import Confirmation from "./booking/Confirmation";
 
 import "./App.css";
+import ViewRoom from "./pages/ViewRoom";
+import RoomType from "./pages/RoomType";
+import Property from "./pages/Property";
+import AddRoomType from "./pages/AddRoomType";
+import ViewRoomType from "./pages/ViewRoomType";
 
 export const history = createBrowserHistory({
     forceRefresh: false
@@ -55,9 +60,14 @@ function App() {
                 <Route path="/reservation" component={Reservation} exact />
                 <Route path="/pending" component={Pending} exact />
                 <Route path="/checkIn" component={CheckIn} exact />
+                <Route path="/property" component={Property} />
                 <Route path="/room" component={Room} exact />
-                <Route path="/room/:id" component={AddRoom} exact />
-                <Route path="/addroom" component={AddRoom} exact />
+                <Route path="/room/:id/edit" component={AddRoom} exact />
+                <Route path="/room/:id/view" component={ViewRoom} exact />
+                <Route path="/room/add" component={AddRoom} exact />
+                <Route path="/roomtype/:id/view" component={ViewRoomType} exact />
+                <Route path="/roomtype/add" component={AddRoomType} exact />
+                <Route path="/roomtype/:id/edit" component={AddRoomType} exact />
                 <Route path="/roomfacilities" component={RoomFacilities} exact />
                 <Route path="/roomfacilities/:id" component={AddFacilities} exact />
                 <Route path="/addfacilities" component={AddFacilities} exact />

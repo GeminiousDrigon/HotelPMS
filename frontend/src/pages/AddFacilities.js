@@ -115,7 +115,7 @@ export default class AddFacilities extends Component {
                     <Paper style={{ padding: 20 }}>
                         <h2>Add Room Facilities</h2>
                         <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
-                            {this.state.icon !== "" && <Icon fontSize="large">{this.state.icon}</Icon>}
+                            {this.state.icon !== "" && <Icon fontSize="large" color="primary">{this.state.icon}</Icon>}
                             <h1 style={{ margin: 0, marginLeft: 5 }}>{this.state.name}</h1>
                         </div>
                         <TextField

@@ -22,6 +22,7 @@ import MeetingRoomTwoToneIcon from "@material-ui/icons/MeetingRoomTwoTone";
 import FastfoodTwoToneIcon from "@material-ui/icons/FastfoodTwoTone";
 import DescriptionTwoToneIcon from "@material-ui/icons/DescriptionTwoTone";
 import Button from "@material-ui/core/Button";
+import Icon from "@material-ui/core/Icon";
 
 const drawerWidth = 240;
 
@@ -130,6 +131,11 @@ export default function AdminLayout(props) {
             path: "/roomfacilities"
         },
         {
+            name: "Property",
+            icon: <Icon>apartment</Icon>,
+            path: "/property"
+        },
+        {
             name: "Reports",
             icon: <DescriptionTwoToneIcon />,
             path: "/reports"
@@ -144,6 +150,7 @@ export default function AdminLayout(props) {
                 className={clsx(classes.appBar, {
                     [classes.appBarShift]: open
                 })}
+                elevation={1}
             >
                 <Toolbar>
                     <IconButton
@@ -193,12 +200,17 @@ export default function AdminLayout(props) {
                 <Divider />
             </Drawer>
 
-            <main
+            <div
                 className={classes.content}
-                style={{ marginTop: 60, backgroundColor: "#DCDCDC" }}
+                style={{
+                    marginTop: 60,
+                    backgroundColor: "#DCDCDC",
+                    flex: 1,
+                    padding: props.noPadding ? 0 : 24
+                }}
             >
                 {props.children}
-            </main>
+            </div>
         </div>
     );
 }

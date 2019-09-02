@@ -186,7 +186,6 @@ export default class AddRoom extends Component {
                         style={{
                             backgroundColor: "white",
                             padding: 20,
-                            width: "70%"
                         }}
                     >
                         <h1>Add Room</h1>

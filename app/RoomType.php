@@ -16,6 +16,7 @@ class RoomType extends Model
         'bed_no',
         'bed_type',
         'room_size_unit',
+        'description',
     ];
 
     public function amenities()

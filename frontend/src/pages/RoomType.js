@@ -20,7 +20,7 @@ import MoreVertIcon from "@material-ui/icons/MoreVert";
 
 import axios from "axios";
 
-export default class Room extends Component {
+export default class RoomType extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -39,12 +39,13 @@ export default class Room extends Component {
     };
 
     componentDidMount() {
-        this.getAllRooms();
+        this.getAllRoomType();
     }
 
-    getAllRooms = async () => {
+    getAllRoomType = async () => {
         try {
-            let { data } = await axios.get("/api/room");
+            let { data } = await axios.get("/api/roomtype");
+            console.log(data)
             this.setState({
                 rooms: data
             });
@@ -57,8 +58,8 @@ export default class Room extends Component {
     deleteRoom = async () => {
         try {
             let id = this.state.selectedRoom;
-            await axios.delete(`/api/room/${id}`);
-            this.handleClose()
+            await axios.delete(`/api/roomtype/${id}`);
+            this.handleClose();
             this.getAllRooms();
         } catch (err) {
             console.log(err);
@@ -66,10 +67,10 @@ export default class Room extends Component {
     };
 
     viewRoom = () =>
-        this.props.history.push(`/room/${this.state.selectedRoom}/view`);
+        this.props.history.push(`/roomtype/${this.state.selectedRoom}/view`);
 
     editRoom = () =>
-        this.props.history.push(`/room/${this.state.selectedRoom}/edit`);
+        this.props.history.push(`/roomtype/${this.state.selectedRoom}/edit`);
 
     render() {
         let { anchorEl } = this.state;
@@ -85,36 +86,16 @@ export default class Room extends Component {
                     }}
                 >
                     <Paper style={{ backgroundColor: "white", padding: 20 }}>
-                        <h1>Room(s)</h1>
+                        <h1>Room Type(s)</h1>
                         <Table>
                             <TableHead>
                                 <TableRow>
+                                    <TableCell align="left">Name</TableCell>
                                     <TableCell align="left">
-                                        Room Type
+                                        room_size
                                     </TableCell>
-                                    <TableCell align="left">
-                                        Description
-                                    </TableCell>
-                                    <TableCell align="left">Price</TableCell>
-                                    <TableCell align="left">
-                                        Room Size
-                                    </TableCell>
-                                    <TableCell align="left">Quantity</TableCell>
-                                    <TableCell align="left">
-                                        Max Guest
-                                    </TableCell>
-                                    <TableCell align="left">
-                                        Max Additional Guest
-                                    </TableCell>
-                                    <TableCell align="left">
-                                        Private Bath
-                                    </TableCell>
-                                    <TableCell align="left">
-                                        Free Parking
-                                    </TableCell>
-                                    <TableCell align="left">
-                                        Non-refundable
-                                    </TableCell>
+                                    <TableCell align="left">bed_no</TableCell>
+                                    <TableCell align="left">bed_type</TableCell>
                                     <TableCell align="left">Action</TableCell>
                                 </TableRow>
                             </TableHead>
@@ -123,41 +104,16 @@ export default class Room extends Component {
                                     return (
                                         <TableRow>
                                             <TableCell align="left">
-                                                {room.type}
+                                                {room.name}
                                             </TableCell>
                                             <TableCell align="left">
-                                                {room.description}
+                                                {`${room.room_size+room.room_size_unit}`}<sup>2</sup>
                                             </TableCell>
                                             <TableCell align="left">
-                                                {room.price}
+                                                {room.bed_no}
                                             </TableCell>
                                             <TableCell align="left">
-                                                {`${room.room_size} ${room.room_size_unit}`}
-                                                <sup>2</sup>
-                                            </TableCell>
-                                            <TableCell align="left">
-                                                {room.quantity}
-                                            </TableCell>
-                                            <TableCell align="left">
-                                                {room.max_guest}
-                                            </TableCell>
-                                            <TableCell align="left">
-                                                {room.max_add_guest}
-                                            </TableCell>
-                                            <TableCell align="left">
-                                                {room.private_bath
-                                                    ? "Yes"
-                                                    : "NO"}
-                                            </TableCell>
-                                            <TableCell align="left">
-                                                {room.free_parking
-                                                    ? "Yes"
-                                                    : "NO"}
-                                            </TableCell>
-                                            <TableCell align="left">
-                                                {room.non_refundable
-                                                    ? "Yes"
-                                                    : "NO"}
+                                                {room.bed_type}
                                             </TableCell>
                                             <TableCell align="left">
                                                 <IconButton
@@ -200,7 +156,7 @@ export default class Room extends Component {
                             size="large"
                             color="primary"
                             aria-label="add"
-                            onClick={() => this.props.history.push("/room/add")}
+                            onClick={() => this.props.history.push("/roomtype/add")}
                         >
                             <AddIcon />
                         </Fab>

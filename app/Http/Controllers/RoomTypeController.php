@@ -47,6 +47,7 @@ class RoomTypeController extends Controller
         } else {
             $roomType->fill([
                 'name' => $request->name,
+                'description' => $request->description,
                 'room_size' => $request->room_size,
                 'room_size_unit' => $request->room_size_unit,
                 'bed_no' => $request->bed_no,
