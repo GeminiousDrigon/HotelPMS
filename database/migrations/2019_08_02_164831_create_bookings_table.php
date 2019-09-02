@@ -18,8 +18,10 @@ class CreateBookingsTable extends Migration
             $table->date('from_date');
             $table->date('to_date');
             $table->uuid('user_id');
+            $table->uuid('room_type_id');
             $table->uuid('room_id');
             $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('room_type_id')->references('id')->on('room_types');
             $table->foreign('room_id')->references('id')->on('rooms');
             $table->integer('price');
             $table->boolean('with_breakfast');
