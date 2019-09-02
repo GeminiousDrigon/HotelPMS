@@ -29,6 +29,9 @@ import RoomInfo from "./booking/RoomInfo";
 import GuestInfo from "./booking/GuestInfo";
 import Confirmation from "./booking/Confirmation";
 
+//Login
+import Signin from "./login/Signin";
+
 import "./App.css";
 
 export const history = createBrowserHistory({
@@ -58,8 +61,16 @@ function App() {
                 <Route path="/room" component={Room} exact />
                 <Route path="/room/:id" component={AddRoom} exact />
                 <Route path="/addroom" component={AddRoom} exact />
-                <Route path="/roomfacilities" component={RoomFacilities} exact />
-                <Route path="/roomfacilities/:id" component={AddFacilities} exact />
+                <Route
+                    path="/roomfacilities"
+                    component={RoomFacilities}
+                    exact
+                />
+                <Route
+                    path="/roomfacilities/:id"
+                    component={AddFacilities}
+                    exact
+                />
                 <Route path="/addfacilities" component={AddFacilities} exact />
                 <Route path="/account" component={Account} exact />
                 <Route path="/addaccount" component={AddAccount} exact />
@@ -68,6 +79,8 @@ function App() {
                 <Route path="/roominfo" component={RoomInfo} exact />
                 <Route path="/guestinfo" component={GuestInfo} exact />
                 <Route path="/confirmation" component={Confirmation} exact />
+                {/* Log-in */}
+                <Route path="/sign-in" component={Signin} exact />
             </Switch>
         </Router>
     );
