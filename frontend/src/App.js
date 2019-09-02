@@ -64,7 +64,6 @@ function App() {
                 <Route path="/pending" component={Pending} exact />
                 <Route path="/checkIn" component={CheckIn} exact />
                 <Route path="/property" component={Property} />
-                <Route path="/room" component={Room} exact />
                 <Route path="/room/:id/edit" component={AddRoom} exact />
                 <Route path="/room/:id/view" component={ViewRoom} exact />
                 <Route path="/room/add" component={AddRoom} exact />
