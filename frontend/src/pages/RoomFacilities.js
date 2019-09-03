@@ -20,6 +20,7 @@ import FolderIcon from "@material-ui/icons/Folder";
 import IconButton from "@material-ui/core/IconButton";
 import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from "@material-ui/icons/Search";
+import Divider from "@material-ui/core/Divider";
 
 import axios from "axios";
 
@@ -72,12 +73,13 @@ export default class RoomFacilities extends Component {
                         margin: "auto",
                         display: "flex",
                         justifyContent: "center",
-                        flexDirection: "column"
+                        flexDirection: "column",
+                        width: "50%"
                     }}
                 >
                     <Paper style={{ backgroundColor: "white", padding: 20 }}>
                         <h1>Facilities</h1>
-                        <div style={{ width: "20%" }}>
+                        <div style={{ width: "100%" }}>
                             <div>
                                 <InputBase
                                     placeholder="Search icon"
@@ -87,7 +89,7 @@ export default class RoomFacilities extends Component {
                                 <div
                                     style={{
                                         marginTop: "-30px",
-                                        marginLeft: "80%"
+                                        marginLeft: "32%"
                                     }}
                                 >
                                     <SearchIcon />
@@ -111,6 +113,7 @@ export default class RoomFacilities extends Component {
 
                                     {/* List of Facilities */}
                                 </ListItem>
+                                <Divider variant="inset" component="li" />
                                 <ListItem button>
                                     <FolderIcon />
                                     <ListItemText id={""} primary=" Folder" />
@@ -118,6 +121,7 @@ export default class RoomFacilities extends Component {
                                         <Checkbox edge="end" inputProps={{}} />
                                     </ListItemSecondaryAction>
                                 </ListItem>
+                                <Divider component="li" />
                                 <ListItem button>
                                     <FolderIcon />
                                     <ListItemText id={""} primary=" Test" />
@@ -125,6 +129,7 @@ export default class RoomFacilities extends Component {
                                         <Checkbox edge="end" inputProps={{}} />
                                     </ListItemSecondaryAction>
                                 </ListItem>
+                                <Divider component="li" />
                             </List>
                         </div>
                         {/* <Table>
