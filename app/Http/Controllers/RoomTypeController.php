@@ -25,7 +25,7 @@ class RoomTypeController extends Controller
 
     public function getOne($id)
     {
-        $roomType = RoomType::with(['amenities:icon,name', 'rooms', 'rates', 'bookings'])->find($id);
+        $roomType = RoomType::with(['amenities', 'rooms.roomType', 'rates', 'bookings'])->find($id);
         if (!$roomType) {
             return response()->json([
                 "status" => 404,
@@ -50,6 +50,7 @@ class RoomTypeController extends Controller
                 'description' => $request->description,
                 'room_size' => $request->room_size,
                 'room_size_unit' => $request->room_size_unit,
+                'max_guest' => $request->max_guest,
                 'bed_no' => $request->bed_no,
                 'bed_type' => $request->bed_type
             ]);

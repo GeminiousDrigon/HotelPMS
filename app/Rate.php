@@ -9,7 +9,7 @@ class Rate extends Model
 {
     use Uuid;
     protected $fillable = [
-        'sleep', 'price', 'breakfast', 'room_type_id'
+        'sleep', 'price', 'breakfast', 'room_type_id', 'name'
     ];
 
     public function roomType(){

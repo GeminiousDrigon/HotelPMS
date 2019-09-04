@@ -43,6 +43,7 @@ class RateController extends Controller
             ]);
         } else {
             $rate->fill([
+                'name' => $request->name,
                 'sleep' => $request->sleep,
                 'price' => $request->price,
                 'breakfast' => $request->breakfast,

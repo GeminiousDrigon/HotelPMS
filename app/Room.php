@@ -10,7 +10,7 @@ class Room extends Model
     use Uuid; 
 
     protected $fillable = [
-        'max_guest', 'max_add_guest', 'room_number', 'room_type_id'
+        'room_number', 'room_type_id'
     ];
 
     public function roomType(){

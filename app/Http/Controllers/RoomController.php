@@ -3,20 +3,37 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Room;
 use App\RoomType;
+use Illuminate\Support\Str;
+use Illuminate\Support\Carbon;
 
 class RoomController extends Controller
 {
     public function create(Request $request)
     {
-        $room = Room::create($request->all());
-        return response()->json($room, 200);
+        if ($request->input('quantity') == 1) {
+            $room = Room::create($request->all());
+            return response()->json($room, 200);
+        } else {
+            $rooms = array();
+            $quantity = $request->input('quantity');
+            $room_type_id = $request->input('room_type_id');
+            $now = Carbon::now();
+            for ($i = 0; $i < $quantity; $i++) {
+                $rooms[$i] = ["room_type_id" => $room_type_id, "id" => Str::uuid(), 'updated_at' => $now, 'created_at' => $now];
+            }
+            Room::insert($rooms);
+            return response()->json([
+                "message" => "Operation successful!"
+            ], 200);
+        }
     }
 
     public function getAll()
     {
-        $rooms = Room::all();
+        $rooms = Room::with('roomType')->orderBy('room_number', 'asc')->get();
         return response()->json($rooms, 200);
     }
 
@@ -44,8 +61,6 @@ class RoomController extends Controller
         } else {
             $room->fill([
                 'room_number' => $request->room_number,
-                'max_guest' => $request->max_guest,
-                'max_add_guest' => $request->max_add_guest,
                 'room_type_id' => $request->room_type_id
             ]);
             $room->save();

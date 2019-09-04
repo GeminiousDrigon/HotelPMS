@@ -18,6 +18,7 @@ class CreateRoomTypesTable extends Migration
             $table->string('name');
             $table->integer('room_size');
             $table->integer('bed_no');
+            $table->integer('max_guest');
             $table->text('description');
             $table->string('bed_type');
             $table->char('room_size_unit')->default('m');

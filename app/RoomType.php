@@ -15,6 +15,7 @@ class RoomType extends Model
         'room_size',
         'bed_no',
         'bed_type',
+        'max_guest',
         'room_size_unit',
         'description',
     ];

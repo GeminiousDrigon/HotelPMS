@@ -15,6 +15,7 @@ class CreateRatesTable extends Migration
     {
         Schema::create('rates', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->string('name');
             $table->integer('sleep');
             $table->integer('price');
             $table->boolean('breakfast');

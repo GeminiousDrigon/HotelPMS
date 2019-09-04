@@ -15,9 +15,7 @@ class CreateRoomsTable extends Migration
     {
         Schema::create('rooms', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('room_number')->unique();
-            $table->integer('max_guest');
-            $table->integer('max_add_guest');
+            $table->string('room_number')->unique()->nullable();
             $table->uuid('room_type_id');
             $table->foreign('room_type_id')->references('id')->on('room_types');
             $table->timestamps();
