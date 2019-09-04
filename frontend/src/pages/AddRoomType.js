@@ -24,6 +24,7 @@ export default class AddRoomType extends Component {
             description: "",
             room_size: 0,
             room_size_unit: "",
+            max_guest: 0,
             bed_no: 0,
             bed_type: "",
 
@@ -58,6 +59,7 @@ export default class AddRoomType extends Component {
                 room_size,
                 room_size_unit,
                 bed_no,
+                max_guest,
                 bed_type
             } = this.state;
             let roomType = {
@@ -66,6 +68,7 @@ export default class AddRoomType extends Component {
                 room_size,
                 room_size_unit,
                 bed_no,
+                max_guest,
                 bed_type
             };
             if (this.props.match.params.id) {
@@ -95,6 +98,7 @@ export default class AddRoomType extends Component {
                 room_size,
                 room_size_unit,
                 bed_no,
+                max_guest,
                 bed_type
             } = data;
             this.setState({
@@ -103,6 +107,7 @@ export default class AddRoomType extends Component {
                 room_size,
                 room_size_unit,
                 bed_no,
+                max_guest,
                 bed_type
             });
         } catch (err) {
@@ -117,7 +122,8 @@ export default class AddRoomType extends Component {
             room_size,
             room_size_unit,
             bed_no,
-            bed_type
+            bed_type,
+            max_guest,
         } = this.state;
         return (
             <AdminLayout {...this.props}>
@@ -278,6 +284,18 @@ export default class AddRoomType extends Component {
                                         </MenuItem>
                                     </Select>
                                 </FormControl>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <TextField
+                                    value={max_guest}
+                                    id="maxGuest"
+                                    label="Max Guest"
+                                    margin="normal"
+                                    variant="outlined"
+                                    onChange={this.onChange}
+                                    type="number"
+                                    fullWidth
+                                />
                             </Grid>
                         </Grid>
                         <div

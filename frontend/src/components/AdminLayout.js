@@ -84,6 +84,9 @@ const useStyles = makeStyles(theme => ({
     content: {
         flexGrow: 1,
         padding: theme.spacing(3)
+    },
+    title: {
+        flexGrow: 1
     }
 }));
 
@@ -155,7 +158,7 @@ export default function AdminLayout(props) {
                     <Typography variant="h6" className={classes.title}>
                         Bluepool Garden
                     </Typography>
-                    <div style={{ marginLeft: "70%" }}>
+                    <div>
                         <Button color="inherit">Logout</Button>
                     </div>
                 </Toolbar>

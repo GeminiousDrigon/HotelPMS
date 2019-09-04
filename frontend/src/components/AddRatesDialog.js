@@ -9,6 +9,11 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import Button from "@material-ui/core/Button";
 import Icon from "@material-ui/core/Icon";
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
+import Select from "@material-ui/core/Select";
+import OutlinedInput from "@material-ui/core/OutlinedInput";
+import MenuItem from "@material-ui/core/MenuItem";
 
 //icons
 import PersonIcon from "@material-ui/icons/Person";
@@ -21,70 +26,67 @@ export default class AddRatesDialog extends Component {
         super(props);
 
         this.state = {
+            name: "",
+            price: 0,
+            sleep: 0,
+            breakfast: false,
             fetching: false,
-            facilities: [],
-            selected: []
+            sleepsLabelWidth: 0
         };
     }
+
+    onEntering= () => {
+        if(this.props.edit)
+            this.setState({fetching:true})
+    }
+    
 
     onClose = get => {
         this.setState({ fetching: true });
         this.props.handleClose();
-        if (get) this.props.getFacilities();
+        if (get) this.props.getRates();
     };
 
     onEntered = async () => {
-        console.log("entered!");
-        let [facilities, roomFacilities] = await Promise.all([
-            axios.get("/api/amenity"),
-            axios.get(`/api/room/${this.props.id}/amenity`)
-        ]);
-        console.log(facilities, roomFacilities);
-        //get all facilities of that room
-        //use the map function to get the array of the ids
-        let selectedIds = roomFacilities.data.map(el => el.id);
-        let output = facilities.data.map((el, i) => {
-            if (selectedIds.includes(el.id)) {
-                el.selected = true;
-            } else {
-                el.selected = false;
-            }
-            return el;
-        });
-        console.log(output);
-        this.setState({ facilities: output, fetching: false });
+        this.setState({ sleepsLabelWidth: this.sleepsInput.offsetWidth });
+        let { edit } = this.props;
+        if (edit) {
+            console.log("entered!");
+            let {data} = await axios.get('/api/rate/'+this.props.rateId);
+            this.setState({price: data.price, sleep: data.sleep, breakfast: data.breakfast, name: data.name, fetching: false})
+        }
     };
 
-    handleSelectFacility = facility => {
-        let facilities = this.state.facilities.map((el, i) => {
-            if (el.id === facility.id) {
-                el.selected = !facility.selected;
-                return el;
-            } else return el;
-        });
-        console.log(facilities);
-        this.setState({ facilities });
-    };
-
-    submitFacilities = async () => {
+    submitRate = async () => {
         try {
-            let facilities = this.state.facilities
-                .filter(el => el.selected)
-                .map(el => el.id);
-            await axios.post(`/api/room/${this.props.id}/amenity`, {
-                id: facilities
-            });
+            let {sleep, price, breakfast, name} = this.state;
+            let rate = {sleep,price,breakfast, name, room_type_id: this.props.id}
+            if(this.props.edit){
+                rate = {...rate, id: this.props.rateId};
+                await axios.put('/api/rate/'+this.props.rateId, rate)
+            }else{
+                await axios.post(`/api/rate`, rate);
+            }
             this.onClose(true);
         } catch (err) {
             console.log(err);
         }
     };
 
+    onChange= (e) => {
+        this.setState({[e.target.id]: e.target.value})
+    }
+    
+    onChangeSleepSelect = (e)=> this.setState({sleep: e.target.value})
+    onChangeBreakfast = (e)=> this.setState({breakfast: e.target.checked})
+
     render() {
-        let { facilities } = this.state;
-        let filtered = this.state.facilities.filter(el => el.selected);
-        let selectedNo = filtered.length;
-        console.log(selectedNo);
+        let { sleep, price, breakfast, name } = this.state;
+
+        let sleepsMenu = [];
+        for (let i = 0; i <= this.props.maxGuest; i++) {
+            sleepsMenu.push(<MenuItem value={i} key={i}>{i}</MenuItem>);
+        }
         return (
             <Dialog
                 onClose={this.onClose}
@@ -92,28 +94,53 @@ export default class AddRatesDialog extends Component {
                 aria-labelledby="simple-dialog-title"
                 open={this.props.open}
                 fullWidth
-                maxWidth="md"
+                maxWidth="sm"
+                onEntering={this.onEntering}
             >
                 <DialogTitle id="simple-dialog-title">
-                    Select facilities
+                    Create rate
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        To subscribe to this website, please enter your email
-                        address here. We will send updates occasionally.
+                        Please fill up the form to create a new rate.
                     </DialogContentText>
                     <TextField
-                        autoFocus
                         id="name"
-                        label="Number of Sleeps"
-                        type="number"
+                        value={name}
+                        onChange={this.onChange}
+                        label="Name"
                         variant="outlined"
-                        fullWidth
                         margin="normal"
+                        fullWidth
                     />
+                    <FormControl variant="outlined" margin="normal" fullWidth>
+                        <InputLabel
+                            htmlFor="outlined-age-native-simple"
+                            ref={el => (this.sleepsInput = el)}
+                        >
+                            Number of Sleeps
+                        </InputLabel>
+                        <Select
+                            value={sleep}
+                            input={
+                                <OutlinedInput
+                                    id="sleep"
+                                    onChange={this.onChangeSleepSelect}
+                                    labelWidth={this.state.sleepsLabelWidth}
+                                />
+                            }
+                            SelectDisplayProps={{
+                                style: { display: "flex" }
+                            }}
+                        >
+                            {sleepsMenu}
+                        </Select>
+                    </FormControl>
+
                     <TextField
-                        autoFocus
-                        id="name"
+                        id="price"
+                        value={price}
+                        onChange={this.onChange}
                         label="Price per night"
                         type="number"
                         variant="outlined"
@@ -123,8 +150,8 @@ export default class AddRatesDialog extends Component {
                     <FormControlLabel
                         control={
                             <Checkbox
-                                // checked={state.checkedB}
-                                // onChange={handleChange("checkedB")}
+                                checked={breakfast}
+                                onChange={this.onChangeBreakfast}
                                 value="checkedB"
                                 color="primary"
                             />
@@ -136,7 +163,7 @@ export default class AddRatesDialog extends Component {
                     <Button color="primary" onClick={this.onClose}>
                         Cancel
                     </Button>
-                    <Button color="primary" onClick={this.submitFacilities}>
+                    <Button color="primary" onClick={this.submitRate}>
                         Add
                     </Button>
                 </DialogActions>

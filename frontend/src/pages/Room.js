@@ -13,18 +13,25 @@ import Paper from "@material-ui/core/Paper";
 import Icon from "@material-ui/core/Icon";
 
 import IconButton from "@material-ui/core/IconButton";
+import Button from "@material-ui/core/Button";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 
 import axios from "axios";
+import { Typography } from "@material-ui/core";
+import AddRoomDialog from "../components/AddRoomDialog";
 
 export default class Room extends Component {
     constructor(props) {
         super(props);
         this.state = {
             rooms: [],
+            addDialog: false,
+            editRoom: false,
+            roomId: null,
+
             anchorEl: null,
             selectedRoom: null
         };
@@ -58,7 +65,7 @@ export default class Room extends Component {
         try {
             let id = this.state.selectedRoom;
             await axios.delete(`/api/room/${id}`);
-            this.handleClose()
+            this.handleClose();
             this.getAllRooms();
         } catch (err) {
             console.log(err);
@@ -68,8 +75,25 @@ export default class Room extends Component {
     viewRoom = () =>
         this.props.history.push(`/room/${this.state.selectedRoom}/view`);
 
-    editRoom = () =>
-        this.props.history.push(`/room/${this.state.selectedRoom}/edit`);
+    editRoom = () => {
+        this.setState(
+            {
+                addDialog: true,
+                roomId: this.state.selectedRoom,
+                editRoom: true
+            },
+            this.handleClose
+        );
+    };
+
+    handleRoomDialog = value => {
+        if (value) this.getAllRooms();
+        this.setState({
+            addDialog: !this.state.addDialog,
+            editRoom: false,
+            roomId: null
+        });
+    };
 
     render() {
         let { anchorEl } = this.state;
@@ -85,35 +109,36 @@ export default class Room extends Component {
                     }}
                 >
                     <Paper style={{ backgroundColor: "white", padding: 20 }}>
-                        <h1>Room(s)</h1>
+                        <div
+                            style={{
+                                display: "flex",
+                                justifyContent: "space-between"
+                            }}
+                        >
+                            <Typography variant="h4">Room(s)</Typography>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={() => this.handleRoomDialog(true)}
+                            >
+                                Add <Icon style={{ marginLeft: 5 }}>add</Icon>
+                            </Button>
+                        </div>
                         <Table>
                             <TableHead>
                                 <TableRow>
                                     <TableCell align="left">
-                                        Room Type
+                                        Room Number
                                     </TableCell>
-                                    <TableCell align="left">
-                                        Description
-                                    </TableCell>
-                                    <TableCell align="left">Price</TableCell>
                                     <TableCell align="left">
                                         Room Size
                                     </TableCell>
-                                    <TableCell align="left">Quantity</TableCell>
                                     <TableCell align="left">
-                                        Max Guest
+                                        Room type
                                     </TableCell>
+                                    <TableCell align="left">Bed Type</TableCell>
                                     <TableCell align="left">
-                                        Max Additional Guest
-                                    </TableCell>
-                                    <TableCell align="left">
-                                        Private Bath
-                                    </TableCell>
-                                    <TableCell align="left">
-                                        Free Parking
-                                    </TableCell>
-                                    <TableCell align="left">
-                                        Non-refundable
+                                        Number of Beds
                                     </TableCell>
                                     <TableCell align="left">Action</TableCell>
                                 </TableRow>
@@ -123,41 +148,23 @@ export default class Room extends Component {
                                     return (
                                         <TableRow>
                                             <TableCell align="left">
-                                                {room.type}
+                                                {!room.room_number? "Unassigned": room.room_number}
                                             </TableCell>
                                             <TableCell align="left">
-                                                {room.description}
-                                            </TableCell>
-                                            <TableCell align="left">
-                                                {room.price}
-                                            </TableCell>
-                                            <TableCell align="left">
-                                                {`${room.room_size} ${room.room_size_unit}`}
+                                                {room.room_type.room_size +
+                                                    " " +
+                                                    room.room_type
+                                                        .room_size_unit}
                                                 <sup>2</sup>
                                             </TableCell>
                                             <TableCell align="left">
-                                                {room.quantity}
+                                                {room.room_type.name}
                                             </TableCell>
                                             <TableCell align="left">
-                                                {room.max_guest}
+                                                {room.room_type.bed_type}
                                             </TableCell>
                                             <TableCell align="left">
-                                                {room.max_add_guest}
-                                            </TableCell>
-                                            <TableCell align="left">
-                                                {room.private_bath
-                                                    ? "Yes"
-                                                    : "NO"}
-                                            </TableCell>
-                                            <TableCell align="left">
-                                                {room.free_parking
-                                                    ? "Yes"
-                                                    : "NO"}
-                                            </TableCell>
-                                            <TableCell align="left">
-                                                {room.non_refundable
-                                                    ? "Yes"
-                                                    : "NO"}
+                                                {room.room_type.bed_no}
                                             </TableCell>
                                             <TableCell align="left">
                                                 <IconButton
@@ -206,6 +213,12 @@ export default class Room extends Component {
                         </Fab>
                     </Paper>
                 </div>
+                <AddRoomDialog
+                    open={this.state.addDialog}
+                    handleClose={this.handleRoomDialog}
+                    edit={this.state.editRoom}
+                    id={this.state.roomId}
+                />
             </>
         );
     }

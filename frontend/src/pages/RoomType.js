@@ -126,8 +126,9 @@ export default class RoomType extends Component {
                                                             room.id
                                                         )
                                                     }
+                                                    size="small"
                                                 >
-                                                    <MoreVertIcon />
+                                                    <MoreVertIcon size="inherit" />
                                                 </IconButton>
                                             </TableCell>
                                         </TableRow>
