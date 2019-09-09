@@ -385,7 +385,8 @@ class BookingController extends Controller
                     'lastname' => $request->lastname,
                     'middlename' => $request->middlename,
                     'contactno' => $request->contactno,
-                    'address' => $request->address
+                    'address' => $request->address,
+                    'country' => $request->country
                 ]);
             } else {
                 $user = User::find($request->input('userId'));
