@@ -40,9 +40,7 @@ export default class AddFacilitiesDialog extends Component {
     };
 
     onEntered = async () => {
-        console.log("entered!");
         let [facilities, roomFacilities] = await Promise.all([axios.get("/api/amenity"), axios.get(`/api/roomtype/${this.props.id}/amenity`)])
-        console.log(facilities,roomFacilities)
         //get all facilities of that room
         //use the map function to get the array of the ids
         let selectedIds = roomFacilities.data.map(el =>el.id);
@@ -54,7 +52,6 @@ export default class AddFacilitiesDialog extends Component {
             }
             return el;
         });
-        console.log(output);
         this.setState({ facilities: output, fetching: false });
     };
 
@@ -65,7 +62,6 @@ export default class AddFacilitiesDialog extends Component {
                 return el;
             } else return el;
         });
-        console.log(facilities);
         this.setState({ facilities });
     };
 
@@ -84,7 +80,6 @@ export default class AddFacilitiesDialog extends Component {
         let { facilities } = this.state;
         let filtered = this.state.facilities.filter(el => el.selected);
         let selectedNo = filtered.length;
-        console.log(selectedNo);
         let chips = filtered.map((el, i) => {
             return (
                 <Chip

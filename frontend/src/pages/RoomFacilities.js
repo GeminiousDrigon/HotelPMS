@@ -21,6 +21,11 @@ import IconButton from "@material-ui/core/IconButton";
 import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from "@material-ui/icons/Search";
 import Divider from "@material-ui/core/Divider";
+import Icon from "@material-ui/core/Icon";
+import MenuItem from "@material-ui/core/MenuItem";
+import Menu from "@material-ui/core/Menu";
+import Typography from "@material-ui/core/Typography";
+import Tooltip from "@material-ui/core/Tooltip";
 
 import axios from "axios";
 
@@ -38,7 +43,9 @@ export default class RoomFacilities extends Component {
         super(props);
 
         this.state = {
-            facilities: []
+            facilities: [],
+            anchorEl: null,
+            facilityId: null
         };
     }
 
@@ -56,8 +63,9 @@ export default class RoomFacilities extends Component {
         }
     };
 
-    deleteFacility = async id => {
+    deleteFacility = async () => {
         try {
+            let id = this.state.facilityId;
             await axios.delete(`/api/amenity/${id}`);
             this.getAllFacilities();
         } catch (err) {
@@ -65,7 +73,24 @@ export default class RoomFacilities extends Component {
         }
     };
 
+    handleClick = (e, id) =>
+        this.setState({
+            anchorEl: e.currentTarget,
+            facilityId: id
+        });
+
+    handleClose = () => {
+        this.setState({ anchorEl: null, facilityId: null });
+    };
+
+    editFacility = () =>
+        this.props.history.push(`/roomfacilities/${this.state.facilityId}`);
+
+    addFacilities = () => this.props.history.push("/addfacilities");
+
     render() {
+        let { anchorEl } = this.state;
+        let open = Boolean(anchorEl);
         return (
             <>
                 <div
@@ -77,14 +102,37 @@ export default class RoomFacilities extends Component {
                         width: "50%"
                     }}
                 >
-                    <Paper style={{ backgroundColor: "white", padding: 20 }}>
-                        <h1>Facilities</h1>
+                    <Paper
+                        style={{
+                            backgroundColor: "white",
+                            padding: 20
+                        }}
+                    >
+                        <div
+                            style={{
+                                display: "flex",
+                                justifyContent: "space-between"
+                            }}
+                        >
+                            <Typography variant="h4">Facilities</Typography>
+                            <Tooltip title="Add Facility">
+                                <IconButton
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={this.addFacilities}
+                                >
+                                    <Icon>add</Icon>
+                                </IconButton>
+                            </Tooltip>
+                        </div>
                         <div style={{ width: "100%" }}>
                             <div>
                                 <InputBase
                                     placeholder="Search icon"
                                     classes={{}}
-                                    inputProps={{ "aria-label": "search" }}
+                                    inputProps={{
+                                        "aria-label": "search"
+                                    }}
                                 />
                                 <div
                                     style={{
@@ -96,40 +144,49 @@ export default class RoomFacilities extends Component {
                                 </div>
                             </div>
                             <List>
-                                <ListItem>
-                                    <ListItemText
-                                        id={""}
-                                        primary="Select All"
-                                    />
-                                    <ListItemSecondaryAction>
-                                        <IconButton
-                                            edge="end"
-                                            aria-label="delete"
-                                        >
-                                            <DeleteIcon />
-                                        </IconButton>
-                                        <Checkbox edge="end" inputProps={{}} />
-                                    </ListItemSecondaryAction>
-
-                                    {/* List of Facilities */}
-                                </ListItem>
-                                <Divider variant="inset" component="li" />
-                                <ListItem button>
-                                    <FolderIcon />
-                                    <ListItemText id={""} primary=" Folder" />
-                                    <ListItemSecondaryAction>
-                                        <Checkbox edge="end" inputProps={{}} />
-                                    </ListItemSecondaryAction>
-                                </ListItem>
-                                <Divider component="li" />
-                                <ListItem button>
-                                    <FolderIcon />
-                                    <ListItemText id={""} primary=" Test" />
-                                    <ListItemSecondaryAction>
-                                        <Checkbox edge="end" inputProps={{}} />
-                                    </ListItemSecondaryAction>
-                                </ListItem>
-                                <Divider component="li" />
+                                {this.state.facilities.map(
+                                    (el, i, collection) => {
+                                        return (
+                                            <>
+                                                <ListItem>
+                                                    <Icon
+                                                        color="primary"
+                                                        style={{
+                                                            marginRight: 10
+                                                        }}
+                                                    >
+                                                        {el.icon}
+                                                    </Icon>
+                                                    <ListItemText
+                                                        id={""}
+                                                        primary={el.name}
+                                                    />
+                                                    <ListItemSecondaryAction>
+                                                        <IconButton
+                                                            aria-label="more"
+                                                            aria-controls="long-menu"
+                                                            aria-haspopup="true"
+                                                            onClick={e =>
+                                                                this.handleClick(
+                                                                    e,
+                                                                    el.id
+                                                                )
+                                                            }
+                                                            size="small"
+                                                        >
+                                                            <Icon fontSize="inherit">
+                                                                more_vert
+                                                            </Icon>
+                                                        </IconButton>
+                                                    </ListItemSecondaryAction>
+                                                </ListItem>
+                                                {collection.length > i+1 && (
+                                                    <Divider />
+                                                )}
+                                            </>
+                                        );
+                                    }
+                                )}
                             </List>
                         </div>
                         {/* <Table>
@@ -187,19 +244,19 @@ export default class RoomFacilities extends Component {
                                 })}
                             </TableBody>
                         </Table> */}
-                        <Fab
-                            style={{
-                                position: "absolute",
-                                bottom: "50px",
-                                right: 50
-                            }}
-                            size="large"
-                            color="primary"
-                            aria-label="add"
-                            href="/AddFacilities"
+                        <Menu
+                            anchorEl={anchorEl}
+                            keepMounted
+                            open={open}
+                            onClose={this.handleClose}
                         >
-                            <AddIcon />
-                        </Fab>
+                            <MenuItem onClick={this.editFacility}>
+                                Edit
+                            </MenuItem>
+                            <MenuItem onClick={this.deleteFacility}>
+                                Delete
+                            </MenuItem>
+                        </Menu>
                     </Paper>
                 </div>
             </>

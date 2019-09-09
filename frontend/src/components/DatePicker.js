@@ -19,7 +19,6 @@ export default function MaterialUIPickers() {
     }
 
     return (
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <Grid container justify="space-around">
                 <KeyboardDatePicker
                     margin="normal"
@@ -57,14 +56,6 @@ export default function MaterialUIPickers() {
                         "aria-label": "change time"
                     }}
                 />
-                <TextField
-                    margin="normal"
-                    label="Number of Day(s)"
-                    value=""
-                    onChange=""
-                    disabled
-                />
             </Grid>
-        </MuiPickersUtilsProvider>
     );
 }

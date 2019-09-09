@@ -14,6 +14,7 @@ import Grid from "@material-ui/core/Grid";
 import MenuItem from "@material-ui/core/MenuItem";
 
 import axios from "axios";
+import { Typography } from "@material-ui/core";
 
 export default class AddRoomType extends Component {
     constructor(props) {
@@ -123,7 +124,7 @@ export default class AddRoomType extends Component {
             room_size_unit,
             bed_no,
             bed_type,
-            max_guest,
+            max_guest
         } = this.state;
         return (
             <AdminLayout {...this.props}>
@@ -141,7 +142,7 @@ export default class AddRoomType extends Component {
                             padding: 20
                         }}
                     >
-                        <h1>Add Room</h1>
+                        <Typography variant="h5">Add Room Type</Typography>
                         <Grid container spacing={1}>
                             <Grid item xs={12}>
                                 <TextField
@@ -288,7 +289,7 @@ export default class AddRoomType extends Component {
                             <Grid item xs={4}>
                                 <TextField
                                     value={max_guest}
-                                    id="maxGuest"
+                                    id="max_guest"
                                     label="Max Guest"
                                     margin="normal"
                                     variant="outlined"
