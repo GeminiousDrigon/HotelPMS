@@ -17,8 +17,8 @@ class CreateBookingsTable extends Migration
             $table->uuid('id')->primary();
             $table->date('from_date');
             $table->date('to_date');
-            $table->dateTime('checkin_date');
-            $table->dateTime('checkout_date');
+            $table->dateTime('checkin_date')->nullable();
+            $table->dateTime('checkout_date')->nullable();
             $table->string('status');
             $table->uuid('user_id');
             $table->uuid('room_type_id');
