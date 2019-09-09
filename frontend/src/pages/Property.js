@@ -41,7 +41,7 @@ export default class Property extends Component {
 
     render() {
         return (
-            <AdminLayout noPadding {...this.props}>
+            <AdminLayout style={{ padding:"60px 0 0"}} {...this.props}>
                 <Paper elevation={1}>
                     <Tabs
                         value={this.props.location.pathname}
