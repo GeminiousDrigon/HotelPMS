@@ -142,6 +142,7 @@ class Walkin extends Component {
                 rate_id: this.state.selectedRate.id,
                 paidAmount: this.state.paidAmount
             });
+            this.props.history.push('/')
         } catch (err) {
             console.log(err);
         }
