@@ -15,7 +15,7 @@ class CreateBillingsTable extends Migration
     {
         Schema::create('billings', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('type');
+            // $table->string('type');
             $table->integer('amount');
             $table->uuid('booking_id');
             $table->foreign('booking_id')->references('id')->on('bookings');

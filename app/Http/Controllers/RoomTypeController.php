@@ -25,7 +25,9 @@ class RoomTypeController extends Controller
 
     public function getOne($id)
     {
-        $roomType = RoomType::with(['amenities', 'rooms.roomType', 'rates', 'bookings'])->find($id);
+        $roomType = RoomType::with(['amenities', 'rooms'=>function( $query){
+            $query->whereNotNull('room_number')->with('roomType');
+        }, 'rates', 'bookings'])->find($id);
         if (!$roomType) {
             return response()->json([
                 "status" => 404,

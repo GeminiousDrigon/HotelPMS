@@ -149,4 +149,11 @@ class RoomController extends Controller
             "body" => "Operation successful"
         ], 200);
     }
+
+    public function getAllRooms()
+    {
+        $room = Room::whereNotNull('room_type_id')->with('roomType')->orderBy('room_number', 'asc')->get();
+
+        return response()->json($room, 200);
+    }
 }

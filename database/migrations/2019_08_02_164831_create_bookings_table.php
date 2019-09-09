@@ -17,9 +17,12 @@ class CreateBookingsTable extends Migration
             $table->uuid('id')->primary();
             $table->date('from_date');
             $table->date('to_date');
+            $table->dateTime('checkin_date');
+            $table->dateTime('checkout_date');
+            $table->string('status');
             $table->uuid('user_id');
             $table->uuid('room_type_id');
-            $table->uuid('room_id');
+            $table->uuid('room_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('room_type_id')->references('id')->on('room_types');
             $table->foreign('room_id')->references('id')->on('rooms');
