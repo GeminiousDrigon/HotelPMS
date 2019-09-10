@@ -12,19 +12,20 @@ import Select from "@material-ui/core/Select";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import MenuItem from "@material-ui/core/MenuItem";
 
+import * as yup from "yup";
 import axios from "axios";
+import { withFormik } from "formik";
+import { FormHelperText } from "@material-ui/core";
 
-export default class AddRoomDialog extends Component {
+class AddRoomDialog extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            room_type: "",
-            quantity: 0,
             roomTypes: [],
-            room_number: "",
             submitting: false,
-            roomTypeLabelWidth: 0
+            roomTypeLabelWidth: 0,
+            validateCalled: false
         };
     }
 
@@ -37,42 +38,59 @@ export default class AddRoomDialog extends Component {
         this.setState({ roomTypes: data });
         if (this.props.edit) {
             let { data } = await axios.get(`/api/room/${this.props.id}`);
-            this.setState({
-                room_type: data.room_type_id,
-                room_number: data.room_number
-            });
+            this.props.setFieldValue("room_type", data.room_type_id);
+            this.props.setFieldValue(
+                "room_number",
+                data.room_number === null ? "" : data.room_number
+            );
+            this.props.setFieldValue("edit", this.props.edit);
             console.log(data);
         }
     };
 
-    onChangeSelect = e => this.setState({ room_type: e.target.value });
+    onChangeSelect = e => {
+        this.props.setTouched({
+            room_type: true
+        });
+        this.props.setFieldValue("room_type", e.target.value);
+    };
 
     onChange = e => this.setState({ [e.target.id]: e.target.value });
 
-    onSubmit = () => {
-        this.setState({ submitting: true }, async () => {
-            try {
-                if (this.props.edit) {
-                    await axios.put(`/api/room/${this.props.id}`, {
-                        room_number: this.state.room_number,
-                        room_type_id: this.state.room_type
-                    });
-                } else {
-                    await axios.post("/api/room", {
-                        room_type_id: this.state.room_type,
-                        quantity: this.state.quantity
-                    });
-                }
-                this.props.handleClose(true);
-            } catch (err) {
-                console.log(err);
+    onSubmit = async () => {
+        try {
+            await this.props.validateForm();
+            if (this.props.isValid) {
+                // this.setState({ submitting: true }, async () => {
+                //     try {
+                //         let { values } = this.props;
+                //         if (this.props.edit) {
+                //             await axios.put(`/api/room/${this.props.id}`, {
+                //                 room_number: values.room_number,
+                //                 room_type_id: values.room_type
+                //             });
+                //         } else {
+                //             await axios.post("/api/room", {
+                //                 room_type_id: values.room_type,
+                //                 quantity: values.quantity
+                //             });
+                //         }
+                //         this.props.handleClose(true);
+                //     } catch (err) {
+                //         console.log(err);
+                //     }
+                // });
+            } else {
+                console.log("not valid");
             }
-        });
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     handleClose = () => this.props.handleClose(false);
 
-    onExit = () =>
+    onExit = () => {
         this.setState({
             room_type: "",
             quantity: 0,
@@ -82,9 +100,21 @@ export default class AddRoomDialog extends Component {
             roomTypeLabelWidth: 0
         });
 
+        this.props.resetForm();
+    };
+
     render() {
         let { open } = this.props;
         let { room_type, quantity, roomTypes, room_number } = this.state;
+        const {
+            values,
+            touched,
+            errors,
+            handleChange,
+            handleBlur,
+            handleSubmit
+        } = this.props;
+        let { validateCalled } = this.state;
         return (
             <Dialog
                 open={open}
@@ -104,8 +134,13 @@ export default class AddRoomDialog extends Component {
                             id="room_number"
                             label="Room Number"
                             variant="outlined"
-                            onChange={this.onChange}
-                            value={room_number}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            value={values.room_number}
+                            helperText={
+                                errors.room_number ? errors.room_number : ""
+                            }
+                            error={errors.room_number}
                             fullWidth
                         />
                     )}
@@ -114,6 +149,7 @@ export default class AddRoomDialog extends Component {
                         margin="normal"
                         fullWidth
                         style={{ marginBottom: 20 }}
+                        error={errors.room_type}
                     >
                         <InputLabel
                             htmlFor="outlined-age-native-simple"
@@ -122,12 +158,10 @@ export default class AddRoomDialog extends Component {
                             Room Type
                         </InputLabel>
                         <Select
-                            value={room_type}
+                            value={values.room_type}
                             input={
                                 <OutlinedInput
-                                    onChange={e =>
-                                        this.onChangeSelect(e, "bed_type")
-                                    }
+                                    onChange={e => this.onChangeSelect}
                                     labelWidth={this.state.roomTypeLabelWidth}
                                 />
                             }
@@ -143,6 +177,9 @@ export default class AddRoomDialog extends Component {
                                 );
                             })}
                         </Select>
+                        <FormHelperText>
+                            {errors.room_type ? errors.room_type : ""}
+                        </FormHelperText>
                     </FormControl>
                     {!this.props.edit && (
                         <TextField
@@ -150,8 +187,11 @@ export default class AddRoomDialog extends Component {
                             label="Quantity"
                             type="number"
                             variant="outlined"
-                            onChange={this.onChange}
-                            value={quantity}
+                            onChange={handleChange}
+                            value={values.quantity}
+                            onBlur={handleBlur}
+                            helperText={errors.quantity ? errors.quantity : ""}
+                            error={errors.quantity}
                             fullWidth
                         />
                     )}
@@ -160,7 +200,7 @@ export default class AddRoomDialog extends Component {
                     <Button onClick={this.handleClose} color="primary">
                         Cancel
                     </Button>
-                    <Button onClick={this.onSubmit} color="primary">
+                    <Button color="primary" onClick={this.onSubmit}>
                         Submit
                     </Button>
                 </DialogActions>
@@ -168,3 +208,39 @@ export default class AddRoomDialog extends Component {
         );
     }
 }
+
+const WithFormik = withFormik({
+    mapPropsToValues: props => {
+        console.log(props);
+        return {
+            edit: props.edit,
+            room_type: "",
+            quantity: 0,
+            room_number: ""
+        };
+    },
+
+    validationSchema: function() {
+        let schema = yup.object().shape({
+            room_type: yup
+                .string("Room type must be a word!")
+                .required("Room type is required!"),
+            quantity: yup.number().when("edit", {
+                is: true,
+                otherwise: yup
+                    .number()
+                    .min(1, "Quantity must be equal or greater than 1!")
+                    .required("Quantity is required!"),
+                then: yup.number().notRequired()
+            }),
+            room_number: yup.string().when("edit", {
+                is: true,
+                then: yup.string().required("Room number is required!"),
+                otherwise: yup.string().notRequired()
+            })
+        });
+        return schema;
+    }
+})(AddRoomDialog);
+
+export default WithFormik;

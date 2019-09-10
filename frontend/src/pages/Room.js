@@ -148,7 +148,9 @@ export default class Room extends Component {
                                     return (
                                         <TableRow>
                                             <TableCell align="left">
-                                                {!room.room_number? "Unassigned": room.room_number}
+                                                {!room.room_number
+                                                    ? "Unassigned"
+                                                    : room.room_number}
                                             </TableCell>
                                             <TableCell align="left">
                                                 {room.room_type.room_size +
@@ -177,6 +179,7 @@ export default class Room extends Component {
                                                             room.id
                                                         )
                                                     }
+                                                    size="small"
                                                 >
                                                     <MoreVertIcon />
                                                 </IconButton>
