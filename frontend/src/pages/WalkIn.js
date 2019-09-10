@@ -50,7 +50,7 @@ class Walkin extends Component {
         this.state = {
             newGuest: true,
             userId: null,
-            honorifics: "",
+            honorific: "",
             firstname: "",
             middlename: "",
             lastname: "",
@@ -63,7 +63,12 @@ class Walkin extends Component {
             roomIndex: "",
             selectedRoom: {},
             rateId: "",
+            rateIndex: "",
             selectedRate: {},
+            roomTypeIndex: "",
+            roomTypeId: "",
+            selectedRoomType: {},
+
             numberOfNights: 1,
             numberOfGuest: 0,
             price: 0,
@@ -72,16 +77,19 @@ class Walkin extends Component {
             balance: 0,
             rooms: [],
             rates: [],
+            roomtypes: [],
             fetchingRate: false,
             userDialog: false,
             snackBar: false,
-            snackBarMessage: ""
+            snackBarMessage: "",
+            validatedCalled: false
         };
     }
 
     async componentDidMount() {
-        let { data } = await axios.get("/api/room/hotelroom");
-        this.setState({ rooms: data });
+        let { data } = await axios.get("/api/roomtype");
+        console.log(data);
+        this.setState({ roomtypes: data });
     }
 
     handleChange = e => this.setState({ [e.target.id]: e.target.value });
@@ -89,71 +97,104 @@ class Walkin extends Component {
     noop = () => {};
 
     handleSelectChange = e => {
-        this.setState({ [e.target.name]: e.target.value });
+        this.props.setFieldValue(e.target.name, e.target.value);
     };
 
-    handleSelectRoom = async e => {
-        if (e.target.value !== this.state.roomIndex) {
-            let { rooms } = this.state;
-            let room = rooms[e.target.value];
-            let roomTypeId = room.room_type.id;
+    handleSelectRoomType = async e => {
+        console.log(e.target.value);
+        console.log(this.state.roomtypes[e.target.value]);
+        let roomTypeId = this.state.roomtypes[e.target.value].id;
+        let roomType = this.state.roomtypes[e.target.value];
+        if (this.props.values.roomTypeId !== roomTypeId) {
+            this.props.setFieldValue("roomTypeId", roomTypeId);
+            this.props.setTouched({
+                roomTypeId: true
+            });
             this.setState(
                 {
+                    roomTypeIndex: e.target.value,
                     fetchingRate: true,
-                    roomIndex: e.target.value,
-                    roomTypeId: roomTypeId,
-                    selectedRoom: room,
-                    rateId: ""
+                    selectedRoomType: roomType,
+                    rateIndex: null,
+                    roomIndex: null
                 },
                 async () => {
-                    let { data } = await axios.get(
-                        "/api/roomtype/" + this.state.roomTypeId + "/rate"
-                    );
-                    this.setState({ rates: data, fetchingRate: false });
+                    try {
+                        let [rooms, rates] = await Promise.all([
+                            axios.get(
+                                "/api/room/hotelroom?room_type_id=" + roomTypeId
+                            ),
+                            axios.get(
+                                `api/roomtype/${this.props.values.roomTypeId}/rate`
+                            )
+                        ]);
+                        this.setState({
+                            rates: rates.data,
+                            rooms: rooms.data,
+                            fetchingRate: false
+                        });
+                    } catch (err) {
+                        this.setState({ fetchingRate: false });
+                        console.log(err);
+                    }
                 }
             );
-        } else {
-            this.setState({ roomIndex: e.target.value });
         }
     };
 
-    handleSelectRate = e => {
-        this.setState({ [e.target.name]: e.target.value });
-        let { rates } = this.state;
-        let rate = rates[e.target.value];
-        let rateId = e.target.value;
-        this.setState({
-            selectedRate: rate,
-            rateId,
-            price: rate.price * this.state.numberOfNights
+    handleSelectRoom = async e => {
+        let roomId = this.state.rooms[e.target.value].id;
+        this.props.setFieldValue("roomId", roomId);
+        this.props.setTouched({
+            roomId: true
         });
+        this.setState({ roomIndex: e.target.value });
+    };
+
+    handleSelectRate = e => {
+        let rate = this.state.rates[e.target.value];
+        let rateId = this.state.rates[e.target.value].id;
+        let checkInDate = moment(this.props.values.checkInDate);
+        let checkOutDate = moment(this.props.values.checkOutDate);
+        let diff = checkOutDate.diff(checkInDate, "days");
+        let price = diff * rate.price;
+        console.log(diff, rate.price, price)
+        this.props.setFieldValue('rateId', rateId)
+        this.props.setFieldValue("price", price);
+        this.props.setTouched({
+            rateId: true
+        });
+        this.setState({ rateIndex: e.target.value });
     };
 
     onSubmit = async () => {
         try {
+            this.setState({ validatedCalled: true });
             await this.props.validateForm();
             if (this.props.isValid) {
                 this.setState({ submitting: true }, async () => {
                     try {
                         await axios.post("/api/booking/walkin", {
-                            userId: this.state.userId,
-                            email: this.state.email,
-                            honorific: this.state.honorifics,
-                            firstname: this.state.firstname,
-                            lastname: this.state.lastname,
-                            middlename: this.state.middlename,
-                            contactno: this.state.contactno,
-                            address: this.state.address,
-                            from_date: moment(this.state.checkInDate).format(
+                            userId: this.props.values.userId,
+                            email: this.props.values.email,
+                            honorific: this.props.values.honorific,
+                            firstname: this.props.values.firstname,
+                            lastname: this.props.values.lastname,
+                            middlename: this.props.values.middlename,
+                            contactno: this.props.values.contactno,
+                            address: this.props.values.address,
+                            country: this.props.values.country,
+                            from_date: moment(this.props.values.checkInDate).format(
                                 "YYYY-MM-DD"
                             ),
-                            to_date: moment(this.state.checkOutDate).format(
+                            to_date: moment(this.props.values.checkOutDate).format(
                                 "YYYY-MM-DD"
                             ),
-                            room_id: this.state.selectedRoom.id,
-                            rate_id: this.state.selectedRate.id,
-                            paidAmount: this.state.paidAmount
+                            room_id: this.props.values.roomId,
+                            rate_id: this.props.values.rateId,
+                            paidAmount: this.props.values.paidAmount
                         });
+                        this.props.history.push('/')
                     } catch (err) {
                         console.log(err);
                     }
@@ -171,17 +212,15 @@ class Walkin extends Component {
     };
 
     setUser = user => {
-        this.setState({
-            honorifics: user.honorific,
-            firstname: user.firstname,
-            middlename: user.middlename,
-            lastname: user.lastname,
-            address: user.address,
-            country: user.country,
-            email: user.email,
-            contactno: user.contactno,
-            userId: user.id
-        });
+        this.props.setFieldValue('honorific', user.honorific)
+        this.props.setFieldValue("firstname", user.firstname);
+        this.props.setFieldValue("middlename", user.middlename);
+        this.props.setFieldValue("lastname", user.lastname);
+        this.props.setFieldValue("address", user.address);
+        this.props.setFieldValue("country", user.country);
+        this.props.setFieldValue("email", user.email);
+        this.props.setFieldValue("contactno", user.contactno);
+        this.props.setFieldValue("userId", user.userId);
     };
 
     handleUserDialog = () => {
@@ -190,23 +229,38 @@ class Walkin extends Component {
 
     handleCheckinDate = date => {
         let checkInDate = moment(date);
-        let checkOutDate = moment(this.state.checkoutDate);
-        if (checkInDate.isSameOrAfter(checkOutDate, "day")) {
+        let checkOutDate = moment(this.props.values.checkOutDate);
+       
+        if (checkInDate.isSameOrAfter(checkOutDate, "days")) {
             checkOutDate = moment(date).add({ days: 1 });
-            let diff = checkOutDate.diff(checkInDate, "days");
-            this.setState({
-                checkInDate: date,
-                checkOutDate: checkOutDate,
-                numberOfNights: diff
-            });
+            let diff = checkOutDate.diff(checkInDate, "day");
+            console.log("same or after", diff)
+            let price = 0;
+            if (this.state.rateIndex !== "") {
+                let rates = this.state.rates[this.state.rateIndex];
+                price = rates.price * diff;
+            }
+            this.props.setFieldValue("checkInDate", moment(date));
+            this.props.setFieldValue("checkOutDate", checkOutDate);
+            this.props.setFieldValue("numberOfNights", diff);
+            this.props.setFieldValue("price", price);
+           
         } else {
-            this.setState({ checkInDate: date });
+            let diff = checkOutDate.diff(checkInDate, "day");
+            let price = 0;
+            if (this.state.rateIndex !== "") {
+                let rates = this.state.rates[this.state.rateIndex];
+                price = rates.price * diff;
+            }
+            this.props.setFieldValue("checkInDate", moment(date));
+            this.props.setFieldValue("numberOfNights", diff);
+            this.props.setFieldValue("price", price);
         }
     };
     handleCheckoutDate = date => {
-        let checkInDate = moment(this.state.checkInDate);
+        let checkInDate = moment(this.props.values.checkInDate);
         let checkOutDate = moment(date);
-        if (checkOutDate.isSameOrBefore(checkInDate, "day")) {
+        if (checkOutDate.isSameOrBefore(checkInDate, "days")) {
             this.setState({
                 snackBarMessage: (
                     <span>
@@ -218,8 +272,16 @@ class Walkin extends Component {
                 snackBar: true
             });
         } else {
-            let diff = checkOutDate.diff(checkInDate, "days");
-            this.setState({ checkOutDate: date, numberOfNights: diff });
+            let diff = checkOutDate.diff(checkInDate, "day");
+            let price = 0;
+            if (this.state.rateIndex !== "") {
+                let rates = this.state.rates[this.state.rateIndex];
+                price = rates.price * diff;
+                console.log(rates,diff,price)
+            }
+            this.props.setFieldValue("checkOutDate", moment(date));
+            this.props.setFieldValue("numberOfNights", diff);
+            this.props.setFieldValue("price", price);
         }
     };
 
@@ -236,7 +298,7 @@ class Walkin extends Component {
         } = this.props;
         let {
             newGuest,
-            honorifics,
+            honorific,
             firstname,
             middlename,
             lastname,
@@ -254,13 +316,17 @@ class Walkin extends Component {
             price,
             paidAmount,
             total,
-            balance
+            balance,
+            validatedCalled,
+            roomTypeIndex,
+            rateIndex,
+            selectedRoomType
         } = this.state;
 
         let numberOfGuestItems = [];
 
-        if (selectedRoom.room_type_id) {
-            for (let i = 0; i <= selectedRoom.room_type.max_guest; i++) {
+        if (selectedRoom) {
+            for (let i = 0; i <= selectedRoomType.max_guest; i++) {
                 numberOfGuestItems.push(
                     <MenuItem value={i} key={i}>
                         {i}
@@ -329,13 +395,21 @@ class Walkin extends Component {
                                     </div>
                                 </Collapse>
 
-                                <FormControl component="fieldset">
+                                <FormControl
+                                    component="fieldset"
+                                    error={
+                                        (validatedCalled ||
+                                            touched.honorific) &&
+                                        errors.honorific
+                                    }
+                                >
                                     <FormLabel component="legend">
                                         Honorifics
                                     </FormLabel>
                                     <RadioGroup
-                                        value={honorifics}
-                                        onChange={this.handleChange}
+                                        value={values.honorific}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
                                         style={{
                                             display: "flex",
                                             flexDirection: "row"
@@ -347,7 +421,7 @@ class Walkin extends Component {
                                                 <Radio
                                                     disabled={!newGuest}
                                                     color="primary"
-                                                    id="honorifics"
+                                                    id="honorific"
                                                 />
                                             }
                                             label="Mr"
@@ -361,7 +435,7 @@ class Walkin extends Component {
                                                         readOnly: true
                                                     }}
                                                     color="primary"
-                                                    id="honorifics"
+                                                    id="honorific"
                                                 />
                                             }
                                             label="Ms"
@@ -375,7 +449,7 @@ class Walkin extends Component {
                                                         readOnly: true
                                                     }}
                                                     color="primary"
-                                                    id="honorifics"
+                                                    id="honorific"
                                                 />
                                             }
                                             label="Dr"
@@ -389,12 +463,19 @@ class Walkin extends Component {
                                                         readOnly: true
                                                     }}
                                                     color="primary"
-                                                    id="honorifics"
+                                                    id="honorific"
                                                 />
                                             }
                                             label="Atty"
                                         />
                                     </RadioGroup>
+                                    <FormHelperText>
+                                        {(validatedCalled ||
+                                            touched.honorific) &&
+                                        errors.honorific
+                                            ? errors.honorific
+                                            : ""}
+                                    </FormHelperText>
                                 </FormControl>
 
                                 <TextField
@@ -404,9 +485,17 @@ class Walkin extends Component {
                                     label="Firstname"
                                     margin="normal"
                                     helperText={
-                                        errors.firstname ? errors.firstname : ""
+                                        (validatedCalled ||
+                                            touched.firstname) &&
+                                        errors.firstname
+                                            ? errors.firstname
+                                            : ""
                                     }
-                                    error={errors.firstname}
+                                    error={
+                                        (validatedCalled ||
+                                            touched.firstname) &&
+                                        errors.firstname
+                                    }
                                     onBlur={handleBlur}
                                     value={values.firstname}
                                     onChange={handleChange}
@@ -422,11 +511,17 @@ class Walkin extends Component {
                                     label="Middle name"
                                     margin="normal"
                                     helperText={
+                                        (validatedCalled ||
+                                            touched.middlename) &&
                                         errors.middlename
                                             ? errors.middlename
                                             : ""
                                     }
-                                    error={errors.middlename}
+                                    error={
+                                        (validatedCalled ||
+                                            touched.middlename) &&
+                                        errors.middlename
+                                    }
                                     onBlur={handleBlur}
                                     value={values.middlename}
                                     onChange={handleChange}
@@ -441,9 +536,15 @@ class Walkin extends Component {
                                     label="Lastname"
                                     margin="normal"
                                     helperText={
-                                        errors.lastname ? errors.lastname : ""
+                                        (validatedCalled || touched.lastname) &&
+                                        errors.lastname
+                                            ? errors.lastname
+                                            : ""
                                     }
-                                    error={errors.lastname}
+                                    error={
+                                        (validatedCalled || touched.lastname) &&
+                                        errors.lastname
+                                    }
                                     onBlur={handleBlur}
                                     value={values.lastname}
                                     onChange={handleChange}
@@ -458,9 +559,15 @@ class Walkin extends Component {
                                     label="Address"
                                     margin="normal"
                                     helperText={
-                                        errors.address ? errors.address : ""
+                                        (validatedCalled || touched.address) &&
+                                        errors.address
+                                            ? errors.address
+                                            : ""
                                     }
-                                    error={errors.address}
+                                    error={
+                                        (validatedCalled || touched.address) &&
+                                        errors.address
+                                    }
                                     onBlur={handleBlur}
                                     value={values.address}
                                     onChange={handleChange}
@@ -471,7 +578,10 @@ class Walkin extends Component {
                                 <FormControl
                                     variant="standard"
                                     margin="normal"
-                                    error={errors.country}
+                                    error={
+                                        (validatedCalled || touched.country) &&
+                                        errors.country
+                                    }
                                     fullWidth
                                 >
                                     <InputLabel
@@ -483,7 +593,7 @@ class Walkin extends Component {
                                     <Select
                                         name="country"
                                         onChange={this.handleSelectChange}
-                                        value={country}
+                                        value={values.country}
                                         SelectDisplayProps={{
                                             style: {
                                                 display: "flex"
@@ -500,7 +610,10 @@ class Walkin extends Component {
                                         })}
                                     </Select>
                                     <FormHelperText>
-                                        {errors.country ? errors.country : ""}
+                                        {(validatedCalled || touched.country) &&
+                                        errors.country
+                                            ? errors.country
+                                            : ""}
                                     </FormHelperText>
                                 </FormControl>
                                 <TextField
@@ -510,9 +623,15 @@ class Walkin extends Component {
                                     label="Email address"
                                     margin="normal"
                                     helperText={
-                                        errors.email ? errors.email : ""
+                                        (validatedCalled || touched.country) &&
+                                        errors.email
+                                            ? errors.email
+                                            : ""
                                     }
-                                    error={errors.email}
+                                    error={
+                                        (validatedCalled || touched.country) &&
+                                        errors.email
+                                    }
                                     onBlur={handleBlur}
                                     value={values.email}
                                     onChange={handleChange}
@@ -527,9 +646,17 @@ class Walkin extends Component {
                                     label="Contact number"
                                     margin="normal"
                                     helperText={
-                                        errors.contactno ? errors.contactno : ""
+                                        (validatedCalled ||
+                                            touched.contactno) &&
+                                        errors.contactno
+                                            ? errors.contactno
+                                            : ""
                                     }
-                                    error={errors.contactno}
+                                    error={
+                                        (validatedCalled ||
+                                            touched.contactno) &&
+                                        errors.contactno
+                                    }
                                     onBlur={handleBlur}
                                     value={values.contactno}
                                     onChange={handleChange}
@@ -560,7 +687,7 @@ class Walkin extends Component {
                                     id="date-picker-dialog"
                                     label="Check-in Date"
                                     format="MM/dd/yyyy"
-                                    value={checkInDate}
+                                    value={values.checkInDate}
                                     onChange={this.handleCheckinDate}
                                     KeyboardButtonProps={{
                                         "aria-label": "change date"
@@ -575,7 +702,7 @@ class Walkin extends Component {
                                     id="date-picker-dialog"
                                     label="Check-out Date"
                                     format="MM/dd/yyyy"
-                                    value={checkOutDate}
+                                    value={values.checkOutDate}
                                     onChange={this.handleCheckoutDate}
                                     KeyboardButtonProps={{
                                         "aria-label": "change date"
@@ -587,16 +714,88 @@ class Walkin extends Component {
                                 <FormControl
                                     variant="standard"
                                     margin="normal"
-                                    error={errors.roomIndex}
+                                    error={
+                                        (validatedCalled ||
+                                            touched.roomTypeId) &&
+                                        errors.roomTypeId
+                                    }
                                     fullWidth
                                 >
                                     <InputLabel
                                         htmlFor="outlined-age-native-simple"
                                         ref={el => (this.roomInput = el)}
                                     >
-                                        Room
+                                        Room type
                                     </InputLabel>
                                     <Select
+                                        onChange={this.handleSelectRoomType}
+                                        value={roomTypeIndex}
+                                        SelectDisplayProps={{
+                                            style: {
+                                                display: "flex"
+                                            }
+                                        }}
+                                    >
+                                        {this.state.roomtypes.map(
+                                            (roomType, i) => {
+                                                let [
+                                                    firstLetter,
+                                                    ...bedType
+                                                ] = roomType.bed_type;
+                                                bedType = bedType.reduce(
+                                                    (acc, el) =>
+                                                        acc + el.toLowerCase(),
+                                                    ""
+                                                );
+                                                return (
+                                                    <MenuItem
+                                                        value={i}
+                                                        key={roomType.id}
+                                                    >
+                                                        {`${
+                                                            roomType.name
+                                                        } (${firstLetter +
+                                                            bedType} Bed)`}
+                                                    </MenuItem>
+                                                );
+                                            }
+                                        )}
+                                    </Select>
+                                    <FormHelperText>
+                                        {(validatedCalled ||
+                                            touched.roomTypeId) &&
+                                        errors.roomTypeId
+                                            ? errors.roomTypeId
+                                            : ""}
+                                    </FormHelperText>
+                                </FormControl>
+                                <FormControl
+                                    variant="standard"
+                                    margin="normal"
+                                    error={
+                                        (validatedCalled || touched.roomId) &&
+                                        errors.roomId
+                                    }
+                                    fullWidth
+                                    disabled={
+                                        this.state.fetchingRate ||
+                                        roomTypeIndex === ""
+                                    }
+                                >
+                                    <InputLabel
+                                        htmlFor="outlined-age-native-simple"
+                                        ref={el => (this.roomInput = el)}
+                                    >
+                                        Room
+                                        {this.state.fetchingRate && (
+                                            <CircularProgress
+                                                size={13}
+                                                style={{ marginLeft: 5 }}
+                                            />
+                                        )}
+                                    </InputLabel>
+                                    <Select
+                                        name="rateId"
                                         onChange={this.handleSelectRoom}
                                         value={roomIndex}
                                         SelectDisplayProps={{
@@ -610,26 +809,28 @@ class Walkin extends Component {
                                                 <MenuItem
                                                     value={i}
                                                     key={room.id}
-                                                >
-                                                    {`Room #${room.room_number} (${room.room_type.name})`}
-                                                </MenuItem>
+                                                >{`Room #${room.room_number}`}</MenuItem>
                                             );
                                         })}
                                     </Select>
                                     <FormHelperText>
-                                        {errors.roomIndex
-                                            ? errors.roomIndex
+                                        {(validatedCalled || touched.roomId) &&
+                                        errors.roomId
+                                            ? errors.roomId
                                             : ""}
                                     </FormHelperText>
                                 </FormControl>
                                 <FormControl
                                     variant="standard"
                                     margin="normal"
-                                    error={errors.rateId}
+                                    error={
+                                        (validatedCalled || touched.rateId) &&
+                                        errors.rateId
+                                    }
                                     fullWidth
                                     disabled={
                                         this.state.fetchingRate ||
-                                        roomIndex === null
+                                        roomTypeIndex === ""
                                     }
                                 >
                                     <InputLabel
@@ -647,7 +848,7 @@ class Walkin extends Component {
                                     <Select
                                         name="rateId"
                                         onChange={this.handleSelectRate}
-                                        value={rateId}
+                                        value={rateIndex}
                                         SelectDisplayProps={{
                                             style: {
                                                 display: "flex"
@@ -664,7 +865,10 @@ class Walkin extends Component {
                                         })}
                                     </Select>
                                     <FormHelperText>
-                                        {errors.rateId ? errors.rateId : ""}
+                                        {(validatedCalled || touched.rateId) &&
+                                        errors.rateId
+                                            ? errors.rateId
+                                            : ""}
                                     </FormHelperText>
                                 </FormControl>
 
@@ -672,7 +876,7 @@ class Walkin extends Component {
                                     variant="standard"
                                     margin="normal"
                                     fullWidth
-                                    disabled={!Boolean(roomIndex)}
+                                    disabled={roomTypeIndex === ""}
                                 >
                                     <InputLabel htmlFor="outlined-age-native-simple">
                                         Number of Guests
@@ -696,7 +900,7 @@ class Walkin extends Component {
                                     variant="standard"
                                     label="Number of Nights"
                                     margin="normal"
-                                    value={numberOfNights}
+                                    value={values.numberOfNights}
                                     InputProps={{ readOnly: true }}
                                     fullWidth
                                 />
@@ -722,7 +926,7 @@ class Walkin extends Component {
                                     id="price"
                                     placeholder="Price"
                                     label="Price"
-                                    value={price}
+                                    value={values.price}
                                     InputProps={{ readOnly: true }}
                                     variant="standard"
                                     hiddenLabel
@@ -733,8 +937,8 @@ class Walkin extends Component {
                                     id="paidAmount"
                                     placeholder="Paid Amount"
                                     label="Paid Amount"
-                                    value={paidAmount}
-                                    onChange={this.handleChange}
+                                    value={values.paidAmount}
+                                    onChange={handleChange}
                                     variant="standard"
                                     hiddenLabel
                                     margin="normal"
@@ -747,7 +951,7 @@ class Walkin extends Component {
                                     label="Total"
                                     variant="standard"
                                     margin="normal"
-                                    value={price}
+                                    value={values.price}
                                     InputProps={{ readOnly: true }}
                                     fullWidth
                                 />
@@ -759,9 +963,9 @@ class Walkin extends Component {
                                     label="Balance"
                                     margin="normal"
                                     value={
-                                        price - paidAmount < 0
+                                        values.price - values.paidAmount < 0
                                             ? 0
-                                            : price - paidAmount
+                                            : values.price - values.paidAmount
                                     }
                                     InputProps={{ readOnly: true }}
                                     fullWidth
@@ -889,6 +1093,8 @@ const WithFormik = withFormik({
     mapPropsToValues: props => {
         console.log(props);
         return {
+            userId: "",
+            honorific: "",
             firstname: "",
             middlename: "",
             lastname: "",
@@ -896,13 +1102,23 @@ const WithFormik = withFormik({
             country: "",
             email: "",
             contactno: "",
-            roomInput: "",
-            rateId: ""
+            roomTypeId: "",
+            roomId: "",
+            rateId: "",
+            numberOfGuest: 0,
+            numberOfNights: 1,
+            paidAmount: 0,
+            price: 0,
+            checkInDate: moment(),
+            checkOutDate: moment().add({ day: 1 })
         };
     },
 
     validationSchema: function() {
         let schema = yup.object().shape({
+            honorific: yup
+                .string("Honorific must be a word!")
+                .required("Honorific is required!"),
             firstname: yup
                 .string("Name must be a word!")
                 .required("First Name is required!"),
@@ -924,12 +1140,13 @@ const WithFormik = withFormik({
             contactno: yup
                 .string("Name must be a word!")
                 .required("Contact No is required!"),
-            roomIndex: yup
-                .string("Name must be a word!")
-                .required("Room is required!"),
-            rateId: yup
-                .string("Name must be a word!")
-                .required("Rate is required!")
+            roomTypeId: yup.string().required("Room type is required!"),
+            roomId: yup.string().required("Room is required!"),
+            rateId: yup.string().required("Rate is required!"),
+            numberOfGuest: yup
+                .number()
+                .required("Number of guest is required!")
+                .min(1, "Number of guest must be more than one(1)!")
         });
         return schema;
     }

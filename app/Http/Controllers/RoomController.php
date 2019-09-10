@@ -150,14 +150,22 @@ class RoomController extends Controller
         ], 200);
     }
 
-    public function getAllRooms()
+    public function getAllRooms(Request $request)
     {
-        $room = Room::where(function ($query) {
-            $query->whereNotNull('room_type_id');
-        })->orWhere(function ($query) {
-            $query->whereNotNUll('room_number');
-        })->with('roomType')->orderBy('room_number', 'asc')
-        ->get();
+        if ($request->query('room_type_id')) {
+            $room_type_id = $request->query('room_type_id');
+            $room = Room::where('room_type_id', $room_type_id)
+            ->whereNotNull('room_number')
+            ->orderBy('room_number', 'asc')
+                ->get();
+        } else {
+            $room = Room::where(function ($query) {
+                $query->whereNotNull('room_type_id');
+            })->orWhere(function ($query) {
+                $query->whereNotNull('room_number');
+            })->orderBy('room_number', 'asc')
+                ->get();
+        }
 
         return response()->json($room, 200);
     }
