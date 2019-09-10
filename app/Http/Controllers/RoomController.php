@@ -152,7 +152,12 @@ class RoomController extends Controller
 
     public function getAllRooms()
     {
-        $room = Room::whereNotNull('room_type_id')->with('roomType')->orderBy('room_number', 'asc')->get();
+        $room = Room::where(function ($query) {
+            $query->whereNotNull('room_type_id');
+        })->orWhere(function ($query) {
+            $query->whereNotNUll('room_number');
+        })->with('roomType')->orderBy('room_number', 'asc')
+        ->get();
 
         return response()->json($room, 200);
     }
