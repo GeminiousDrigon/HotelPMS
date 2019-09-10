@@ -67,11 +67,27 @@ function App() {
                 <Route path="/room/:id/edit" component={AddRoom} exact />
                 <Route path="/room/:id/view" component={ViewRoom} exact />
                 <Route path="/room/add" component={AddRoom} exact />
-                <Route path="/roomtype/:id/view" component={ViewRoomType} exact />
+                <Route
+                    path="/roomtype/:id/view"
+                    component={ViewRoomType}
+                    exact
+                />
                 <Route path="/roomtype/add" component={AddRoomType} exact />
-                <Route path="/roomtype/:id/edit" component={AddRoomType} exact />
-                <Route path="/roomfacilities" component={RoomFacilities} exact />
-                <Route path="/roomfacilities/:id" component={AddFacilities} exact />
+                <Route
+                    path="/roomtype/:id/edit"
+                    component={AddRoomType}
+                    exact
+                />
+                <Route
+                    path="/roomfacilities"
+                    component={RoomFacilities}
+                    exact
+                />
+                <Route
+                    path="/roomfacilities/:id"
+                    component={AddFacilities}
+                    exact
+                />
                 <Route path="/addfacilities" component={AddFacilities} exact />
                 <Route path="/account" component={Account} exact />
                 <Route path="/addaccount" component={AddAccount} exact />

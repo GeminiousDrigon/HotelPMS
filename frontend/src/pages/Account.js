@@ -11,6 +11,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
+import { Button } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
     fab: {
@@ -43,6 +44,7 @@ export default class Account extends Component {
                                     <TableCell align="left">Name</TableCell>
                                     <TableCell align="left">Gmail</TableCell>
                                     <TableCell align="left">Password</TableCell>
+                                    <TableCell align="left">Role</TableCell>
                                     <TableCell align="left">Action</TableCell>
                                 </TableRow>
                             </TableHead>
@@ -55,7 +57,18 @@ export default class Account extends Component {
                                 <TableCell align="left">
                                     e1sknfd123jksfj423
                                 </TableCell>
+                                <TableCell align="left" color="primary">
+                                    ordinary
+                                </TableCell>
                                 <TableCell align="left">
+                                    <Button
+                                        style={{ marginRight: "10px" }}
+                                        variant="contained"
+                                        color="primary"
+                                        onClick={this.onAddRoomType}
+                                    >
+                                        Set Admin
+                                    </Button>
                                     <Fab
                                         style={{ marginRight: "10px" }}
                                         size="small"
