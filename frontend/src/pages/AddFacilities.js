@@ -22,11 +22,15 @@ import CheckOutlinedIcon from "@material-ui/icons/CheckOutlined";
 import Icon from "@material-ui/core/Icon";
 import Grid from "@material-ui/core/Grid";
 
+import * as yup from "yup";
 import axios from "axios";
+import { withFormik } from "formik";
+import { FormHelperText } from "@material-ui/core";
+
 import icons from "../icons.json";
 import IconsItem from "../components/IconsItem";
 
-export default class AddFacilities extends Component {
+class AddFacilities extends Component {
     constructor(props) {
         super(props);
 
@@ -60,24 +64,38 @@ export default class AddFacilities extends Component {
 
     onSave = async () => {
         try {
-            if (this.props.match.params.id) {
-                console.log("here");
-                let { id } = this.props.match.params;
-                let facility = await axios.put(`/api/amenity/${id}`, {
-                    name: this.state.name,
-                    icon: this.state.icon
+            await this.props.validateForm();
+            if (this.props.isValid) {
+                this.setState({ submitting: true }, async () => {
+                    try {
+                        if (this.props.match.params.id) {
+                            console.log("here");
+                            let { id } = this.props.match.params;
+                            let facility = await axios.put(
+                                `/api/amenity/${id}`,
+                                {
+                                    name: this.state.name,
+                                    icon: this.state.icon
+                                }
+                            );
+                            this.props.history.goBack();
+                        } else {
+                            let facility = await axios.post("/api/amenity", {
+                                name: this.state.name,
+                                icon: this.state.icon
+                            });
+                            this.props.history.push("/property/facilities");
+                            console.log(facility);
+                        }
+                    } catch (err) {
+                        console.log(err);
+                    }
                 });
-                this.props.history.goBack();
             } else {
-                let facility = await axios.post("/api/amenity", {
-                    name: this.state.name,
-                    icon: this.state.icon
-                });
-                this.props.history.push("/property/facilities");
-                console.log(facility);
+                console.log("not valid");
             }
-        } catch (err) {
-            console.log(err);
+        } catch (error) {
+            console.log(error);
         }
     };
 
@@ -98,6 +116,14 @@ export default class AddFacilities extends Component {
     };
 
     render() {
+        const {
+            values,
+            touched,
+            errors,
+            handleChange,
+            handleBlur,
+            handleSubmit
+        } = this.props;
         return (
             <AdminLayout {...this.props}>
                 <div
@@ -125,7 +151,7 @@ export default class AddFacilities extends Component {
                                 </Icon>
                             )}
                             <h1 style={{ margin: 0, marginLeft: 5 }}>
-                                {this.state.name}
+                                {values.name}
                             </h1>
                         </div>
                         <TextField
@@ -134,8 +160,11 @@ export default class AddFacilities extends Component {
                             placeholder="Name"
                             margin="normal"
                             variant="outlined"
-                            onChange={this.onChange}
-                            value={this.state.name}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            value={values.name}
+                            helperText={errors.name ? errors.name : ""}
+                            error={errors.name}
                             fullWidth
                         />
                         <div
@@ -170,3 +199,19 @@ export default class AddFacilities extends Component {
         );
     }
 }
+const WithFormik = withFormik({
+    mapPropsToValues: props => {
+        console.log(props);
+        return {
+            name: ""
+        };
+    },
+    validationSchema: function() {
+        let schema = yup.object().shape({
+            name: yup.string("Name").required("Name is required!")
+        });
+        return schema;
+    }
+})(AddFacilities);
+
+export default WithFormik;

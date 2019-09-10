@@ -29,7 +29,11 @@ import { List } from "react-virtualized";
 
 import countries from "../country.json";
 
+import * as yup from "yup";
 import axios from "axios";
+import { withFormik } from "formik";
+import { FormHelperText } from "@material-ui/core";
+
 import moment from "moment";
 
 import {
@@ -127,22 +131,36 @@ class Walkin extends Component {
 
     onSubmit = async () => {
         try {
-            await axios.post("/api/booking/walkin", {
-                userId: this.state.userId,
-                email: this.state.email,
-                honorific: this.state.honorifics,
-                firstname: this.state.firstname,
-                lastname: this.state.lastname,
-                middlename: this.state.middlename,
-                contactno: this.state.contactno,
-                address: this.state.address,
-                from_date: moment(this.state.checkInDate).format("YYYY-MM-DD"),
-                to_date: moment(this.state.checkOutDate).format("YYYY-MM-DD"),
-                room_id: this.state.selectedRoom.id,
-                rate_id: this.state.selectedRate.id,
-                paidAmount: this.state.paidAmount
-            });
-            this.props.history.push('/')
+            await this.props.validateForm();
+            if (this.props.isValid) {
+                this.setState({ submitting: true }, async () => {
+                    try {
+                        await axios.post("/api/booking/walkin", {
+                            userId: this.state.userId,
+                            email: this.state.email,
+                            honorific: this.state.honorifics,
+                            firstname: this.state.firstname,
+                            lastname: this.state.lastname,
+                            middlename: this.state.middlename,
+                            contactno: this.state.contactno,
+                            address: this.state.address,
+                            from_date: moment(this.state.checkInDate).format(
+                                "YYYY-MM-DD"
+                            ),
+                            to_date: moment(this.state.checkOutDate).format(
+                                "YYYY-MM-DD"
+                            ),
+                            room_id: this.state.selectedRoom.id,
+                            rate_id: this.state.selectedRate.id,
+                            paidAmount: this.state.paidAmount
+                        });
+                    } catch (err) {
+                        console.log(err);
+                    }
+                });
+            } else {
+                console.log("not valid");
+            }
         } catch (err) {
             console.log(err);
         }
@@ -208,6 +226,14 @@ class Walkin extends Component {
     handleCloseSnackBar = () => this.setState({ snackBar: false });
 
     render() {
+        const {
+            values,
+            touched,
+            errors,
+            handleChange,
+            handleBlur,
+            handleSubmit
+        } = this.props;
         let {
             newGuest,
             honorifics,
@@ -377,8 +403,13 @@ class Walkin extends Component {
                                     variant="standard"
                                     label="Firstname"
                                     margin="normal"
-                                    value={firstname}
-                                    onChange={this.handleChange}
+                                    helperText={
+                                        errors.firstname ? errors.firstname : ""
+                                    }
+                                    error={errors.firstname}
+                                    onBlur={handleBlur}
+                                    value={values.firstname}
+                                    onChange={handleChange}
                                     inputProps={{ readOnly: !newGuest }}
                                     disabled={!newGuest}
                                     fullWidth
@@ -390,8 +421,15 @@ class Walkin extends Component {
                                     variant="standard"
                                     label="Middle name"
                                     margin="normal"
-                                    value={middlename}
-                                    onChange={this.handleChange}
+                                    helperText={
+                                        errors.middlename
+                                            ? errors.middlename
+                                            : ""
+                                    }
+                                    error={errors.middlename}
+                                    onBlur={handleBlur}
+                                    value={values.middlename}
+                                    onChange={handleChange}
                                     inputProps={{ readOnly: !newGuest }}
                                     disabled={!newGuest}
                                     fullWidth
@@ -402,8 +440,13 @@ class Walkin extends Component {
                                     variant="standard"
                                     label="Lastname"
                                     margin="normal"
-                                    value={lastname}
-                                    onChange={this.handleChange}
+                                    helperText={
+                                        errors.lastname ? errors.lastname : ""
+                                    }
+                                    error={errors.lastname}
+                                    onBlur={handleBlur}
+                                    value={values.lastname}
+                                    onChange={handleChange}
                                     inputProps={{ readOnly: !newGuest }}
                                     disabled={!newGuest}
                                     fullWidth
@@ -414,8 +457,13 @@ class Walkin extends Component {
                                     variant="standard"
                                     label="Address"
                                     margin="normal"
-                                    value={address}
-                                    onChange={this.handleChange}
+                                    helperText={
+                                        errors.address ? errors.address : ""
+                                    }
+                                    error={errors.address}
+                                    onBlur={handleBlur}
+                                    value={values.address}
+                                    onChange={handleChange}
                                     inputProps={{ readOnly: !newGuest }}
                                     disabled={!newGuest}
                                     fullWidth
@@ -423,6 +471,7 @@ class Walkin extends Component {
                                 <FormControl
                                     variant="standard"
                                     margin="normal"
+                                    error={errors.country}
                                     fullWidth
                                 >
                                     <InputLabel
@@ -450,6 +499,9 @@ class Walkin extends Component {
                                             );
                                         })}
                                     </Select>
+                                    <FormHelperText>
+                                        {errors.country ? errors.country : ""}
+                                    </FormHelperText>
                                 </FormControl>
                                 <TextField
                                     id="email"
@@ -457,8 +509,13 @@ class Walkin extends Component {
                                     variant="standard"
                                     label="Email address"
                                     margin="normal"
-                                    value={email}
-                                    onChange={this.handleChange}
+                                    helperText={
+                                        errors.email ? errors.email : ""
+                                    }
+                                    error={errors.email}
+                                    onBlur={handleBlur}
+                                    value={values.email}
+                                    onChange={handleChange}
                                     inputProps={{ readOnly: !newGuest }}
                                     disabled={!newGuest}
                                     fullWidth
@@ -469,8 +526,13 @@ class Walkin extends Component {
                                     variant="standard"
                                     label="Contact number"
                                     margin="normal"
-                                    value={contactno}
-                                    onChange={this.handleChange}
+                                    helperText={
+                                        errors.contactno ? errors.contactno : ""
+                                    }
+                                    error={errors.contactno}
+                                    onBlur={handleBlur}
+                                    value={values.contactno}
+                                    onChange={handleChange}
                                     inputProps={{ readOnly: !newGuest }}
                                     disabled={!newGuest}
                                     fullWidth
@@ -525,6 +587,7 @@ class Walkin extends Component {
                                 <FormControl
                                     variant="standard"
                                     margin="normal"
+                                    error={errors.roomIndex}
                                     fullWidth
                                 >
                                     <InputLabel
@@ -553,14 +616,20 @@ class Walkin extends Component {
                                             );
                                         })}
                                     </Select>
+                                    <FormHelperText>
+                                        {errors.roomIndex
+                                            ? errors.roomIndex
+                                            : ""}
+                                    </FormHelperText>
                                 </FormControl>
                                 <FormControl
                                     variant="standard"
                                     margin="normal"
+                                    error={errors.rateId}
                                     fullWidth
                                     disabled={
                                         this.state.fetchingRate ||
-                                        roomIndex!==null
+                                        roomIndex === null
                                     }
                                 >
                                     <InputLabel
@@ -594,6 +663,9 @@ class Walkin extends Component {
                                             );
                                         })}
                                     </Select>
+                                    <FormHelperText>
+                                        {errors.rateId ? errors.rateId : ""}
+                                    </FormHelperText>
                                 </FormControl>
 
                                 <FormControl
@@ -813,4 +885,54 @@ const styles = createStyles(theme => ({
     }
 }));
 
-export default withStyles(styles)(Walkin);
+const WithFormik = withFormik({
+    mapPropsToValues: props => {
+        console.log(props);
+        return {
+            firstname: "",
+            middlename: "",
+            lastname: "",
+            address: "",
+            country: "",
+            email: "",
+            contactno: "",
+            roomInput: "",
+            rateId: ""
+        };
+    },
+
+    validationSchema: function() {
+        let schema = yup.object().shape({
+            firstname: yup
+                .string("Name must be a word!")
+                .required("First Name is required!"),
+            middlename: yup
+                .string("Name must be a word!")
+                .required("Middle Name is required!"),
+            lastname: yup
+                .string("Name must be a word!")
+                .required("Last Name is required!"),
+            address: yup
+                .string("Name must be a word!")
+                .required("Address is required!"),
+            country: yup
+                .string("Name must be a word!")
+                .required("Country is required!"),
+            email: yup
+                .string("Name must be a word!")
+                .required("Gmail is required!"),
+            contactno: yup
+                .string("Name must be a word!")
+                .required("Contact No is required!"),
+            roomIndex: yup
+                .string("Name must be a word!")
+                .required("Room is required!"),
+            rateId: yup
+                .string("Name must be a word!")
+                .required("Rate is required!")
+        });
+        return schema;
+    }
+})(Walkin);
+
+export default withStyles(styles)(WithFormik);

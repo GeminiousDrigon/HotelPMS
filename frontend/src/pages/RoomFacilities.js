@@ -126,23 +126,6 @@ export default class RoomFacilities extends Component {
                             </Tooltip>
                         </div>
                         <div style={{ width: "100%" }}>
-                            <div>
-                                <InputBase
-                                    placeholder="Search icon"
-                                    classes={{}}
-                                    inputProps={{
-                                        "aria-label": "search"
-                                    }}
-                                />
-                                <div
-                                    style={{
-                                        marginTop: "-30px",
-                                        marginLeft: "32%"
-                                    }}
-                                >
-                                    <SearchIcon />
-                                </div>
-                            </div>
                             <List>
                                 {this.state.facilities.map(
                                     (el, i, collection) => {
@@ -180,7 +163,7 @@ export default class RoomFacilities extends Component {
                                                         </IconButton>
                                                     </ListItemSecondaryAction>
                                                 </ListItem>
-                                                {collection.length > i+1 && (
+                                                {collection.length > i + 1 && (
                                                     <Divider />
                                                 )}
                                             </>
