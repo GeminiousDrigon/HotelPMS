@@ -223,7 +223,7 @@ const WithFormik = withFormik({
     validationSchema: function() {
         let schema = yup.object().shape({
             room_type: yup
-                .string("Room type must be a word!")
+                .string("Firstname ")
                 .required("Room type is required!"),
             quantity: yup.number().when("edit", {
                 is: true,

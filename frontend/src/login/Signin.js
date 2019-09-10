@@ -3,7 +3,7 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import TextField from "@material-ui/core/TextField";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import Paper from "@material-ui/core/Paper";
-import VpnKeyIcon from "@material-ui/icons/VpnKey";
+import LockIcon from "@material-ui/icons/Lock";
 import Button from "@material-ui/core/Button";
 import SaveIcon from "@material-ui/icons/Save";
 
@@ -11,11 +11,21 @@ export default class Signin extends Component {
     render() {
         return (
             <div>
+                <div>
+                    <img
+                        src="img/logo1.jpg"
+                        style={{
+                            width: "30%",
+                            marginLeft: "35%",
+                            marginTop: "5%"
+                        }}
+                    ></img>
+                </div>
+
                 <Paper
                     style={{
                         width: "30%",
                         margin: "auto",
-                        marginTop: "10%",
                         backgroundColor: "#DCDCDC",
                         height: "250px"
                     }}
@@ -24,7 +34,7 @@ export default class Signin extends Component {
                         style={{
                             width: "80%",
                             margin: "auto",
-                            paddingTop: "50px"
+                            paddingTop: "30px"
                         }}
                     >
                         <TextField
@@ -32,7 +42,7 @@ export default class Signin extends Component {
                                 width: "100%"
                             }}
                             id="Gmail"
-                            placeholder="Gmail"
+                            placeholder="Username"
                             InputProps={{
                                 startAdornment: (
                                     <InputAdornment position="start">
@@ -53,20 +63,36 @@ export default class Signin extends Component {
                             InputProps={{
                                 startAdornment: (
                                     <InputAdornment position="start">
-                                        <VpnKeyIcon />
+                                        <LockIcon />
                                     </InputAdornment>
                                 )
                             }}
                         />
                     </div>
                     <br></br>
-                    <div style={{ marginLeft: "60%" }}>
+                    <div
+                        style={{
+                            float: "right",
+                            marginRight: "10%"
+                        }}
+                    >
+                        <a href="">
+                            <i>Forgot Password?</i>
+                        </a>
+                    </div>
+                    <br></br>
+
+                    <div style={{ margin: "5% 5% 5% 10%" }}>
                         <Button
                             variant="contained"
-                            color="primary"
+                            style={{
+                                backgroundColor: "#1093bd",
+                                color: "white",
+                                width: "95%"
+                            }}
                             onClick={this.onAddRoomType}
                         >
-                            Sign In
+                            LOGIN
                         </Button>
                     </div>
                 </Paper>
