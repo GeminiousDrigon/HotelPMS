@@ -192,25 +192,11 @@ export default class Room extends Component {
                             open={open}
                             onClose={this.handleClose}
                         >
-                            <MenuItem onClick={this.viewRoom}>View</MenuItem>
                             <MenuItem onClick={this.editRoom}>Edit</MenuItem>
                             <MenuItem onClick={this.deleteRoom}>
                                 Delete
                             </MenuItem>
                         </Menu>
-                        <Fab
-                            style={{
-                                position: "absolute",
-                                bottom: "50px",
-                                right: 50
-                            }}
-                            size="large"
-                            color="primary"
-                            aria-label="add"
-                            onClick={() => this.props.history.push("/room/add")}
-                        >
-                            <AddIcon />
-                        </Fab>
                     </Paper>
                 </div>
                 <AddRoomDialog

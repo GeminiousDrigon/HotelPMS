@@ -1,20 +1,17 @@
 import React, { Component } from "react";
-import AdminLayout from "../components/AdminLayout";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import Fab from "@material-ui/core/Fab";
-import AddIcon from "@material-ui/icons/Add";
-import DeleteIcon from "@material-ui/icons/Delete";
-import EditIcon from "@material-ui/icons/Edit";
 import Paper from "@material-ui/core/Paper";
 import Icon from "@material-ui/core/Icon";
 
 import IconButton from "@material-ui/core/IconButton";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
+import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
 
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 
@@ -45,11 +42,9 @@ export default class RoomType extends Component {
     getAllRoomType = async () => {
         try {
             let { data } = await axios.get("/api/roomtype");
-            console.log(data)
             this.setState({
                 rooms: data
             });
-            console.log(data);
         } catch (err) {
             console.log(err);
         }
@@ -72,6 +67,8 @@ export default class RoomType extends Component {
     editRoom = () =>
         this.props.history.push(`/roomtype/${this.state.selectedRoom}/edit`);
 
+    addRoom = () => this.props.history.push("/roomtype/add");
+
     render() {
         let { anchorEl } = this.state;
         let open = Boolean(anchorEl);
@@ -86,7 +83,21 @@ export default class RoomType extends Component {
                     }}
                 >
                     <Paper style={{ backgroundColor: "white", padding: 20 }}>
-                        <h1>Room Type(s)</h1>
+                        <div
+                            style={{
+                                display: "flex",
+                                justifyContent: "space-between"
+                            }}
+                        >
+                            <Typography variant="h4">Room Type(s)</Typography>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={this.addRoom}
+                            >
+                                Add <Icon style={{ marginLeft: 5 }}>add</Icon>
+                            </Button>
+                        </div>
                         <Table>
                             <TableHead>
                                 <TableRow>
@@ -107,7 +118,9 @@ export default class RoomType extends Component {
                                                 {room.name}
                                             </TableCell>
                                             <TableCell align="left">
-                                                {`${room.room_size+room.room_size_unit}`}<sup>2</sup>
+                                                {`${room.room_size +
+                                                    room.room_size_unit}`}
+                                                <sup>2</sup>
                                             </TableCell>
                                             <TableCell align="left">
                                                 {room.bed_no}
@@ -148,19 +161,6 @@ export default class RoomType extends Component {
                                 Delete
                             </MenuItem>
                         </Menu>
-                        <Fab
-                            style={{
-                                position: "absolute",
-                                bottom: "50px",
-                                right: 50
-                            }}
-                            size="large"
-                            color="primary"
-                            aria-label="add"
-                            onClick={() => this.props.history.push("/roomtype/add")}
-                        >
-                            <AddIcon />
-                        </Fab>
                     </Paper>
                 </div>
             </>

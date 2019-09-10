@@ -148,7 +148,7 @@ export default class ViewRoomType extends Component {
         }
     };
 
-    editRate = () => this.setState({ rateDialog: true, editRate: true });
+    editRate = () => this.setState({ rateDialog: true, editRate: true, anchorEl: null });
 
     render() {
         let {

@@ -16,6 +16,8 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+//users
+Route::get("/user", "UserController@getGuestUsers");
 //amenity-ok
 Route::post("/amenity", "AmenityController@create");
 Route::get("/amenity", "AmenityController@getAll");
@@ -34,6 +36,7 @@ Route::delete("/billing/{id}/booking", "BillingController@removeBooking");
 //booking
 Route::post("/booking", "BookingController@create");
 Route::get("/booking", "BookingController@getAll");
+Route::post("/booking/walkin", "BookingController@createWalkInBooking");
 Route::get("/booking/{id}", "BookingController@getOne");
 Route::put("/booking/{id}", "BookingController@editOne");
 Route::delete("/booking/{id}", "BookingController@deleteOne");
@@ -52,6 +55,7 @@ Route::delete("/booking/{id}/billing", "BookingController@removeBilling");
 //room-ok
 Route::post("/room", "RoomController@create");
 Route::get("/room", "RoomController@getAll");
+Route::get("/room/hotelroom", "RoomController@getAllRooms");
 Route::get("/room/{id}", "RoomController@getOne");
 Route::put("/room/{id}", "RoomController@editOne");
 Route::delete("/room/{id}", "RoomController@deleteOne");

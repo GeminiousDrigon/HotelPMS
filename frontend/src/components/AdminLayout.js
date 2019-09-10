@@ -28,7 +28,8 @@ const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
     root: {
-        display: "flex"
+        display: "flex",
+        height: "100%"
     },
     appBar: {
         zIndex: theme.zIndex.drawer + 5
@@ -61,7 +62,8 @@ const useStyles = makeStyles(theme => ({
         transition: theme.transitions.create("width", {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.enteringScreen
-        })
+        }),
+        zIndex: "20 !important"
     },
     drawerClose: {
         transition: theme.transitions.create("width", {
@@ -72,7 +74,8 @@ const useStyles = makeStyles(theme => ({
         width: theme.spacing(7) + 1,
         [theme.breakpoints.up("sm")]: {
             width: theme.spacing(9) + 1
-        }
+        },
+        zIndex: "20 !important"
     },
     toolbar: {
         display: "flex",
@@ -83,7 +86,7 @@ const useStyles = makeStyles(theme => ({
     },
     content: {
         flexGrow: 1,
-        padding: theme.spacing(3)
+        overflow: "auto"
     },
     title: {
         flexGrow: 1
@@ -194,13 +197,18 @@ export default function AdminLayout(props) {
             </Drawer>
 
             <div
+            id="content-container"
                 className={classes.content}
-                style={{
-                    marginTop: 60,
-                    backgroundColor: "#DCDCDC",
-                    flex: 1,
-                    padding: props.noPadding ? 0 : 24
-                }}
+                style={Object.assign(
+                    {},
+                    {
+                        overlow: "auto",
+                        padding: props.noPadding ? "0" : "84px 24px 24px",
+                        backgroundColor: "#DCDCDC",
+                        flex: 1
+                    },
+                    props.style
+                )}
             >
                 {props.children}
             </div>

@@ -75,7 +75,7 @@ export default class AddFacilities extends Component {
                     name: this.state.name,
                     icon: this.state.icon
                 });
-                this.props.history.push("/roomfacilities");
+                this.props.history.push("/property/facilities");
                 console.log(facility);
             }
         } catch (err) {

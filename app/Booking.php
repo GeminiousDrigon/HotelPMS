@@ -10,7 +10,7 @@ class Booking extends Model
     use Uuid;
 
     protected $fillable = [
-        'from_date', 'to_date', 'user_id', 'room_id', 'price', 'with_breakfast'
+        'from_date', 'to_date', 'user_id', 'room_id', 'price', 'with_breakfast', 'checkin_date', 'checkout_date', 'status','room_type_id'
     ];
 
     public function user(){
