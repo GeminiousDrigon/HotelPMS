@@ -61,25 +61,25 @@ class AddRoomDialog extends Component {
         try {
             await this.props.validateForm();
             if (this.props.isValid) {
-                // this.setState({ submitting: true }, async () => {
-                //     try {
-                //         let { values } = this.props;
-                //         if (this.props.edit) {
-                //             await axios.put(`/api/room/${this.props.id}`, {
-                //                 room_number: values.room_number,
-                //                 room_type_id: values.room_type
-                //             });
-                //         } else {
-                //             await axios.post("/api/room", {
-                //                 room_type_id: values.room_type,
-                //                 quantity: values.quantity
-                //             });
-                //         }
-                //         this.props.handleClose(true);
-                //     } catch (err) {
-                //         console.log(err);
-                //     }
-                // });
+                this.setState({ submitting: true }, async () => {
+                    try {
+                        let { values } = this.props;
+                        if (this.props.edit) {
+                            await axios.put(`/api/room/${this.props.id}`, {
+                                room_number: values.room_number,
+                                room_type_id: values.room_type
+                            });
+                        } else {
+                            await axios.post("/api/room", {
+                                room_type_id: values.room_type,
+                                quantity: values.quantity
+                            });
+                        }
+                        this.props.handleClose(true);
+                    } catch (err) {
+                        console.log(err);
+                    }
+                });
             } else {
                 console.log("not valid");
             }
@@ -161,7 +161,7 @@ class AddRoomDialog extends Component {
                             value={values.room_type}
                             input={
                                 <OutlinedInput
-                                    onChange={e => this.onChangeSelect}
+                                    onChange={this.onChangeSelect}
                                     labelWidth={this.state.roomTypeLabelWidth}
                                 />
                             }
