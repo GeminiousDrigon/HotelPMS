@@ -560,7 +560,7 @@ class Walkin extends Component {
                                     fullWidth
                                     disabled={
                                         this.state.fetchingRate ||
-                                        !Boolean(roomIndex)
+                                        roomIndex!==null
                                     }
                                 >
                                     <InputLabel
