@@ -19,8 +19,6 @@ import HotelOutlinedIcon from "@material-ui/icons/HotelOutlined";
 import PersonOutlinedIcon from "@material-ui/icons/PersonOutlined";
 import CheckOutlinedIcon from "@material-ui/icons/CheckOutlined";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUtensils } from "@fortawesome/free-solid-svg-icons";
 import Icon from "@material-ui/core/Icon";
 import Grid from "@material-ui/core/Grid";
 
@@ -95,10 +93,9 @@ export default class AddFacilities extends Component {
         }
     };
 
-    onSelectIcon = (value) => {
-        this.setState({icon: value})
-    }
-    
+    onSelectIcon = value => {
+        this.setState({ icon: value });
+    };
 
     render() {
         return (
@@ -114,9 +111,22 @@ export default class AddFacilities extends Component {
                 >
                     <Paper style={{ padding: 20 }}>
                         <h2>Add Room Facilities</h2>
-                        <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
-                            {this.state.icon !== "" && <Icon fontSize="large" color="primary">{this.state.icon}</Icon>}
-                            <h1 style={{ margin: 0, marginLeft: 5 }}>{this.state.name}</h1>
+                        <div
+                            style={{
+                                textAlign: "center",
+                                display: "flex",
+                                flexDirection: "row",
+                                justifyContent: "center"
+                            }}
+                        >
+                            {this.state.icon !== "" && (
+                                <Icon fontSize="large" color="primary">
+                                    {this.state.icon}
+                                </Icon>
+                            )}
+                            <h1 style={{ margin: 0, marginLeft: 5 }}>
+                                {this.state.name}
+                            </h1>
                         </div>
                         <TextField
                             id="name"
@@ -130,7 +140,7 @@ export default class AddFacilities extends Component {
                         />
                         <div
                             style={{
-                                width: "100%",
+                                width: "100%"
                             }}
                         >
                             <Button
@@ -148,10 +158,12 @@ export default class AddFacilities extends Component {
                         <h1>Select Icon</h1>
                         {icons.map((icon, i) => {
                             return (
-                                <IconsItem {...icon} onSelectIcon={this.onSelectIcon} />
+                                <IconsItem
+                                    {...icon}
+                                    onSelectIcon={this.onSelectIcon}
+                                />
                             );
                         })}
-                        
                     </Paper>
                 </div>
             </AdminLayout>
