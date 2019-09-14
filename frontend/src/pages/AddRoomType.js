@@ -13,10 +13,13 @@ import Checkbox from "@material-ui/core/Checkbox";
 import Grid from "@material-ui/core/Grid";
 import MenuItem from "@material-ui/core/MenuItem";
 
+import * as yup from "yup";
 import axios from "axios";
+import { withFormik } from "formik";
 import { Typography } from "@material-ui/core";
+import { FormHelperText } from "@material-ui/core";
 
-export default class AddRoomType extends Component {
+class AddRoomType extends Component {
     constructor(props) {
         super(props);
 
@@ -54,41 +57,51 @@ export default class AddRoomType extends Component {
 
     onAddRoomType = async e => {
         try {
-            let {
-                name,
-                description,
-                room_size,
-                room_size_unit,
-                bed_no,
-                max_guest,
-                bed_type
-            } = this.state;
-            let roomType = {
-                name,
-                description,
-                room_size,
-                room_size_unit,
-                bed_no,
-                max_guest,
-                bed_type
-            };
-            if (this.props.match.params.id) {
-                let { id } = this.props.match.params;
-                await axios.put(`/api/roomtype/${id}`, {
-                    ...roomType
+            await this.props.validateForm();
+            if (this.props.isValid) {
+                this.setState({ submitting: true }, async () => {
+                    try {
+                        let {
+                            name,
+                            description,
+                            room_size,
+                            room_size_unit,
+                            bed_no,
+                            max_guest,
+                            bed_type
+                        } = this.state;
+                        let roomType = {
+                            name,
+                            description,
+                            room_size,
+                            room_size_unit,
+                            bed_no,
+                            max_guest,
+                            bed_type
+                        };
+                        if (this.props.match.params.id) {
+                            let { id } = this.props.match.params;
+                            await axios.put(`/api/roomtype/${id}`, {
+                                ...roomType
+                            });
+                            this.props.history.push("/property/roomtype");
+                        } else {
+                            await axios.post("/api/roomtype", {
+                                ...roomType
+                            });
+                            this.props.history.push("/property/roomtype");
+                        }
+                    } catch (err) {
+                        console.log(err);
+                    }
                 });
-                this.props.history.push("/property/roomtype");
             } else {
-                await axios.post("/api/roomtype", {
-                    ...roomType
-                });
-                this.props.history.push("/property/roomtype");
+                console.log("not valid");
             }
-        } catch (err) {
-            console.log(err);
+        } catch (error) {
+            console.log(error);
         }
     };
-
     getRoomType = async () => {
         try {
             let { id } = this.props.match.params;
@@ -117,6 +130,14 @@ export default class AddRoomType extends Component {
     };
 
     render() {
+        const {
+            values,
+            touched,
+            errors,
+            handleChange,
+            handleBlur,
+            handleSubmit
+        } = this.props;
         let {
             name,
             description,
@@ -151,32 +172,48 @@ export default class AddRoomType extends Component {
                                     label="Name"
                                     margin="normal"
                                     variant="outlined"
-                                    onChange={this.onChange}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    value={values.name}
+                                    helperText={errors.name ? errors.name : ""}
+                                    error={errors.name}
                                     fullWidth
                                 />
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField
-                                    value={description}
                                     id="description"
                                     label="Description"
                                     margin="normal"
                                     variant="outlined"
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    value={values.description}
+                                    helperText={
+                                        errors.description
+                                            ? errors.description
+                                            : ""
+                                    }
+                                    error={errors.description}
                                     multiline
                                     rows={5}
                                     rowsMax={5}
-                                    onChange={this.onChange}
                                     fullWidth
                                 />
                             </Grid>
                             <Grid item xs={4}>
                                 <TextField
-                                    value={room_size}
                                     id="room_size"
                                     label="Room Size"
                                     margin="normal"
                                     variant="outlined"
-                                    onChange={this.onChange}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    value={values.room_size}
+                                    helperText={
+                                        errors.room_size ? errors.room_size : ""
+                                    }
+                                    error={errors.room_size}
                                     type="number"
                                     fullWidth
                                 />
@@ -185,6 +222,7 @@ export default class AddRoomType extends Component {
                                 <FormControl
                                     variant="outlined"
                                     margin="normal"
+                                    error={errors.room_size_unit}
                                     fullWidth
                                 >
                                     <InputLabel
@@ -196,7 +234,7 @@ export default class AddRoomType extends Component {
                                         Room Size Unit
                                     </InputLabel>
                                     <Select
-                                        value={room_size_unit}
+                                        value={values.room_size_unit}
                                         input={
                                             <OutlinedInput
                                                 id="room_size_unit"
@@ -224,16 +262,26 @@ export default class AddRoomType extends Component {
                                             Millimeter
                                         </MenuItem>
                                     </Select>
+                                    <FormHelperText>
+                                        {errors.room_size_unit
+                                            ? errors.room_size_unit
+                                            : ""}
+                                    </FormHelperText>
                                 </FormControl>
                             </Grid>
                             <Grid item xs={4}>
                                 <TextField
-                                    value={bed_no}
                                     id="bed_no"
                                     label="Number of Beds"
                                     margin="normal"
                                     variant="outlined"
-                                    onChange={this.onChange}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    value={values.bed_no}
+                                    helperText={
+                                        errors.bed_no ? errors.bed_no : ""
+                                    }
+                                    error={errors.bed_no}
                                     type="number"
                                     fullWidth
                                 />
@@ -242,6 +290,7 @@ export default class AddRoomType extends Component {
                                 <FormControl
                                     variant="outlined"
                                     margin="normal"
+                                    error={errors.bed_type}
                                     fullWidth
                                 >
                                     <InputLabel
@@ -251,7 +300,7 @@ export default class AddRoomType extends Component {
                                         Bed Type
                                     </InputLabel>
                                     <Select
-                                        value={bed_type}
+                                        value={values.bed_type}
                                         input={
                                             <OutlinedInput
                                                 id="room_size_unit"
@@ -284,16 +333,24 @@ export default class AddRoomType extends Component {
                                             Double-deck
                                         </MenuItem>
                                     </Select>
+                                    <FormHelperText>
+                                        {errors.bed_type ? errors.bed_type : ""}
+                                    </FormHelperText>
                                 </FormControl>
                             </Grid>
                             <Grid item xs={4}>
                                 <TextField
-                                    value={max_guest}
                                     id="max_guest"
                                     label="Max Guest"
                                     margin="normal"
                                     variant="outlined"
-                                    onChange={this.onChange}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    value={values.max_guest}
+                                    helperText={
+                                        errors.max_guest ? errors.max_guest : ""
+                                    }
+                                    error={errors.max_guest}
                                     type="number"
                                     fullWidth
                                 />
@@ -321,3 +378,36 @@ export default class AddRoomType extends Component {
         );
     }
 }
+
+const WithFormik = withFormik({
+    mapPropsToValues: props => {
+        console.log(props);
+        return {
+            name: "",
+            description: "",
+            room_size: "",
+            room_size_unit: "",
+            bed_no: "",
+            max_guest: "",
+            bed_type: ""
+        };
+    },
+    validationSchema: function() {
+        let schema = yup.object().shape({
+            name: yup.string("Name").required("Name is required!"),
+            description: yup
+                .string("Description")
+                .required("Description is required!"),
+            room_size: yup.string("").required("Room size is required!"),
+            room_size_unit: yup
+                .string("")
+                .required("Room size unit is required!"),
+            bed_no: yup.string("").required("Number of bed is required!"),
+            max_guest: yup.string("").required("Max guest is required!"),
+            bed_type: yup.string("").required("Type of bed is required!")
+        });
+        return schema;
+    }
+})(AddRoomType);
+
+export default WithFormik;

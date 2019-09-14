@@ -158,8 +158,8 @@ class Walkin extends Component {
         let checkOutDate = moment(this.props.values.checkOutDate);
         let diff = checkOutDate.diff(checkInDate, "days");
         let price = diff * rate.price;
-        console.log(diff, rate.price, price)
-        this.props.setFieldValue('rateId', rateId)
+        console.log(diff, rate.price, price);
+        this.props.setFieldValue("rateId", rateId);
         this.props.setFieldValue("price", price);
         this.props.setTouched({
             rateId: true
@@ -184,17 +184,17 @@ class Walkin extends Component {
                             contactno: this.props.values.contactno,
                             address: this.props.values.address,
                             country: this.props.values.country,
-                            from_date: moment(this.props.values.checkInDate).format(
-                                "YYYY-MM-DD"
-                            ),
-                            to_date: moment(this.props.values.checkOutDate).format(
-                                "YYYY-MM-DD"
-                            ),
+                            from_date: moment(
+                                this.props.values.checkInDate
+                            ).format("YYYY-MM-DD"),
+                            to_date: moment(
+                                this.props.values.checkOutDate
+                            ).format("YYYY-MM-DD"),
                             room_id: this.props.values.roomId,
                             rate_id: this.props.values.rateId,
                             paidAmount: this.props.values.paidAmount
                         });
-                        this.props.history.push('/')
+                        this.props.history.push("/");
                     } catch (err) {
                         console.log(err);
                     }
@@ -212,7 +212,7 @@ class Walkin extends Component {
     };
 
     setUser = user => {
-        this.props.setFieldValue('honorific', user.honorific)
+        this.props.setFieldValue("honorific", user.honorific);
         this.props.setFieldValue("firstname", user.firstname);
         this.props.setFieldValue("middlename", user.middlename);
         this.props.setFieldValue("lastname", user.lastname);
@@ -230,11 +230,11 @@ class Walkin extends Component {
     handleCheckinDate = date => {
         let checkInDate = moment(date);
         let checkOutDate = moment(this.props.values.checkOutDate);
-       
+
         if (checkInDate.isSameOrAfter(checkOutDate, "days")) {
             checkOutDate = moment(date).add({ days: 1 });
             let diff = checkOutDate.diff(checkInDate, "day");
-            console.log("same or after", diff)
+            console.log("same or after", diff);
             let price = 0;
             if (this.state.rateIndex !== "") {
                 let rates = this.state.rates[this.state.rateIndex];
@@ -244,7 +244,6 @@ class Walkin extends Component {
             this.props.setFieldValue("checkOutDate", checkOutDate);
             this.props.setFieldValue("numberOfNights", diff);
             this.props.setFieldValue("price", price);
-           
         } else {
             let diff = checkOutDate.diff(checkInDate, "day");
             let price = 0;
@@ -277,7 +276,7 @@ class Walkin extends Component {
             if (this.state.rateIndex !== "") {
                 let rates = this.state.rates[this.state.rateIndex];
                 price = rates.price * diff;
-                console.log(rates,diff,price)
+                console.log(rates, diff, price);
             }
             this.props.setFieldValue("checkOutDate", moment(date));
             this.props.setFieldValue("numberOfNights", diff);
