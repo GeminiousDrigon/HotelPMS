@@ -91,4 +91,10 @@ class UserController extends Controller
         $users = User::where('role', 'USER')->get();
         return response()->json($users,200);
     }
+
+    public function getAdminAccounts()
+    {
+        $users = User::where('role', 'ADMIN')->get();
+        return response()->json($users, 200);
+    }
 }

@@ -13,11 +13,17 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:api')->group(function () {
+    Route::get("/user", "AuthController@getUser");
 });
+
+Route::post("/login", "AuthController@login");
+Route::post("/createAdmin", "AuthController@createAdminAccount");
+Route::post("/register", "AuthController@createGuestUser");
+
 //users
-Route::get("/user", "UserController@getGuestUsers");
+Route::get("/user/guests", "UserController@getGuestUsers");
+Route::get("/user/admin", "UserController@getAdminAccounts");
 //amenity-ok
 Route::post("/amenity", "AmenityController@create");
 Route::get("/amenity", "AmenityController@getAll");
