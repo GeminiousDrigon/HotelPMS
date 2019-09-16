@@ -112,6 +112,11 @@ export default function AdminLayout(props) {
 
     const menus = [
         {
+            name: "Calendar",
+            icon: <Icon>calendar_today</Icon>,
+            path: "/calendar"
+        },
+        {
             name: "Walk-in",
             icon: <HotelTwoToneIcon />,
             path: "/walkin"
@@ -138,6 +143,13 @@ export default function AdminLayout(props) {
         }
     ];
 
+    const onLogout = () => {
+      localStorage.removeItem("login")
+      localStorage.removeItem("user")
+      props.history.push('/sign-in')
+    }
+    
+
     return (
         <div className={classes.root}>
             <CssBaseline />
@@ -162,7 +174,9 @@ export default function AdminLayout(props) {
                         Bluepool Garden
                     </Typography>
                     <div>
-                        <Button color="inherit">Logout</Button>
+                        <Button color="inherit" onClick={onLogout}>
+                            Logout
+                        </Button>
                     </div>
                 </Toolbar>
             </AppBar>
@@ -197,7 +211,7 @@ export default function AdminLayout(props) {
             </Drawer>
 
             <div
-            id="content-container"
+                id="content-container"
                 className={classes.content}
                 style={Object.assign(
                     {},

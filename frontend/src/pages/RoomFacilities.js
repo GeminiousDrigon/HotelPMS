@@ -65,8 +65,11 @@ export default class RoomFacilities extends Component {
 
     deleteFacility = async () => {
         try {
+            this.setState({anchorEl: null})
             let id = this.state.facilityId;
             await axios.delete(`/api/amenity/${id}`);
+
+            this.setState({ facilityId: null });
             this.getAllFacilities();
         } catch (err) {
             console.log(err);

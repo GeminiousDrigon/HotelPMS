@@ -116,11 +116,11 @@ class TestCalendar extends Component {
             el.title = "testing";
             el.bgColor = "#D9D9D9";
             el.resizable = false;
-            el.resourceId = el.room_id
+            el.resourceId = el.room_id;
             return el;
         });
-        this.setState({ rooms: rooms, bookings: bookings})
-        console.log(bookings)
+        this.setState({ rooms: rooms, bookings: bookings });
+        console.log(bookings);
         this.state.viewModel.setResources(rooms);
         this.state.viewModel.setEvents(bookings);
         this.forceUpdate();
@@ -133,11 +133,11 @@ class TestCalendar extends Component {
         document.getElementsByClassName(
             "scheduler-view"
         )[0].children[1].style.maxHeight =
-            window.innerHeight - (106 + 40 + 56 + 45) + "px";
+            window.innerHeight - (106 + 40 + 56 + 45 + 20) + "px";
         document.getElementsByClassName(
             "resource-view"
         )[0].children[1].style.maxHeight =
-            window.innerHeight - (106 + 40 + 56 + 45) + "px";
+            window.innerHeight - (106 + 40 + 56 + 45 + 20) + "px";
     }
 
     render() {
@@ -267,13 +267,13 @@ class TestCalendar extends Component {
         });
     };
 
-    onScrollRight = (schedulerData, schedulerContent, maxScrollLeft) => null
+    onScrollRight = (schedulerData, schedulerContent, maxScrollLeft) => null;
 
-    onScrollLeft = (schedulerData, schedulerContent, maxScrollLeft) => null
+    onScrollLeft = (schedulerData, schedulerContent, maxScrollLeft) => null;
 
-    onScrollTop = (schedulerData, schedulerContent, maxScrollTop) => null
+    onScrollTop = (schedulerData, schedulerContent, maxScrollTop) => null;
 
-    onScrollBottom = (schedulerData, schedulerContent, maxScrollTop) => null
+    onScrollBottom = (schedulerData, schedulerContent, maxScrollTop) => null;
 
     toggleExpandFunc = (schedulerData, slotId) => {
         console.log(schedulerData, slotId);

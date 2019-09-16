@@ -37,6 +37,7 @@ class AddFacilities extends Component {
         this.state = {
             name: "",
             icon: "",
+            validateCalled: false,
             featured: false,
             iconLabelWidth: 0
         };
@@ -44,7 +45,8 @@ class AddFacilities extends Component {
 
     onChange = e => {
         console.log(e.target.id, e.target.value);
-        this.setState({ [e.target.id]: e.target.value });
+        this.props.setFieldValue(e.target.id, e.target.value);
+        // this.setState({ [e.target.id]: e.target.value });
     };
 
     onChangeFeature = () => {
@@ -57,32 +59,29 @@ class AddFacilities extends Component {
             this.getFacilities(this.props.match.params.id);
         }
     }
-
-    onChangeSelect = e => {
-        this.setState({ icon: e.target.value });
-    };
-
     onSave = async () => {
         try {
+            this.setState({ validateCalled: true });
             await this.props.validateForm();
             if (this.props.isValid) {
                 this.setState({ submitting: true }, async () => {
                     try {
+                        let { values } = this.props;
                         if (this.props.match.params.id) {
                             console.log("here");
                             let { id } = this.props.match.params;
                             let facility = await axios.put(
                                 `/api/amenity/${id}`,
                                 {
-                                    name: this.state.name,
-                                    icon: this.state.icon
+                                    name: values.name,
+                                    icon: values.icon
                                 }
                             );
                             this.props.history.goBack();
                         } else {
                             let facility = await axios.post("/api/amenity", {
-                                name: this.state.name,
-                                icon: this.state.icon
+                                name: values.name,
+                                icon: values.icon
                             });
                             this.props.history.push("/property/facilities");
                             console.log(facility);
@@ -102,17 +101,15 @@ class AddFacilities extends Component {
     getFacilities = async id => {
         try {
             let { data } = await axios.get(`/api/amenity/${id}`);
-            this.setState({
-                name: data.name,
-                icon: data.icon
-            });
+            this.props.setFieldValue("name", data.name)
+            this.props.setFieldValue("icon", data.icon);
         } catch (err) {
             console.log(err);
         }
     };
 
     onSelectIcon = value => {
-        this.setState({ icon: value });
+        this.props.setFieldValue("icon", value);
     };
 
     render() {
@@ -124,6 +121,7 @@ class AddFacilities extends Component {
             handleBlur,
             handleSubmit
         } = this.props;
+        let { validateCalled } = this.state;
         return (
             <AdminLayout {...this.props}>
                 <div
@@ -145,9 +143,9 @@ class AddFacilities extends Component {
                                 justifyContent: "center"
                             }}
                         >
-                            {this.state.icon !== "" && (
+                            {values.icon !== "" && (
                                 <Icon fontSize="large" color="primary">
-                                    {this.state.icon}
+                                    {values.icon}
                                 </Icon>
                             )}
                             <h1 style={{ margin: 0, marginLeft: 5 }}>
@@ -163,8 +161,14 @@ class AddFacilities extends Component {
                             onChange={handleChange}
                             onBlur={handleBlur}
                             value={values.name}
-                            helperText={errors.name ? errors.name : ""}
-                            error={errors.name}
+                            helperText={
+                                (validateCalled || touched.name) && errors.name
+                                    ? errors.name
+                                    : ""
+                            }
+                            error={
+                                (validateCalled || touched.name) && errors.name
+                            }
                             fullWidth
                         />
                         <div
@@ -203,6 +207,7 @@ const WithFormik = withFormik({
     mapPropsToValues: props => {
         console.log(props);
         return {
+            icon: "",
             name: ""
         };
     },

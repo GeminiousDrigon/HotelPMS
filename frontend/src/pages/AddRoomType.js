@@ -31,6 +31,7 @@ class AddRoomType extends Component {
             max_guest: 0,
             bed_no: 0,
             bed_type: "",
+            validateCalled: false,
 
             roomSizeUnitLabelWidth: 0,
             bedTypeLabelWidth: 0
@@ -52,11 +53,14 @@ class AddRoomType extends Component {
     };
 
     onChangeSelect = (e, name) => {
-        this.setState({ [name]: e.target.value });
+        this.props.setFieldValue(name, e.target.value);
+        this.props.setFieldTouched(name, true);
+        // this.setState({ [name]: e.target.value });
     };
 
     onAddRoomType = async e => {
         try {
+            this.setState({ validateCalled: true });
             await this.props.validateForm();
             if (this.props.isValid) {
                 this.setState({ submitting: true }, async () => {
@@ -69,7 +73,7 @@ class AddRoomType extends Component {
                             bed_no,
                             max_guest,
                             bed_type
-                        } = this.state;
+                        } = this.props.values;
                         let roomType = {
                             name,
                             description,
@@ -115,15 +119,13 @@ class AddRoomType extends Component {
                 max_guest,
                 bed_type
             } = data;
-            this.setState({
-                name,
-                description,
-                room_size,
-                room_size_unit,
-                bed_no,
-                max_guest,
-                bed_type
-            });
+            this.props.setFieldValue("name",name);
+            this.props.setFieldValue("description", description);
+            this.props.setFieldValue("room_size", room_size);
+            this.props.setFieldValue("room_size_unit", room_size_unit);
+            this.props.setFieldValue("bed_no", bed_no);
+            this.props.setFieldValue("max_guest", max_guest);
+            this.props.setFieldValue("bed_type", bed_type);
         } catch (err) {
             console.log(err);
         }
@@ -139,13 +141,7 @@ class AddRoomType extends Component {
             handleSubmit
         } = this.props;
         let {
-            name,
-            description,
-            room_size,
-            room_size_unit,
-            bed_no,
-            bed_type,
-            max_guest
+            validateCalled,
         } = this.state;
         return (
             <AdminLayout {...this.props}>
@@ -167,7 +163,7 @@ class AddRoomType extends Component {
                         <Grid container spacing={1}>
                             <Grid item xs={12}>
                                 <TextField
-                                    value={name}
+                                    value={values.name}
                                     id="name"
                                     label="Name"
                                     margin="normal"
@@ -175,8 +171,16 @@ class AddRoomType extends Component {
                                     onChange={handleChange}
                                     onBlur={handleBlur}
                                     value={values.name}
-                                    helperText={errors.name ? errors.name : ""}
-                                    error={errors.name}
+                                    helperText={
+                                        (validateCalled || touched.name) &&
+                                        errors.name
+                                            ? errors.name
+                                            : ""
+                                    }
+                                    error={
+                                        (validateCalled || touched.name) &&
+                                        errors.name
+                                    }
                                     fullWidth
                                 />
                             </Grid>
@@ -190,11 +194,17 @@ class AddRoomType extends Component {
                                     onBlur={handleBlur}
                                     value={values.description}
                                     helperText={
+                                        (validateCalled ||
+                                            touched.description) &&
                                         errors.description
                                             ? errors.description
                                             : ""
                                     }
-                                    error={errors.description}
+                                    error={
+                                        (validateCalled ||
+                                            touched.description) &&
+                                        errors.description
+                                    }
                                     multiline
                                     rows={5}
                                     rowsMax={5}
@@ -211,9 +221,17 @@ class AddRoomType extends Component {
                                     onBlur={handleBlur}
                                     value={values.room_size}
                                     helperText={
-                                        errors.room_size ? errors.room_size : ""
+                                        (validateCalled ||
+                                            touched.room_size) &&
+                                        errors.room_size
+                                            ? errors.room_size
+                                            : ""
                                     }
-                                    error={errors.room_size}
+                                    error={
+                                        (validateCalled ||
+                                            touched.room_size) &&
+                                        errors.room_size
+                                    }
                                     type="number"
                                     fullWidth
                                 />
@@ -222,7 +240,11 @@ class AddRoomType extends Component {
                                 <FormControl
                                     variant="outlined"
                                     margin="normal"
-                                    error={errors.room_size_unit}
+                                    error={
+                                        (validateCalled ||
+                                            touched.room_size_unit) &&
+                                        errors.room_size_unit
+                                    }
                                     fullWidth
                                 >
                                     <InputLabel
@@ -263,7 +285,9 @@ class AddRoomType extends Component {
                                         </MenuItem>
                                     </Select>
                                     <FormHelperText>
-                                        {errors.room_size_unit
+                                        {(validateCalled ||
+                                            touched.room_size_unit) &&
+                                        errors.room_size_unit
                                             ? errors.room_size_unit
                                             : ""}
                                     </FormHelperText>
@@ -279,9 +303,15 @@ class AddRoomType extends Component {
                                     onBlur={handleBlur}
                                     value={values.bed_no}
                                     helperText={
-                                        errors.bed_no ? errors.bed_no : ""
+                                        (validateCalled || touched.bed_no) &&
+                                        errors.bed_no
+                                            ? errors.bed_no
+                                            : ""
                                     }
-                                    error={errors.bed_no}
+                                    error={
+                                        (validateCalled || touched.bed_no) &&
+                                        errors.bed_no
+                                    }
                                     type="number"
                                     fullWidth
                                 />
@@ -290,7 +320,10 @@ class AddRoomType extends Component {
                                 <FormControl
                                     variant="outlined"
                                     margin="normal"
-                                    error={errors.bed_type}
+                                    error={
+                                        (validateCalled || touched.bed_type) &&
+                                        errors.bed_type
+                                    }
                                     fullWidth
                                 >
                                     <InputLabel
@@ -334,7 +367,11 @@ class AddRoomType extends Component {
                                         </MenuItem>
                                     </Select>
                                     <FormHelperText>
-                                        {errors.bed_type ? errors.bed_type : ""}
+                                        {(validateCalled ||
+                                            touched.bed_type) &&
+                                        errors.bed_type
+                                            ? errors.bed_type
+                                            : ""}
                                     </FormHelperText>
                                 </FormControl>
                             </Grid>
@@ -348,9 +385,17 @@ class AddRoomType extends Component {
                                     onBlur={handleBlur}
                                     value={values.max_guest}
                                     helperText={
-                                        errors.max_guest ? errors.max_guest : ""
+                                        (validateCalled ||
+                                            touched.max_guest) &&
+                                        errors.max_guest
+                                            ? errors.max_guest
+                                            : ""
                                     }
-                                    error={errors.max_guest}
+                                    error={
+                                        (validateCalled ||
+                                            touched.max_guest) &&
+                                        errors.max_guest
+                                    }
                                     type="number"
                                     fullWidth
                                 />
