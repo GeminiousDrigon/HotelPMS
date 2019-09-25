@@ -56,7 +56,13 @@ export default class Booking extends Component {
         switch (activeStep) {
             case 0:
                 return (
-                    <Paper style={{ width: "90%", marginLeft: "5%" }}>
+                    <Paper
+                        style={{
+                            width: "90%",
+                            marginLeft: "5%",
+                            backgroundColor: "#DCDCDC"
+                        }}
+                    >
                         <DatePicker />
                     </Paper>
                 );
@@ -77,7 +83,10 @@ export default class Booking extends Component {
                     <Stepper
                         activeStep={activeStep}
                         alternativeLabel
-                        style={{ backgroundColor: "#DCDCDC" }}
+                        style={{
+                            width: "50%",
+                            margin: "auto"
+                        }}
                     >
                         {steps.map(label => (
                             <Step key={label.title}>
@@ -103,7 +112,7 @@ export default class Booking extends Component {
                             display: "flex",
                             flexDirection: "row",
                             justifyContent: "flex-end",
-                            margin: "100px 100px 50px"
+                            margin: "50px 100px 50px"
                         }}
                     >
                         <div>

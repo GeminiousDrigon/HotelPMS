@@ -883,7 +883,7 @@ class Walkin extends Component {
                                     <Select
                                         name="numberOfGuest"
                                         onChange={this.handleSelectChange}
-                                        value={numberOfGuest}
+                                        value={values.numberOfGuest}
                                         SelectDisplayProps={{
                                             style: {
                                                 display: "flex"

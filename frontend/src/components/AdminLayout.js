@@ -144,11 +144,10 @@ export default function AdminLayout(props) {
     ];
 
     const onLogout = () => {
-      localStorage.removeItem("login")
-      localStorage.removeItem("user")
-      props.history.push('/sign-in')
-    }
-    
+        localStorage.removeItem("login");
+        localStorage.removeItem("user");
+        props.history.push("/sign-in");
+    };
 
     return (
         <div className={classes.root}>

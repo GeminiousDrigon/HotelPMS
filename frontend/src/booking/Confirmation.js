@@ -1,16 +1,5 @@
 import React, { Component } from "react";
-import CalendarTodayOutlinedIcon from "@material-ui/icons/CalendarTodayOutlined";
-import HotelOutlinedIcon from "@material-ui/icons/HotelOutlined";
-import PersonOutlinedIcon from "@material-ui/icons/PersonOutlined";
-import CheckOutlinedIcon from "@material-ui/icons/CheckOutlined";
-import Fab from "@material-ui/core/Fab";
-import Table from "@material-ui/core/Table";
-import BookingLayout from "../components/BookingLayout";
-import Paper from "@material-ui/core/Paper";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
+import Divider from "@material-ui/core/Divider";
 export default class Confirmation extends Component {
     render() {
         return (
@@ -90,7 +79,37 @@ export default class Confirmation extends Component {
                             <td>Facilities</td>
                             <td>:</td>
                         </tr>
+                        <Divider></Divider>
+                        <tr style={{ color: "gold", fontSize: "30px" }}>
+                            <td>Full Payment</td>
+                            <td>:</td>
+                        </tr>
+                        <Divider></Divider>
                     </table>
+                </div>
+                <div
+                    style={{
+                        paddingRight: "100px",
+
+                        textAlign: "center"
+                    }}
+                >
+                    <br />
+                    <br />
+                    Thank you for choosing Bluepool Garden.<br></br> For further
+                    inquiries you may call (632) 528-3000 or send an email at
+                    bluepoolgarden@gmail.com<br></br> You will find the details
+                    of your reservation made below.
+                    <br />
+                </div>
+                <div
+                    style={{
+                        paddingRight: "100px",
+                        textAlign: "justify"
+                    }}
+                >
+                    <h1>General Terms & Conditions</h1>
+                    <br></br>
                 </div>
             </div>
         );
