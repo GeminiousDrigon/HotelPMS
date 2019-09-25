@@ -1,5 +1,6 @@
 <?php
 
+use App\Mail\BookingCreated;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -26,3 +27,8 @@ Route::group(['prefix'=> 'admin', 'middleware'=> 'role:ADMIN'],function(){
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/mail', function () {
+    // $invoice = App\Invoice::find(1);
+
+    return new App\Mail\BookingCreated();
+});

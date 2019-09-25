@@ -126,10 +126,6 @@ class TestCalendar extends Component {
         this.forceUpdate();
     }
     componentDidUpdate() {
-        console.log(
-            (document.getElementsByClassName("resource-view")[0].style.height =
-                window.innerHeight)
-        );
         document.getElementsByClassName(
             "scheduler-view"
         )[0].children[1].style.maxHeight =

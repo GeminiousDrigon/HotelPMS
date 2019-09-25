@@ -1,6 +1,8 @@
 <?php
 
+use App\Mail\BookingCreated;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,7 +42,7 @@ Route::get("/billing/{id}/booking", "BillingController@getBooking");
 Route::post("/billing/{id}/booking", "BillingController@addBooking");
 Route::delete("/billing/{id}/booking", "BillingController@removeBooking");
 //booking
-Route::post("/booking", "BookingController@create");
+Route::post("/booking", "BookingController@createBooking");
 Route::get("/booking", "BookingController@getAll");
 Route::post("/booking/walkin", "BookingController@createWalkInBooking");
 Route::get("/booking/{id}", "BookingController@getOne");
@@ -80,6 +82,7 @@ Route::delete("/rate/{id}/roomtype", "RateController@removeRoomType");
 //room type-ok
 Route::post("/roomtype", "RoomTypeController@create");
 Route::get("/roomtype", "RoomTypeController@getAll");
+Route::get("/roomtype/available", "RoomTypeController@getAvailableRoomsTypes");
 Route::get("/roomtype/{id}", "RoomTypeController@getOne");
 Route::put("/roomtype/{id}", "RoomTypeController@editOne");
 Route::delete("/roomtype/{id}", "RoomTypeController@deleteOne");
@@ -93,6 +96,17 @@ Route::post("/roomtype/{id}/booking", "RoomTypeController@addBooking");
 Route::get("/roomtype/{id}/booking", "RoomTypeController@getBookings");
 
 
-Route::fallback(function(){
+Route::post("/email/test", function (Request $request) {
+    $to_name = 'John Bill Suarez';
+    $to_email = 'geminiousdrigon@gmail.com';
+    $data = array("name" => 'Ogbonna', "body" => 'A test mail');
+    Mail::send('emails.home', [], function ($message) use ($to_name, $to_email) {
+        $message->to($to_email, $to_name)
+            ->subject('Artisans Web Testing Mail');
+        $message->from('bluepoolgarden2@gmail.com', 'Artisans Web');
+    });
+});
+
+Route::fallback(function () {
     return response()->json(['message' => 'Not Found.'], 404);
 })->name('api.fallback.404');

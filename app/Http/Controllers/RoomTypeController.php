@@ -8,6 +8,8 @@ use App\Room;
 use App\Rate;
 use App\Amenity;
 use App\Booking;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 
 class RoomTypeController extends Controller
 {
@@ -25,7 +27,7 @@ class RoomTypeController extends Controller
 
     public function getOne($id)
     {
-        $roomType = RoomType::with(['amenities', 'rooms'=>function( $query){
+        $roomType = RoomType::with(['amenities', 'rooms' => function ($query) {
             $query->whereNotNull('room_number')->with('roomType');
         }, 'rates', 'bookings'])->find($id);
         if (!$roomType) {
@@ -223,5 +225,60 @@ class RoomTypeController extends Controller
         }
         $bookings = $roomType->bookings;
         return response()->json($bookings, 200);
+    }
+
+    public function getAvailableRoomsTypes(Request $request)
+    {
+        if (!$request->query('checkin') || !$request->query('checkout')) {
+            return response()->json([
+                "message" => "check-in and check-out dates are required"
+            ], 400);
+        } else {
+            $from_date = $request->query('checkin');
+            $to_date = $request->query('checkout');
+            $from = Carbon::parse($from_date);
+            $to = Carbon::parse($to_date);
+            $roomTypes = RoomType::with([
+                'rooms' => function ($query) use ($from, $to) {
+                    $query->with(['bookings' => function ($query) use ($from, $to) {
+                        $query->whereIn('status', ["CHECKEDIN", "RESERVED"])
+                            ->where(function ($query) use ($from, $to) {
+                                $query->orWhereBetween('from_date', [$from, $to])
+                                    ->orWhereBetween('to_date', [$from, $to]);
+                            });
+                    }]);
+                },
+                'rates'
+            ])->get();
+
+            $finalRoomType = array();
+            $unbookableRooms = array();
+            foreach ($roomTypes as $roomType) {
+                $newRooms = array();
+                for ($i = 0; $i < count($roomType->rooms); $i++) {
+                    if (!(count($roomType->rooms[$i]->bookings) > 0))
+                        $newRooms[] = $roomType->rooms[$i];
+                };
+                $roomType["availableRooms"] = $roomType->rooms()->count();
+                unset($roomType["rooms"]);
+                if (!count($newRooms) == 0) {
+                    // $roomType['rooms'] = $newRooms;
+                    $finalRoomType[] = $roomType;
+                } else {
+                    $lastBooking = RoomType::find($roomType->id)->bookings()->latest()->get();
+                    $roomType["lastBooking"] = $lastBooking[0]->created_at;
+                    $roomType["unbookable"] = true;
+                    $finalRoomType[] = $roomType;
+                    $unbookableRooms[] = $roomType;
+                }
+            };
+
+            if (count($finalRoomType) === count($unbookableRooms)) {
+                return response()->json([
+                    "message" => "FullyBookedRooms"
+                ], 404);
+            } else
+                return response()->json($finalRoomType, 200);
+        }
     }
 }

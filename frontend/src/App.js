@@ -158,7 +158,7 @@ function App() {
                         exact
                     />
                     <Route
-                        path="/addaccount"
+                        path="/add/account"
                         component={requireAuthentication(AddAccount, "ADMIN")}
                         exact
                     />

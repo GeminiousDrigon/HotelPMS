@@ -17,5 +17,10 @@ class Room extends Model
         return $this->belongsTo('App\RoomType');
     }
 
+    public function bookings()
+    {
+        return $this->hasMany('App\Booking');
+    }
+
     public $incrementing = false;
 }

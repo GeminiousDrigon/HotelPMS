@@ -20,6 +20,7 @@ class UserSeeder extends Seeder
             "email" => "dominic.vega@gmail.com",
             "password" => '$2y$12$//7oZunML/cx3MaKOJemvepsuCSAVQP2TDE5PqmHd8TbSi4efayLu',
             "password_updated" => 1,
+            "contactno" => "+639728463717",
             "role" => 'ADMIN'
         ]);
     }

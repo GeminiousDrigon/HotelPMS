@@ -89,7 +89,7 @@ export default class RoomType extends Component {
                                 justifyContent: "space-between"
                             }}
                         >
-                            <Typography variant="h4">Room Type(s)</Typography>
+                            <Typography variant="h5">Room Type(s)</Typography>
                             <Button
                                 variant="contained"
                                 color="primary"
