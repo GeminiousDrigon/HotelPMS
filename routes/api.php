@@ -1,6 +1,8 @@
 <?php
 
+use App\Mail\BookingCreated;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 /*
 |--------------------------------------------------------------------------
@@ -94,6 +96,17 @@ Route::post("/roomtype/{id}/booking", "RoomTypeController@addBooking");
 Route::get("/roomtype/{id}/booking", "RoomTypeController@getBookings");
 
 
-Route::fallback(function(){
+Route::post("/email/test", function (Request $request) {
+    $to_name = 'John Bill Suarez';
+    $to_email = 'geminiousdrigon@gmail.com';
+    $data = array("name" => 'Ogbonna', "body" => 'A test mail');
+    Mail::send('emails.home', [], function ($message) use ($to_name, $to_email) {
+        $message->to($to_email, $to_name)
+            ->subject('Artisans Web Testing Mail');
+        $message->from('bluepoolgarden2@gmail.com', 'Artisans Web');
+    });
+});
+
+Route::fallback(function () {
     return response()->json(['message' => 'Not Found.'], 404);
 })->name('api.fallback.404');
