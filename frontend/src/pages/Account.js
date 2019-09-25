@@ -15,6 +15,7 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import Paper from "@material-ui/core/Paper";
 
 import axios from "axios";
+import { Typography } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
     fab: {
@@ -61,7 +62,25 @@ export default class Account extends Component {
                     }}
                 >
                     <Paper style={{ backgroundColor: "white", padding: 20 }}>
-                        <h1>Account(s)</h1>
+                        <div
+                            style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                marginBottom: 10
+                            }}
+                        >
+                            <Typography variant="h5">Account(s)</Typography>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={() =>
+                                    this.props.history.push("/add/account")
+                                }
+                            >
+                                Add Account
+                            </Button>
+                        </div>
 
                         {this.state.fetching ? (
                             <div
@@ -90,6 +109,9 @@ export default class Account extends Component {
                                             Email address
                                         </TableCell>
                                         <TableCell align="left">
+                                            Contact number
+                                        </TableCell>
+                                        <TableCell align="left">
                                             Action
                                         </TableCell>
                                     </TableRow>
@@ -109,6 +131,9 @@ export default class Account extends Component {
                                                 </TableCell>
                                                 <TableCell align="left">
                                                     {el.email}
+                                                </TableCell>
+                                                <TableCell align="left">
+                                                    +63ß{el.contactno}
                                                 </TableCell>
                                                 <TableCell align="left">
                                                     <Fab
@@ -135,20 +160,6 @@ export default class Account extends Component {
                                 </TableBody>
                             </Table>
                         )}
-
-                        <Fab
-                            style={{
-                                position: "absolute",
-                                bottom: "50px",
-                                right: 50
-                            }}
-                            size="large"
-                            color="primary"
-                            aria-label="add"
-                            href="/AddAccount"
-                        >
-                            <AddIcon />
-                        </Fab>
                     </Paper>
                 </div>
             </AdminLayout>

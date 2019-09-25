@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
@@ -144,11 +144,10 @@ export default function AdminLayout(props) {
     ];
 
     const onLogout = () => {
-      localStorage.removeItem("login")
-      localStorage.removeItem("user")
-      props.history.push('/sign-in')
-    }
-    
+        localStorage.removeItem("login");
+        localStorage.removeItem("user");
+        props.history.push("/sign-in");
+    };
 
     return (
         <div className={classes.root}>
@@ -181,6 +180,7 @@ export default function AdminLayout(props) {
                 </Toolbar>
             </AppBar>
             <Drawer
+                id="drawer"
                 variant="permanent"
                 className={clsx(classes.drawer, {
                     [classes.drawerOpen]: open,
@@ -218,7 +218,7 @@ export default function AdminLayout(props) {
                     {
                         overlow: "auto",
                         padding: props.noPadding ? "0" : "84px 24px 24px",
-                        backgroundColor: "#DCDCDC",
+                        backgroundColor: "#f7f7f7",
                         flex: 1
                     },
                     props.style

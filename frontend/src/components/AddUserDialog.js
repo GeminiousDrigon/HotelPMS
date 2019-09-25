@@ -43,7 +43,7 @@ export default class AddUserDialog extends Component {
 
     onEntered = async () => {
         try {
-            let { data } = await axios.get("/api/user");
+            let { data } = await axios.get("/api/user/guests");
             this.setState({
                 users: data,
                 fetching: false,
@@ -72,7 +72,7 @@ export default class AddUserDialog extends Component {
                 aria-labelledby="simple-dialog-title"
                 open={this.props.open}
                 fullWidth
-                maxWidth="xs"
+                maxWidth="sm"
             >
                 <DialogTitle id="simple-dialog-title">Select guest</DialogTitle>
                 {this.state.fetching ? (
@@ -85,53 +85,49 @@ export default class AddUserDialog extends Component {
                     >
                         <CircularProgress />
                     </div>
+                ) : users.length === 0 ? (
+                    <div style={{ margin: "25px 0" }}>
+                        <Typography
+                            variant="h5"
+                            style={{ fontWeight: 300, textAlign: "center" }}
+                        >
+                            {" "}
+                            No users yet
+                        </Typography>
+                    </div>
                 ) : (
-                    <>
-                        <List>
-                            {users.map((user, i) => (
-                                <Tooltip title={user.email}>
-                                    <ListItem
-                                        button
-                                        // onClick={() => handleListItemClick(email)}
-                                        key={user.id}
-                                        onClick={() =>
-                                            this.handleSelectUser(user.id, i)
-                                        }
-                                    >
-                                        <ListItemAvatar>
-                                            <Avatar
-                                                style={{
-                                                    backgroundColor: "#3f51b5"
-                                                }}
-                                            >
-                                                <Icon>
-                                                    {user.id ===
-                                                    this.state.selectedUser
-                                                        ? "check"
-                                                        : "person"}
-                                                </Icon>
-                                            </Avatar>
-                                        </ListItemAvatar>
-                                        <ListItemText
-                                            primary={`${user.honorific}. ${user.firstname} ${user.lastname}`}
-                                        />
-                                    </ListItem>
-                                </Tooltip>
-                            ))}
-
-                            {/* <ListItem
-                    button
-                    onClick={() => handleListItemClick("addAccount")}
-                >
-                    <ListItemAvatar>
-                        <Avatar>
-                            <AddIcon />
-                        </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText primary="add account" />
-                </ListItem> */}
-                        </List>
-                    </>
+                    <List>
+                        {users.map((user, i) => (
+                            <Tooltip title={user.email}>
+                                <ListItem
+                                    button
+                                    // onClick={() => handleListItemClick(email)}
+                                    key={user.id}
+                                    onClick={() =>
+                                        this.handleSelectUser(user.id, i)
+                                    }
+                                >
+                                    <ListItemAvatar>
+                                        <Avatar
+                                            style={{
+                                                backgroundColor: "#3f51b5"
+                                            }}
+                                        >
+                                            <Icon>
+                                                {user.id ===
+                                                this.state.selectedUser
+                                                    ? "check"
+                                                    : "person"}
+                                            </Icon>
+                                        </Avatar>
+                                    </ListItemAvatar>
+                                    <ListItemText
+                                        primary={`${user.honorific}. ${user.firstname} ${user.lastname} (${user.email})`}
+                                    />
+                                </ListItem>
+                            </Tooltip>
+                        ))}
+                    </List>
                 )}
                 <DialogActions>
                     <Button color="primary" onClick={this.onClose}>

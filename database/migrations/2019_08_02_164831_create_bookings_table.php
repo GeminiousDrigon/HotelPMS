@@ -22,6 +22,7 @@ class CreateBookingsTable extends Migration
             $table->string('status');
             $table->uuid('user_id');
             $table->uuid('room_type_id');
+            $table->integer('guest_no');
             $table->uuid('room_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('room_type_id')->references('id')->on('room_types');

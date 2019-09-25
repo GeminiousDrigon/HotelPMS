@@ -77,7 +77,7 @@ export default function BookingLayout(props) {
             className={classes.grow}
             style={{
                 height: "10%",
-                backgroundColor: "#DCDCDC"
+                backgroundColor: "#f7f7f7"
             }}
         >
             <AppBar position="static">
@@ -120,9 +120,11 @@ export default function BookingLayout(props) {
                     </div>
                 </Toolbar>
             </AppBar>
-            <main className={classes.content}>{props.children}</main>
+            <main className={classes.content} style={{ padding: 25 }}>
+                {props.children}
+            </main>
             {renderMenu}
-            <div
+            {/* <div
                 style={{
                     paddingRight: "100px",
                     paddingLeft: "100px",
@@ -213,7 +215,7 @@ export default function BookingLayout(props) {
                 kindly write to us at reservations@diamondhotel.com. To modify
                 or cancel your booking, please call our Reservations Department
                 directly. (632) 528-3000 or email guestservices@diamondhotel.com
-            </div>
-        </div>
+            </div> */}
+        </div> 
     );
 }

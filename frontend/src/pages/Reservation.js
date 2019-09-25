@@ -14,6 +14,11 @@ import Icon from "@material-ui/core/Icon";
 import Button from "@material-ui/core/Button";
 import SaveIcon from "@material-ui/icons/Save";
 import Paper from "@material-ui/core/Paper";
+import Typography from "@material-ui/core/Typography";
+import CircularProgress from "@material-ui/core/CircularProgress";
+
+import axios from "axios";
+import moment from "moment";
 
 const useStyles = makeStyles(theme => ({
     fab: {
@@ -25,6 +30,30 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default class Reservation extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            fetching: true,
+            reservations: []
+        };
+    }
+
+    componentDidMount() {
+        this.getReservedBookings();
+    }
+
+    getReservedBookings = async () => {
+        try {
+            let { data } = await axios.get("/api/booking?status=RESERVED");
+            console.log(data);
+            this.setState({ fetching: false, reservations: data });
+        } catch (err) {
+            console.log(err);
+            this.setState({ fetching: false });
+        }
+    };
+
     render() {
         return (
             <AdminLayout {...this.props}>
@@ -37,12 +66,8 @@ export default class Reservation extends Component {
                     }}
                 >
                     <Paper style={{ backgroundColor: "white", padding: 20 }}>
-                        <h1>Reservation(s)</h1>
-                        <Button
-                            href="/reservation"
-                            variant="contained"
-                            style={{ backgroundColor: "blue", color: "white" }}
-                        >
+                        <Typography variant="h5">Reservation(s)</Typography>
+                        {/* <Button href="/reservation" variant="contained" style={{ backgroundColor: "blue", color: "white" }}>
                             Pending
                         </Button>
                         <Button
@@ -66,61 +91,59 @@ export default class Reservation extends Component {
                             }}
                         >
                             Check-out
-                        </Button>
-                        <Table>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell align="left">Name</TableCell>
-                                    <TableCell align="left">
-                                        Room Type
-                                    </TableCell>
-                                    <TableCell align="left">Gmail</TableCell>
-                                    <TableCell align="left">
-                                        Contact No
-                                    </TableCell>
-                                    <TableCell align="left">
-                                        Reserve Date
-                                    </TableCell>
-                                    <TableCell align="left">Status</TableCell>
-                                    <TableCell align="left">Action</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                <TableCell align="left">Dominic Vega</TableCell>
-                                <TableCell align="left">Deluxe</TableCell>
-                                <TableCell align="left">
-                                    davega12.dv@gmail.com
-                                </TableCell>
-                                <TableCell align="left">09361180320</TableCell>
-                                <TableCell align="left">
-                                    August 17,2019 @ 7:00 AM
-                                </TableCell>
-                                <TableCell
-                                    align="left"
-                                    style={{ color: "blue" }}
-                                >
-                                    Pending
-                                </TableCell>
-                                <TableCell align="left">
-                                    <Button
-                                        href="/pending"
-                                        variant="contained"
-                                        style={{ backgroundColor: "green" }}
-                                        color="primary"
-                                    >
-                                        Check-in
-                                    </Button>
-                                    <Fab
-                                        size="small"
-                                        aria-label="delete"
-                                        color="secondary"
-                                        style={{ marginLeft: "10px" }}
-                                    >
-                                        <DeleteIcon />
-                                    </Fab>
-                                </TableCell>
-                            </TableBody>
-                        </Table>
+                        </Button> */}
+                        {this.state.fetching ? (
+                            <div style={{ width: "100%", textAlign: "center", padding: "50px 0" }}>
+                                <CircularProgress />
+                            </div>
+                        ) : (
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell align="left">Name</TableCell>
+                                        <TableCell align="left">Room</TableCell>
+                                        <TableCell align="left">Email</TableCell>
+                                        <TableCell align="left">Contact No</TableCell>
+                                        <TableCell align="left">Reserve Date</TableCell>
+                                        <TableCell align="left">Number of Guest</TableCell>
+                                        <TableCell align="left">With Breakfast</TableCell>
+                                        <TableCell align="left">Action</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {this.state.reservations.map((reservation, i, array) => {
+                                        const { user, room_type, room } = reservation;
+                                        return (
+                                            <TableRow>
+                                                <TableCell align="left">{`${user.firstname} ${user.middlename[0]}. ${user.lastname}`}</TableCell>
+                                                <TableCell align="left">{room_type.name}</TableCell>
+                                                <TableCell align="left">{user.email}</TableCell>
+                                                <TableCell align="left">{user.contactno}</TableCell>
+                                                <TableCell align="left">
+                                                    {moment(reservation.from_date).format("MMMM DD, YYYY") +
+                                                        "-" +
+                                                        moment(reservation.to_date).format("MMMM DD, YYYY")}
+                                                </TableCell>
+                                                <TableCell align="left" style={{ color: "blue" }}>
+                                                    {reservation.guest_no}
+                                                </TableCell>
+                                                <TableCell align="left" style={{ color: "blue" }}>
+                                                    {reservation.with_breakfast ? "Yes" : "No"}
+                                                </TableCell>
+                                                <TableCell align="left">
+                                                    <Button href="/pending" variant="contained" style={{ backgroundColor: "green" }} color="primary">
+                                                        Check-in
+                                                    </Button>
+                                                    <Fab size="small" aria-label="delete" color="secondary" style={{ marginLeft: "10px" }}>
+                                                        <DeleteIcon />
+                                                    </Fab>
+                                                </TableCell>
+                                            </TableRow>
+                                        );
+                                    })}
+                                </TableBody>
+                            </Table>
+                        )}
                     </Paper>
                 </div>
             </AdminLayout>

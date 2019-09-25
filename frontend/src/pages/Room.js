@@ -115,7 +115,7 @@ export default class Room extends Component {
                                 justifyContent: "space-between"
                             }}
                         >
-                            <Typography variant="h4">Room(s)</Typography>
+                            <Typography variant="h5">Room(s)</Typography>
                             <Button
                                 variant="contained"
                                 color="primary"
