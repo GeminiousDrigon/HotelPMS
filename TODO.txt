@@ -6,7 +6,12 @@ create view details of the booking
   change rooms,
   update stay( extend or shorten the stay duration),
   display the facilities in the booking process
-
+  complete the route redirections in booking process
+  add form validations in booking process
+  qr scans for check in and checkouts
 
   customize the event item
   handle on change date in resource scheduler
+
+  plan for the reports
+  
