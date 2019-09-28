@@ -2,11 +2,7 @@ import React, { Component } from "react";
 //import moment from 'moment'
 //import 'moment/locale/zh-cn';
 // import 'antd/lib/style/index.less';     //Add this code for locally example
-import Scheduler, {
-    SchedulerData,
-    ViewTypes,
-    DATE_FORMAT
-} from "react-big-scheduler";
+import Scheduler, { SchedulerData, ViewTypes, DATE_FORMAT } from "react-big-scheduler";
 import { DragDropContext } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
 import "react-big-scheduler/lib/css/style.css";
@@ -20,49 +16,43 @@ class TestCalendar extends Component {
         super(props);
 
         //let schedulerData = new SchedulerData(new moment("2017-12-18").format(DATE_FORMAT), ViewTypes.Week);
-        this.schedulerData = new SchedulerData(
-            new moment(),
-            ViewTypes.Month,
-            false,
-            false,
-            {
-                schedulerMaxHeight: 500,
-                schedulerWidth: "92%",
-                eventItemPopoverEnabled: false,
-                weekResourceTableWidth: 300,
-                monthResourceTableWidth: 300,
-                quarterResourceTableWidth: 300,
-                yearResourceTableWidth: 300,
-                resourceName: "Room number",
-                movable: false,
-                views: [
-                    {
-                        viewName: "Week",
-                        viewType: ViewTypes.Week,
-                        showAgenda: false,
-                        isEventPerspective: false
-                    },
-                    {
-                        viewName: "Month",
-                        viewType: ViewTypes.Month,
-                        showAgenda: false,
-                        isEventPerspective: false
-                    },
-                    {
-                        viewName: "Quarter",
-                        viewType: ViewTypes.Quarter,
-                        showAgenda: false,
-                        isEventPerspective: false
-                    },
-                    {
-                        viewName: "Year",
-                        viewType: ViewTypes.Year,
-                        showAgenda: false,
-                        isEventPerspective: false
-                    }
-                ]
-            }
-        );
+        this.schedulerData = new SchedulerData(new moment(), ViewTypes.Month, false, false, {
+            schedulerMaxHeight: 500,
+            schedulerWidth: "92%",
+            eventItemPopoverEnabled: false,
+            weekResourceTableWidth: 300,
+            monthResourceTableWidth: 300,
+            quarterResourceTableWidth: 300,
+            yearResourceTableWidth: 300,
+            resourceName: "Room number",
+            movable: false,
+            views: [
+                {
+                    viewName: "Week",
+                    viewType: ViewTypes.Week,
+                    showAgenda: false,
+                    isEventPerspective: false
+                },
+                {
+                    viewName: "Month",
+                    viewType: ViewTypes.Month,
+                    showAgenda: false,
+                    isEventPerspective: false
+                },
+                {
+                    viewName: "Quarter",
+                    viewType: ViewTypes.Quarter,
+                    showAgenda: false,
+                    isEventPerspective: false
+                },
+                {
+                    viewName: "Year",
+                    viewType: ViewTypes.Year,
+                    showAgenda: false,
+                    isEventPerspective: false
+                }
+            ]
+        });
         this.schedulerData.localeMoment.locale("en");
         // this.schedulerData.setResources([
         //     {
@@ -101,24 +91,22 @@ class TestCalendar extends Component {
     };
 
     async componentDidMount() {
-        let [rooms, bookings] = await Promise.all([
-            axios.get("/api/room"),
-            axios.get("/api/booking")
-        ]);
+        let [rooms, bookings] = await Promise.all([axios.get("/api/room"), axios.get("/api/booking")]);
         rooms = rooms.data.map((el, i) => {
             el.resourceId = el.id;
             el.name = el.room_number + " " + `(${el.room_type.name})`;
             return el;
         });
         bookings = bookings.data.map((el, i) => {
-            el.start = new Date(el.from_date);
-            el.end = new Date(el.to_date);
-            el.title = "testing";
-            el.bgColor = "#D9D9D9";
+            el.start = new Date(el.booking.from_date);
+            el.end = new Date(el.booking.to_date);
+            el.title = `${el.booking.user.firstname} ${el.booking.user.lastname}`;
+            el.bgColor = el.color;
             el.resizable = false;
             el.resourceId = el.room_id;
             return el;
         });
+        console.log(bookings)
         this.setState({ rooms: rooms, bookings: bookings });
         console.log(bookings);
         this.state.viewModel.setResources(rooms);
@@ -126,14 +114,8 @@ class TestCalendar extends Component {
         this.forceUpdate();
     }
     componentDidUpdate() {
-        document.getElementsByClassName(
-            "scheduler-view"
-        )[0].children[1].style.maxHeight =
-            window.innerHeight - (106 + 40 + 56 + 45 + 20) + "px";
-        document.getElementsByClassName(
-            "resource-view"
-        )[0].children[1].style.maxHeight =
-            window.innerHeight - (106 + 40 + 56 + 45 + 20) + "px";
+        document.getElementsByClassName("scheduler-view")[0].children[1].style.maxHeight = window.innerHeight - (106 + 40 + 56 + 45 + 20) + "px";
+        document.getElementsByClassName("resource-view")[0].children[1].style.maxHeight = window.innerHeight - (106 + 40 + 56 + 45 + 20) + "px";
     }
 
     render() {
@@ -159,9 +141,7 @@ class TestCalendar extends Component {
                 onScrollTop={this.onScrollTop}
                 onScrollBottom={this.onScrollBottom}
                 toggleExpandFunc={this.toggleExpandFunc}
-                eventItemPopoverTemplateResolver={
-                    this.eventItemPopoverTemplateResolver
-                }
+                eventItemPopoverTemplateResolver={this.eventItemPopoverTemplateResolver}
             />
         );
     }
@@ -183,11 +163,7 @@ class TestCalendar extends Component {
     };
 
     onViewChange = (schedulerData, view) => {
-        schedulerData.setViewType(
-            view.viewType,
-            view.showAgenda,
-            view.isEventPerspective
-        );
+        schedulerData.setViewType(view.viewType, view.showAgenda, view.isEventPerspective);
         schedulerData.setEvents(this.state.bookings);
         this.setState({
             viewModel: schedulerData
@@ -205,21 +181,15 @@ class TestCalendar extends Component {
     eventClicked = (schedulerData, event) => {
         console.log(schedulerData);
         console.log(event);
-        alert(
-            `You just clicked an event: {id: ${event.id}, title: ${event.title}}`
-        );
+        alert(`You just clicked an event: {id: ${event.id}, title: ${event.title}}`);
     };
 
     ops1 = (schedulerData, event) => {
-        alert(
-            `You just executed ops1 to event: {id: ${event.id}, title: ${event.title}}`
-        );
+        alert(`You just executed ops1 to event: {id: ${event.id}, title: ${event.title}}`);
     };
 
     ops2 = (schedulerData, event) => {
-        alert(
-            `You just executed ops2 to event: {id: ${event.id}, title: ${event.title}}`
-        );
+        alert(`You just executed ops2 to event: {id: ${event.id}, title: ${event.title}}`);
     };
 
     newEvent = (schedulerData, slotId, slotName, start, end, type, item) => {

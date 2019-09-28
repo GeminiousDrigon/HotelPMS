@@ -19,7 +19,7 @@ class Room extends Model
 
     public function bookings()
     {
-        return $this->hasMany('App\Booking');
+        return $this->hasMany('App\BookRoom');
     }
 
     public $incrementing = false;

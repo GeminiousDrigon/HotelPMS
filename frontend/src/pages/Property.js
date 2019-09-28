@@ -49,7 +49,7 @@ export default class Property extends Component {
                         aria-label="simple tabs example"
                     >
                         {this.tabContents.map(e => (
-                            <Tab label={e.name} value={e.path} />
+                            <Tab label={e.name} value={e.path} key={e.path}/>
                         ))}
                     </Tabs>
                 </Paper>
@@ -61,6 +61,7 @@ export default class Property extends Component {
                                     path={e.path}
                                     exact
                                     component={e.component}
+                                    key={e.path}
                                 />
                             );
                         })}

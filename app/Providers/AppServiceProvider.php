@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\BookRoom;
+use App\Observers\BookRoomObserver;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Passport\Passport;
 
@@ -26,5 +28,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         //
+        // BookRoom::observe(BookRoomObserver::class);
     }
 }

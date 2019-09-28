@@ -133,7 +133,7 @@ export default class RoomFacilities extends Component {
                                 {this.state.facilities.map(
                                     (el, i, collection) => {
                                         return (
-                                            <>
+                                            <div key={el.id}>
                                                 <ListItem>
                                                     <Icon
                                                         color="primary"
@@ -169,7 +169,7 @@ export default class RoomFacilities extends Component {
                                                 {collection.length > i + 1 && (
                                                     <Divider />
                                                 )}
-                                            </>
+                                            </div>
                                         );
                                     }
                                 )}

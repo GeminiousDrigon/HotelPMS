@@ -122,9 +122,9 @@ export default function AdminLayout(props) {
             path: "/walkin"
         },
         {
-            name: "Reservation",
+            name: "Bookings",
             icon: <EventTwoToneIcon />,
-            path: "/reservation"
+            path: "/bookings"
         },
         {
             name: "Accounts",

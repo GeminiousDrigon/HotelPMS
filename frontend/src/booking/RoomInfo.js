@@ -373,7 +373,13 @@ export default class RoomInfo extends Component {
                     </div>
                     {/* <div style={{ flexGrow: 1, marginLeft: 10, alignItems: 'flex-start' }}>
                 </div> */}
-                    <ConfirmDialog open={this.state.confirmReset} onConfirmReset={this.onConfirmReset} handleClose={this.handleReset} />
+                    <ConfirmDialog
+                        title="Are you sure?"
+                        content="Are you sure you want to reset your choosen rooms?"
+                        open={this.state.confirmReset}
+                        onConfirm={this.onConfirmReset}
+                        handleClose={this.handleReset}
+                    />
                     <Snackbar
                         anchorOrigin={{
                             vertical: "bottom",

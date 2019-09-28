@@ -40,7 +40,7 @@ class User extends Authenticatable
     ];
 
     public function bookings(){
-        return $this->hasMany('App\Bookings');
+        return $this->hasMany('App\BookRoom');
     }
 
     public $incrementing = false;

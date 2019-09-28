@@ -34,7 +34,7 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-export default class Reservation extends Component {
+export default class Checkins extends Component {
     constructor(props) {
         super(props);
 
@@ -56,7 +56,7 @@ export default class Reservation extends Component {
     getReservedBookings = async () => {
         try {
             if (!this.state.fetching) this.setState({ fetching: true });
-            let { data } = await axios.get("/api/booking?status=RESERVED");
+            let { data } = await axios.get("/api/booking?status=CHECKEDIN");
             console.log(data);
             this.setState({ fetching: false, reservations: data });
         } catch (err) {
@@ -115,7 +115,7 @@ export default class Reservation extends Component {
                 >
                     <Paper style={{ backgroundColor: "white", padding: 20 }}>
                         {updating && <LinearProgress />}
-                        <Typography variant="h5">Reservation(s)</Typography>
+                        <Typography variant="h5">Check-in(s)</Typography>
                         {/* <Button href="/reservation" variant="contained" style={{ backgroundColor: "blue", color: "white" }}>
                             Pending
                         </Button>
@@ -198,8 +198,8 @@ export default class Reservation extends Component {
                                     </TableBody>
                                 </Table>
                                 <Menu id="long-menu" anchorEl={anchorEl} open={open} onClose={this.onCloseMoreAction}>
-                                    <MenuItem onClick={this.handleOpenCheckin}>Check-in</MenuItem>
-                                    <MenuItem>Mark as no-show</MenuItem>
+                                    <MenuItem onClick={this.handleOpenCheckin}>Check-out</MenuItem>
+                                    <MenuItem>Add Payment</MenuItem>
                                 </Menu>
                             </>
                         )}

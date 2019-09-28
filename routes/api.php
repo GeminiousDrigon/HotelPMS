@@ -32,6 +32,12 @@ Route::get("/amenity", "AmenityController@getAll");
 Route::get("/amenity/{id}", "AmenityController@getOne");
 Route::put("/amenity/{id}", "AmenityController@editOne");
 Route::delete("/amenity/{id}", "AmenityController@deleteOne");
+//bookroom-ok
+Route::post("/bookroom", "BookRoomController@create");
+Route::get("/bookroom", "BookRoomController@getAll");
+Route::get("/bookroom/{id}", "BookRoomController@getOne");
+Route::put("/bookroom/{id}", "BookRoomController@editOne");
+Route::delete("/bookroom/{id}", "BookRoomController@deleteOne");
 //billing
 Route::post("/billing", "BillingController@create");
 Route::get("/billing", "BillingController@getAll");

@@ -48,6 +48,7 @@ import {
 
 import axios from "axios";
 import requireAuthentication from "./components/auth/requireAuthentication";
+import Bookings from "./pages/Bookings";
 
 export const history = createBrowserHistory({
     forceRefresh: false
@@ -88,9 +89,8 @@ function App() {
                         exact
                     />
                     <Route
-                        path="/reservation"
-                        component={requireAuthentication(Reservation, "ADMIN")}
-                        exact
+                        path="/bookings"
+                        component={requireAuthentication(Bookings, "ADMIN")}
                     />
                     <Route path="/pending" component={Pending} exact />
                     <Route path="/checkIn" component={CheckIn} exact />
