@@ -90,7 +90,7 @@ function App() {
                         exact
                     />
                     <Route
-                        path="/bookings/:id"
+                        path="/bookings/view/:id"
                         component={requireAuthentication(ViewBooking, "ADMIN")}
                         exact
                     />
