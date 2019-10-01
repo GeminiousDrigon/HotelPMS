@@ -249,7 +249,7 @@ class RoomTypeController extends Controller
                         }
                     ]);
                 },
-                'rates'
+                'rates', 'amenities'
             ])->get();
             // return response()->json($roomTypes);
 

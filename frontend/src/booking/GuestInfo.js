@@ -56,7 +56,7 @@ export default class GuestInfo extends Component {
     };
 
     render() {
-        const { values, touched, errors, handleChange, handleBlur, handleSubmit } = this.props;
+        const { values, touched, errors, handleChange, handleBlur, handleSubmit, validateCalled } = this.props;
         return (
             <Paper style={{ padding: 25 }}>
                 <Typography variant="h5" style={{ fontWeight: 300 }} gutterBottom>
@@ -64,10 +64,7 @@ export default class GuestInfo extends Component {
                 </Typography>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
-                        <FormControl
-                            component="fieldset"
-                            // error={(validatedCalled || touched.honorific) && errors.honorific ? true : false}
-                        >
+                        <FormControl component="fieldset" error={(validateCalled || touched.honorific) && errors.honorific ? true : false}>
                             <FormLabel component="legend">Honorifics</FormLabel>
                             <RadioGroup
                                 value={values.honorific}
@@ -81,7 +78,7 @@ export default class GuestInfo extends Component {
                                 <FormControlLabel value="Mr" control={<Radio color="primary" id="honorific" />} label="Mr" />
                                 <FormControlLabel value="Ms" control={<Radio color="primary" id="honorific" />} label="Ms" />
                             </RadioGroup>
-                            {/* <FormHelperText>{(validatedCalled || touched.honorific) && errors.honorific ? errors.honorific : ""}</FormHelperText> */}
+                            <FormHelperText>{(validateCalled || touched.honorific) && errors.honorific ? errors.honorific : ""}</FormHelperText>
                         </FormControl>
                     </Grid>
                     <Grid item xs={12} md={4}>
@@ -94,6 +91,8 @@ export default class GuestInfo extends Component {
                             value={values.firstname}
                             onChange={handleChange}
                             onBlur={handleBlur}
+                            helperText={(validateCalled || touched.firstname) && errors.firstname ? errors.firstname : ""}
+                            error={(validateCalled || touched.firstname) && errors.firstname ? true : false}
                         />
                     </Grid>
                     <Grid item xs={12} md={4}>
@@ -106,6 +105,8 @@ export default class GuestInfo extends Component {
                             value={values.middlename}
                             onChange={handleChange}
                             onBlur={handleBlur}
+                            helperText={(validateCalled || touched.middlename) && errors.middlename ? errors.middlename : ""}
+                            error={(validateCalled || touched.middlename) && errors.middlename ? true : false}
                         />
                     </Grid>
                     <Grid item xs={12} md={4}>
@@ -118,6 +119,8 @@ export default class GuestInfo extends Component {
                             value={values.lastname}
                             onChange={handleChange}
                             onBlur={handleBlur}
+                            helperText={(validateCalled || touched.lastname) && errors.lastname ? errors.lastname : ""}
+                            error={(validateCalled || touched.lastname) && errors.lastname ? true : false}
                         />
                     </Grid>
                     <Grid item xs={12}>
@@ -130,14 +133,12 @@ export default class GuestInfo extends Component {
                             value={values.address}
                             onChange={handleChange}
                             onBlur={handleBlur}
+                            helperText={(validateCalled || touched.address) && errors.address ? errors.address : ""}
+                            error={(validateCalled || touched.address) && errors.address ? true : false}
                         />
                     </Grid>
                     <Grid item xs={12} md={6}>
-                        <FormControl
-                            variant="outlined"
-                            // error={(validatedCalled || touched.country) && errors.country ? true : false}
-                            fullWidth
-                        >
+                        <FormControl variant="outlined" error={(validateCalled || touched.country) && errors.country ? true : false} fullWidth>
                             <InputLabel htmlFor="outlined-age-native-simple" ref={el => (this.countryInput = el)}>
                                 Country
                             </InputLabel>
@@ -161,7 +162,7 @@ export default class GuestInfo extends Component {
                                     );
                                 })}
                             </Select>
-                            {/* <FormHelperText>{(validatedCalled || touched.country) && errors.country ? errors.country : ""}</FormHelperText> */}
+                            <FormHelperText>{(validateCalled || touched.country) && errors.country ? errors.country : ""}</FormHelperText>
                         </FormControl>
                     </Grid>
                     <Grid item xs={12} md={6}>
@@ -178,6 +179,8 @@ export default class GuestInfo extends Component {
                             onChange={this.onChangeNumber}
                             onBlur={handleBlur}
                             type="number"
+                            helperText={(validateCalled || touched.contactno) && errors.contactno ? errors.contactno : ""}
+                            error={(validateCalled || touched.contactno) && errors.contactno ? true : false}
                         />
                     </Grid>
                     <Grid item xs={12} md={6}>
@@ -190,6 +193,8 @@ export default class GuestInfo extends Component {
                             value={values.email}
                             onChange={handleChange}
                             onBlur={handleBlur}
+                            helperText={(validateCalled || touched.email) && errors.email ? errors.email : ""}
+                            error={(validateCalled || touched.email) && errors.email ? true : false}
                         />
                     </Grid>
                     <Grid item xs={12} md={6}>
@@ -202,6 +207,8 @@ export default class GuestInfo extends Component {
                             value={values.confirmEmail}
                             onChange={handleChange}
                             onBlur={handleBlur}
+                            helperText={(validateCalled || touched.confirmEmail) && errors.confirmEmail ? errors.confirmEmail : ""}
+                            error={(validateCalled || touched.confirmEmail) && errors.confirmEmail ? true : false}
                         />
                     </Grid>
                 </Grid>

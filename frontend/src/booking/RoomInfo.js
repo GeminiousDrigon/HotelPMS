@@ -61,7 +61,7 @@ export default class RoomInfo extends Component {
                 fetching: false
             });
         } catch (err) {
-            if(err.response.data.message = "FullyBookedRooms"){
+            if ((err.response.data.message = "FullyBookedRooms")) {
                 this.props.setStateValue({
                     datesFullyBooked: true
                 });
@@ -232,6 +232,19 @@ export default class RoomInfo extends Component {
                                 <Typography variant="subtitle2" component="div">
                                     Number of beds: {this.state.selectedType.bed_no}
                                 </Typography>
+                                <Typography variant="subtitle2" component="div">
+                                    Facilities:
+                                </Typography>
+                                <div style={{ display: "flex", justifyContent: "flex-start", flexWrap: "wrap" }}>
+                                    {this.state.selectedType.amenities.map((amenity, o) => {
+                                        return (
+                                            <span style={{ display: "flex", marginRight: 15 }}>
+                                                <Icon component="span" color="primary">{amenity.icon}</Icon>
+                                                <Typography component="span">{amenity.name}</Typography>
+                                            </span>
+                                        );
+                                    })}
+                                </div>
                             </Paper>
                             <Typography variant="h5" gutterBottom>
                                 Available Rates
@@ -269,37 +282,21 @@ export default class RoomInfo extends Component {
                             }}
                         >
                             <div style={{ marginBottom: 25 }}>
-                                <Typography variant="h5" style={{ fontWeight: 300 }}>
+                                <Typography variant="h5" style={{ fontWeight: 300 }} gutterBottom>
                                     Booking Dates
                                 </Typography>
-                                <KeyboardDatePicker
-                                    margin="normal"
-                                    id="date-picker-dialog"
-                                    label="Check-in"
-                                    format="MM/dd/yyyy"
-                                    value={values.checkInDate}
-                                    onChange={this.handleCheckinDate}
-                                    KeyboardButtonProps={{
-                                        "aria-label": "change date"
-                                    }}
-                                    minDate={new Date()}
-                                    showDisabledMonthNavigation
-                                    style={{ width: "100%" }}
-                                />
-                                <KeyboardDatePicker
-                                    margin="normal"
-                                    id="date-picker-dialog"
-                                    label="Check-out"
-                                    format="MM/dd/yyyy"
-                                    value={values.checkOutDate}
-                                    onChange={this.handleCheckoutDate}
-                                    KeyboardButtonProps={{
-                                        "aria-label": "change date"
-                                    }}
-                                    minDate={new Date()}
-                                    showDisabledMonthNavigation
-                                    style={{ width: "100%" }}
-                                />
+                                <Typography variant="h6" style={{ fontWeight: 300 }}>
+                                    Check-in Date
+                                </Typography>
+                                <Typography variant="h6" style={{ fontWeight: 300 }} align="center">
+                                    {moment(values.checkInDate).format("MMMM DD,  YYYY")}
+                                </Typography>
+                                <Typography variant="h6" style={{ fontWeight: 300 }}>
+                                    Check-out Date
+                                </Typography>
+                                <Typography variant="h6" style={{ fontWeight: 300 }} align="center">
+                                    {moment(values.checkOutDate).format("MMMM DD,  YYYY")}
+                                </Typography>
                             </div>
                             <div style={{ marginBottom: 25 }}>
                                 <div
