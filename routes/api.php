@@ -3,6 +3,7 @@
 use App\Mail\BookingCreated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use App\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -106,11 +107,15 @@ Route::post("/email/test", function (Request $request) {
     $to_name = 'John Bill Suarez';
     $to_email = 'geminiousdrigon@gmail.com';
     $data = array("name" => 'Ogbonna', "body" => 'A test mail');
-    Mail::send('emails.home', [], function ($message) use ($to_name, $to_email) {
-        $message->to($to_email, $to_name)
-            ->subject('Artisans Web Testing Mail');
-        $message->from('bluepoolgarden2@gmail.com', 'Artisans Web');
-    });
+    $user = User::find("9dacef69-4cf6-4384-965c-78d8642afe6c");
+    // return response()->json($user);
+    Mail::to($user)->send(new BookingCreated());
+    // Mail::send('emails.home', [], function ($message) use ($to_name, $to_email) {
+    //     $message->to($to_email, $to_name)
+    //         ->subject('Artisans Web Testing Mail');
+    //     $message->from('bluepoolgarden2@gmail.com', 'Artisans Web');
+    // });
+
 });
 
 Route::fallback(function () {

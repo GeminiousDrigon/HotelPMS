@@ -16,7 +16,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::group(['prefix'=> 'admin', 'middleware'=> 'role:ADMIN'],function(){
+Route::group(['prefix' => 'admin', 'middleware' => 'role:ADMIN'], function () {
     Route::get('/test', function () {
         return view('welcome');
     });
@@ -30,5 +30,5 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/mail', function () {
     // $invoice = App\Invoice::find(1);
 
-    return new App\Mail\BookingCreated();
+    return (new App\Mail\BookingCreated())->render();
 });

@@ -28,18 +28,24 @@ class BookingController extends Controller
         // return response()->json($request->query('status'));
         if ($request->query('status')) {
             $bookings = BookRoom::select('book_rooms.*')->where('status', array($request->query('status')))
-            ->leftJoin('bookings', 'bookings.id', '=', 'book_rooms.booking_id')
+                ->leftJoin('bookings', 'bookings.id', '=', 'book_rooms.booking_id')
                 ->with(['booking.user', 'roomType', 'room'])
                 ->orderBy('from_date', 'asc')->get();
         } else {
-            $bookings = BookRoom::with('booking.user')->get();
+            $bookings = BookRoom::with(['booking.user', 'room'])->get();
         }
         return response()->json($bookings, 200);
     }
 
     public function getOne($id)
     {
-        $booking = Booking::find($id);
+        $booking = Booking::with([
+            'user',
+            'rooms' => function ($query) {
+                $query->with(['roomType', 'room']);
+            },
+            'billings'
+        ])->find($id);
         if (!$booking) {
             return response()->json([
                 "status" => 404,
@@ -273,15 +279,10 @@ class BookingController extends Controller
                 "message" => "No booking found"
             ], 404);
         }
-        $billing = Billing::find($request->input('id'));
-        if (!$billing) {
-            return response()->json([
-                "status" => 404,
-                "message" => "No billing found"
-            ], 404);
-        }
-        $booking->booking()->save($billing);
-        $booking->save();
+        Billing::create([
+            'amount' => $request->input('amount'),
+            'booking_id' => $id
+        ]);
         return response()->json([
             "status" => 200,
             "message" => "Operation successful"
@@ -297,7 +298,7 @@ class BookingController extends Controller
                 "message" => "No booking found"
             ], 404);
         }
-        $billing = $booking->billing;
+        $billing = $booking->billings;
         if (!$billing) {
             return response()->json([
                 "status" => 404,
@@ -411,10 +412,12 @@ class BookingController extends Controller
                 'checkout_date' => null
             ]);
 
-            $billing = Billing::create([
-                'amount' => $request->input('paidAmount'),
-                'booking_id' => $booking->id
-            ]);
+            if ($request->input('paidAmount')) {
+                $billing = Billing::create([
+                    'amount' => $request->input('paidAmount'),
+                    'booking_id' => $booking->id
+                ]);
+            }
 
             return response()->json($booking);
         } else {

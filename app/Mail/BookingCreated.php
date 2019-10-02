@@ -2,6 +2,8 @@
 
 namespace App\Mail;
 
+use App\Booking;
+use App\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -28,7 +30,7 @@ class BookingCreated extends Mailable
      */
     public function build()
     {
-        return $this->from('bluepoolgarden2@gmail.com')
+        return $this->from('bluepoolgarden2@gmail.com', 'Test Title')
             ->view('emails.home');
     }
 }

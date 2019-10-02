@@ -19,6 +19,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import IconButton from "@material-ui/core/IconButton";
+import OpenInNewIcon from "@material-ui/icons/OpenInNew";
 
 import axios from "axios";
 import moment from "moment";
@@ -65,38 +66,45 @@ export default class Reservation extends Component {
         }
     };
 
-    onMoreAction = (e, id) => {
-        this.setState({ anchorEl: e.currentTarget, selectedReservation: id });
-    };
+    // onMoreAction = (e, id) => {
+    //     this.setState({ anchorEl: e.currentTarget, selectedReservation: id });
+    // };
 
-    onCloseMoreAction = () => this.setState({ anchorEl: null, selectedReservation: null });
+    // onCloseMoreAction = () => this.setState({ anchorEl: null, selectedReservation: null });
 
-    handleCloseCheckin = () => this.setState({ checkInStatus: false });
+    // handleCloseCheckin = () => this.setState({ checkInStatus: false });
 
-    handleOpenCheckin = () => {
-        this.setState({ checkInStatus: true, anchorEl: null });
-    };
+    // handleOpenCheckin = () => {
+    //     this.setState({ checkInStatus: true, anchorEl: null });
+    // };
 
-    handleCloseNoShow = () => this.setState({ noShowStatus: false });
+    // handleCloseNoShow = () => this.setState({ noShowStatus: false });
 
-    onConfirmCheckin = async () => {
-        //update the status of reservation
-        try {
-            let { selectedReservation } = this.state;
-            let { booking, room, room_type, ...allReservation } = selectedReservation;
-            await axios.put(`/api/bookroom/${selectedReservation.id}`, {
-                ...allReservation,
-                status: "CHECKEDIN"
-            });
-            this.setState({ selectedReservation: null, anchorEl: null, checkInStatus: false });
-            this.getReservedBookings();
-        } catch (err) {
-            console.log(err);
-        }
-    };
+    // onConfirmCheckin = async () => {
+    //     //update the status of reservation
+    //     try {
+    //         let { selectedReservation } = this.state;
+    //         let { booking, room, room_type, ...allReservation } = selectedReservation;
+    //         await axios.put(`/api/bookroom/${selectedReservation.id}`, {
+    //             ...allReservation,
+    //             status: "CHECKEDIN"
+    //         });
+    //         this.setState({ selectedReservation: null, anchorEl: null, checkInStatus: false });
+    //         this.getReservedBookings();
+    //     } catch (err) {
+    //         console.log(err);
+    //     }
+    // };
 
-    onConfirmNoShow = () => {
-        //update the status of reservation
+    // onConfirmNoShow = () => {
+    //     //update the status of reservation
+    // };
+
+    viewReservation = reservation => {
+        let { id } = reservation.booking;
+        let hostname = window.location.hostname;
+        let port = window.location.port;
+        window.open(`http://${hostname}:${port}/bookings/view/${id}`);
     };
 
     render() {
@@ -116,31 +124,6 @@ export default class Reservation extends Component {
                     <Paper style={{ backgroundColor: "white", padding: 20 }}>
                         {updating && <LinearProgress />}
                         <Typography variant="h5">Reservation(s)</Typography>
-                        {/* <Button href="/reservation" variant="contained" style={{ backgroundColor: "blue", color: "white" }}>
-                            Pending
-                        </Button>
-                        <Button
-                            href="/checkIn"
-                            variant="contained"
-                            style={{
-                                marginLeft: "10px",
-                                backgroundColor: "orange",
-                                color: "white"
-                            }}
-                        >
-                            Check-in
-                        </Button>
-                        <Button
-                            href="/checkOut"
-                            variant="contained"
-                            style={{
-                                marginLeft: "10px",
-                                backgroundColor: "red",
-                                color: "white"
-                            }}
-                        >
-                            Check-out
-                        </Button> */}
                         {this.state.fetching ? (
                             <div style={{ width: "100%", textAlign: "center", padding: "50px 0" }}>
                                 <CircularProgress />
@@ -186,10 +169,11 @@ export default class Reservation extends Component {
                                                             aria-label="more"
                                                             aria-controls="long-menu"
                                                             aria-haspopup="true"
-                                                            onClick={e => this.onMoreAction(e, reservation)}
+                                                            // onClick={e => this.onMoreAction(e, reservation)}
+                                                            onClick={e => this.viewReservation(reservation)}
                                                             size="small"
                                                         >
-                                                            <MoreVertIcon style={{ fontSize: "1.25em" }} />
+                                                            <OpenInNewIcon style={{ fontSize: "1.25em" }} />
                                                         </IconButton>
                                                     </TableCell>
                                                 </TableRow>
@@ -197,15 +181,15 @@ export default class Reservation extends Component {
                                         })}
                                     </TableBody>
                                 </Table>
-                                <Menu id="long-menu" anchorEl={anchorEl} open={open} onClose={this.onCloseMoreAction}>
+                                {/* <Menu id="long-menu" anchorEl={anchorEl} open={open} onClose={this.onCloseMoreAction}>
                                     <MenuItem onClick={this.handleOpenCheckin}>Check-in</MenuItem>
                                     <MenuItem>Mark as no-show</MenuItem>
-                                </Menu>
+                                </Menu> */}
                             </>
                         )}
                     </Paper>
                 </div>
-                <ConfirmDialog
+                {/* <ConfirmDialog
                     title="Are you sure?"
                     content="Are you sure you want to check in this reservation?"
                     open={checkInStatus}
@@ -218,7 +202,7 @@ export default class Reservation extends Component {
                     open={noShowStatus}
                     onConfirm={this.onConfirmNoShow}
                     handleClose={this.handleCloseNoShow}
-                />
+                /> */}
             </>
         );
     }

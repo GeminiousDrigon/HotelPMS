@@ -159,7 +159,7 @@ export default class Confirmation extends Component {
                         spacing={2}
                         style={{ paddingTop: 25, paddingBottom: 25 }}
                     >
-                        <Grid container justify="space-around" style={{}}>
+                        <Grid container justify="space-around">
                             <Grid
                                 item
                                 xs={12}

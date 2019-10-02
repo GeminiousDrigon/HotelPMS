@@ -100,7 +100,7 @@ class TestCalendar extends Component {
         bookings = bookings.data.map((el, i) => {
             el.start = new Date(el.booking.from_date);
             el.end = new Date(el.booking.to_date);
-            el.title = `${el.booking.user.firstname} ${el.booking.user.lastname}`;
+            el.title = `#${el.room.room_number} ${el.booking.user.firstname} ${el.booking.user.lastname}`;
             el.bgColor = el.color;
             el.resizable = false;
             el.resourceId = el.room_id;
