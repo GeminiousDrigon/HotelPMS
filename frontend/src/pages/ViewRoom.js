@@ -83,18 +83,17 @@ export default class ViewRoom extends Component {
 
     addFacility = () => {
         this.setState({ addFacilitiesDialog: !this.state.addFacilitiesDialog });
-		};
-		
-		getFacilities = async () => {
-			try {
-				let {id} = this.props.match.params
-				let {data} = await axios.get(`/api/room/${id}/amenity`)
-				this.setState({facilities: data})
-			} catch (err) {
-				console.log(err)
-			}
-		}
-		
+    };
+
+    getFacilities = async () => {
+        try {
+            let { id } = this.props.match.params;
+            let { data } = await axios.get(`/api/room/${id}/amenity`);
+            this.setState({ facilities: data });
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
     render() {
         let {
@@ -305,7 +304,10 @@ export default class ViewRoom extends Component {
                                                 <Icon color="primary">
                                                     {el.icon}
                                                 </Icon>
-                                                <Typography variant="h6" style={{ marginLeft: 10 }}>
+                                                <Typography
+                                                    variant="h6"
+                                                    style={{ marginLeft: 10 }}
+                                                >
                                                     {el.name}
                                                 </Typography>
                                             </div>
