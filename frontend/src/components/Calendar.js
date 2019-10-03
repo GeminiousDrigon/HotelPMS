@@ -91,7 +91,7 @@ class TestCalendar extends Component {
     };
 
     async componentDidMount() {
-        let [rooms, bookings] = await Promise.all([axios.get("/api/room"), axios.get("/api/booking")]);
+        let [rooms, bookings] = await Promise.all([axios.get("/api/room"), axios.get("/api/bookroom?type=CHECKEDIN,RESERVED")]);
         rooms = rooms.data.map((el, i) => {
             el.resourceId = el.id;
             el.name = el.room_number + " " + `(${el.room_type.name})`;
@@ -106,7 +106,7 @@ class TestCalendar extends Component {
             el.resourceId = el.room_id;
             return el;
         });
-        console.log(bookings)
+        console.log(bookings);
         this.setState({ rooms: rooms, bookings: bookings });
         console.log(bookings);
         this.state.viewModel.setResources(rooms);
@@ -181,7 +181,10 @@ class TestCalendar extends Component {
     eventClicked = (schedulerData, event) => {
         console.log(schedulerData);
         console.log(event);
-        alert(`You just clicked an event: {id: ${event.id}, title: ${event.title}}`);
+        // alert(`You just clicked an event: {id: ${event.id}, title: ${event.title}}`);
+        let hostname = window.location.hostname;
+        let port = window.location.port;
+        window.open(`http://${hostname}:${port}/bookings/view/${event.booking.id}`);
     };
 
     ops1 = (schedulerData, event) => {
@@ -249,14 +252,7 @@ class TestCalendar extends Component {
         });
     };
 
-    eventItemPopoverTemplateResolver = (
-        schedulerData,
-        eventItem,
-        title,
-        start,
-        end,
-        statusColor
-    ) => {
+    eventItemPopoverTemplateResolver = (schedulerData, eventItem, title, start, end, statusColor) => {
         console.log(schedulerData, eventItem, title, start, end, statusColor);
         return null;
     };

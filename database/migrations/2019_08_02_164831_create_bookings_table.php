@@ -15,14 +15,16 @@ class CreateBookingsTable extends Migration
     {
         Schema::create('bookings', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->string('status');
             $table->date('from_date');
             $table->date('to_date');
+            // $table->time('arrival');
             $table->dateTime('checkin_date')->nullable();
             $table->dateTime('checkout_date')->nullable();
             $table->uuid('user_id');
             $table->foreign('user_id')->references('id')->on('users');
 
-            
+
             $table->timestamps();
         });
     }

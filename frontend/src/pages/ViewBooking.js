@@ -21,6 +21,13 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
+import IconButton from "@material-ui/core/IconButton";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+import LinearProgress from "@material-ui/core/LinearProgress";
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
+import Select from "@material-ui/core/Select";
 
 import Divider from "@material-ui/core/Divider";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -28,10 +35,12 @@ import LocalOfferIcon from "@material-ui/icons/LocalOffer";
 import EventAvailableIcon from "@material-ui/icons/EventAvailable";
 import PaymentIcon from "@material-ui/icons/Payment";
 import AdminLayout from "../components/AdminLayout";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
 import { Formik } from "formik";
 
 import axios from "axios";
 import * as yup from "yup";
+import moment from "moment";
 
 export default class ViewBooking extends Component {
     constructor(props) {
@@ -43,15 +52,25 @@ export default class ViewBooking extends Component {
             failed: false,
             notFound: false,
             booking: {},
-            addBilling: false
+            //guest
+            guestAnchorEl: null,
+            //billing
+            addBilling: false,
+            paymentAnchorEl: null,
+            selectedPayment: null,
+            fetchingViewPayment: false,
+            initialPayment: 0,
+            fetchingPayment: false,
+            deletePayment: false,
+            deletingPayment: false
         };
     }
 
     componentDidMount() {
-        this.getBookingDetails();
+        this.getBooking();
     }
 
-    getBookingDetails = async () => {
+    getBooking = async () => {
         try {
             this.setState({ fetching: true });
             let { id } = this.props.match.params;
@@ -59,6 +78,10 @@ export default class ViewBooking extends Component {
             data.total = data.billings.reduce((total, billing) => {
                 return total + billing.amount;
             }, 0);
+            data.totalPrice = data.rooms.reduce((totalPrice, room) => {
+                return totalPrice + room.price;
+            }, 0);
+            data.balance = data.totalPrice - data.total;
             this.setState({
                 booking: { ...data },
                 fetched: true,
@@ -78,42 +101,148 @@ export default class ViewBooking extends Component {
         }
     };
 
-    getBillings = async () => {
+    getBookingDetails = async params => {
         try {
             let { id } = this.props.match.params;
-            let { data } = await axios.get(`/api/booking/${id}/billing`);
-            let { booking } = this.state;
-            booking.billings = data;
+            let { data } = await axios.get(`/api/booking/${id}?type=detail`);
+            let booking = { ...this.state.booking, ...data };
+            console.log(booking);
             this.setState({ booking });
         } catch (err) {
             console.log(err);
         }
     };
 
+    getBillings = async () => {
+        try {
+            this.setState({ fetchingPayment: true });
+            let { id } = this.props.match.params;
+            let { data } = await axios.get(`/api/booking/${id}/billing`);
+            let booking = { ...this.state.booking };
+            booking.billings = data.billings;
+
+            const total = data.billings.reduce((total, billing) => {
+                return total + billing.amount;
+            }, 0);
+            booking.total = total;
+            booking.balance = this.state.booking.totalPrice - total;
+            this.setState({ booking, fetchingPayment: false });
+        } catch (err) {
+            console.log(err);
+            this.setState({ fetchingPayment: false });
+        }
+    };
+
     onAddBilling = async amount => {
         try {
-            let { id } = this.props.match.params;
-            await axios.post(`/api/booking/${id}/billing`, {
-                amount
-            });
-            this.onCloseAddBilling();
-            this.getBillings();
+            let { editBilling } = this.state;
+            if (editBilling) {
+                let { id, booking_id } = this.state.selectedPayment;
+                await axios.put(`/api/billing/${id}`, {
+                    amount,
+                    booking_id
+                });
+                this.setState({
+                    addBilling: false,
+                    editBilling: false,
+                    fetchingViewPayment: true,
+                    paymentAnchorEl: null,
+                    selectedPayment: null,
+                    initialPayment: 0
+                });
+                this.getBillings();
+            } else {
+                let { id } = this.props.match.params;
+                await axios.post(`/api/booking/${id}/billing`, {
+                    amount
+                });
+                this.setState({ initialPayment: 0 });
+                this.onCloseAddBilling();
+                this.getBillings();
+            }
         } catch (err) {
             console.log(err);
         }
     };
 
+    onDeleteBilling = async () => {
+        try {
+            this.setState({ deletingPayment: true });
+            let { id } = this.state.selectedPayment;
+            await axios.delete(`/api/billing/${id}`);
+            this.onCloseDeleteBilling();
+            this.getBillings();
+
+            this.setState({ deletingPayment: false });
+        } catch (err) {
+            this.setState({ deletingPayment: false });
+        }
+    };
+
+    //add payment dialog actions
     onOpenAddBilling = () => {
         this.setState({ addBilling: true });
     };
 
     onCloseAddBilling = () => {
-        this.setState({ addBilling: false });
+        this.setState({ addBilling: false, initialPayment: 0 });
+    };
+
+    onOpenEditPayment = async () => {
+        this.setState({ addBilling: true, editBilling: true, fetchingViewPayment: true, paymentAnchorEl: null });
+        let { id } = this.state.selectedPayment;
+        let { data } = await axios.get(`/api/billing/${id}`);
+        console.log(data);
+        this.setState({ fetchingViewPayment: false, initialPayment: data.amount });
+    };
+
+    //delete payment dialog actions
+    onOpenDeleteBilling = () => {
+        this.setState({ deletePayment: true, paymentAnchorEl: null });
+    };
+
+    onCloseDeleteBilling = () => {
+        this.setState({ deletePayment: false, selectedPayment: null });
+    };
+
+    //guest actions
+    onMoreAction = e => {
+        this.setState({ guestAnchorEl: e.currentTarget });
+    };
+
+    onCloseMoreAction = () => {
+        this.setState({ guestAnchorEl: null });
+    };
+
+    //payment actions
+    onMorePayment = (e, selectedPayment) => {
+        this.setState({ paymentAnchorEl: e.currentTarget, selectedPayment });
+    };
+
+    onClosePayment = () => {
+        this.setState({ paymentAnchorEl: null, selectedPayment: null });
+    };
+
+    onChangeStatus = async e => {
+        try {
+            console.log("here");
+            let { billings, rooms, user, ...booking } = this.state.booking;
+            booking.status = e.target.value;
+            await axios.put("/api/booking/" + booking.id, {
+                ...booking
+            });
+            // console.log()
+            this.getBookingDetails();
+        } catch (err) {
+            console.log(err);
+        }
     };
 
     render() {
-        let { fetching, booking } = this.state;
+        let { fetching, booking, guestAnchorEl, paymentAnchorEl, selectedPayment } = this.state;
         let { user, rooms, billings } = booking;
+        let open = Boolean(guestAnchorEl);
+        let openPayment = Boolean(paymentAnchorEl);
         return (
             <AdminLayout {...this.props} style={{ padding: "60px 0 0" }}>
                 {fetching ? (
@@ -127,12 +256,46 @@ export default class ViewBooking extends Component {
                                 <div
                                     style={{
                                         display: "flex",
+                                        justifyContent: "space-between",
                                         alignItems: "center",
                                         marginBottom: 15
                                     }}
                                 >
-                                    <AccountCircleIcon style={{ marginRight: 10, fontSize: 30 }} />
-                                    <Typography variant="h5">Guest Information</Typography>
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            alignItems: "center"
+                                        }}
+                                    >
+                                        <AccountCircleIcon style={{ marginRight: 10, fontSize: 30 }} />
+                                        <Typography variant="h5">Guest Information</Typography>
+                                    </div>
+                                    <FormControl>
+                                        <InputLabel htmlFor="age-simple">Status</InputLabel>
+                                        <Select
+                                            value={booking.status}
+                                            onChange={this.onChangeStatus}
+                                            inputProps={{
+                                                id: "status"
+                                            }}
+                                        >
+                                            <MenuItem value="RESERVED">Reserved</MenuItem>
+                                            <MenuItem value="CHECKEDIN">Check-in</MenuItem>
+                                            <MenuItem value="CHECKEDOUT">Check-out</MenuItem>
+                                            <MenuItem value="NOSHOW">Mark as no-show</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                    {/* <IconButton
+                                        aria-label="more"
+                                        aria-controls="long-menu"
+                                        aria-haspopup="true"
+                                        onClick={this.onMoreAction}
+                                        size="small"
+                                    >
+                                        <MoreVertIcon style={{ fontSize: "1.25em" }} />
+                                    </IconButton>
+
+                                    <Menu id="long-menu" anchorEl={guestAnchorEl} open={open} onClose={this.onCloseMoreAction}></Menu> */}
                                 </div>
 
                                 <Paper style={{ padding: "15px" }}>
@@ -181,16 +344,22 @@ export default class ViewBooking extends Component {
                                     <List component="nav" aria-label="secondary mailbox folders">
                                         {rooms.map((room, i) => {
                                             return (
-                                                <ListItem button>
-                                                    <ListItemText>
-                                                        {`${room.room.room_number}. ${room.room_type.name} `}
-                                                        <i>({room.guest_no} Guest)</i>
-                                                    </ListItemText>
-                                                    <ListItemSecondaryAction>P{room.price.toFixed(2)}</ListItemSecondaryAction>
-                                                </ListItem>
+                                                <>
+                                                    <ListItem>
+                                                        <ListItemText>
+                                                            {`${room.room.room_number}. ${room.room_type.name} `}
+                                                            <i>({room.guest_no} Guest)</i>
+                                                        </ListItemText>
+                                                        <ListItemSecondaryAction>P{room.price.toFixed(2)}</ListItemSecondaryAction>
+                                                    </ListItem>
+                                                    <Divider />
+                                                </>
                                             );
                                         })}
                                     </List>
+                                    <div style={{ padding: "10px 20px", display: "flex", justifyContent: "flex-end" }}>
+                                        <Typography variant="body1">P{this.state.booking.totalPrice.toFixed(2)}</Typography>
+                                    </div>
                                 </Paper>
                             </Grid>
                             <Grid item xs={6}>
@@ -208,36 +377,36 @@ export default class ViewBooking extends Component {
                                     <div style={{ marginBottom: 20 }}>
                                         <br />
                                         <Grid container>
-                                            <Grid item xs={12} md={4}>
+                                            <Grid item xs={12} md={6}>
                                                 <div>
                                                     <Typography align="center" variant="h5" gutterBottom>
                                                         Checked in
                                                     </Typography>
                                                     <Typography align="center" gutterBottom>
-                                                        Sept 19,2019
+                                                        {moment(booking.from_date).format("MMM DD, YYYY")}
                                                     </Typography>
                                                 </div>
                                             </Grid>
-                                            <Grid item xs={12} md={4}>
+                                            <Grid item xs={12} md={6}>
                                                 <div>
                                                     <Typography align="center" variant="h5" gutterBottom>
                                                         Checked Out
                                                     </Typography>
                                                     <Typography align="center" gutterBottom>
-                                                        Sept 19,2019
+                                                        {moment(booking.to_date).format("MMM DD, YYYY")}
                                                     </Typography>
                                                 </div>
                                             </Grid>
-                                            <Grid item xs={12} md={4}>
+                                            {/* <Grid item xs={12} md={4}>
                                                 <div>
-                                                    <Typography align="center" variant="h5">
+                                                    <Typography align="center" variant="h5" gutterBottom>
                                                         Arrival
                                                     </Typography>
                                                     <Typography align="center" gutterBottom>
                                                         Sept 19,2019
                                                     </Typography>
                                                 </div>
-                                            </Grid>
+                                            </Grid> */}
                                         </Grid>
                                     </div>
                                     <Divider />
@@ -248,7 +417,7 @@ export default class ViewBooking extends Component {
                                         <div style={{ padding: "0 20px" }}>
                                             {rooms.map((room, i) => {
                                                 return (
-                                                    <Typography variant="button" gutterBottom>
+                                                    <Typography component="div" variant="button" gutterBottom>
                                                         {`#${room.room.room_number} ${room.room_type.name}`}
                                                     </Typography>
                                                 );
@@ -268,9 +437,17 @@ export default class ViewBooking extends Component {
                                     <PaymentIcon style={{ marginRight: 10, fontSize: 30 }} />
                                     <Typography variant="h5">Payment</Typography>
                                 </div>
-                                <Paper style={{ padding: "15px" }}>
-                                    <div style={{ margin: "0 5px 0 5px" }}>
-                                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                                <Paper>
+                                    {this.state.fetched && this.state.fetchingPayment && <LinearProgress style={{ height: 2 }} />}
+                                    <div style={{ margin: "0 5px 0 5px", padding: "15px" }}>
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                justifyContent: "space-between",
+                                                alignItems: "center",
+                                                marginBottom: 10
+                                            }}
+                                        >
                                             <Typography variant="h6">Paid</Typography>
                                             <Button variant="text" color="primary" onClick={this.onOpenAddBilling} size="small">
                                                 Add
@@ -283,8 +460,9 @@ export default class ViewBooking extends Component {
                                                     <TableHead>
                                                         <TableRow>
                                                             <TableCell>#</TableCell>
-                                                            <TableCell>Amount</TableCell>
-                                                            <TableCell align="right">Date added</TableCell>
+                                                            <TableCell>Date added</TableCell>
+                                                            <TableCell align="right">Amount</TableCell>
+                                                            <TableCell align="right">Action</TableCell>
                                                         </TableRow>
                                                     </TableHead>
                                                     <TableBody>
@@ -293,13 +471,51 @@ export default class ViewBooking extends Component {
                                                                 <TableCell component="th" scope="row">
                                                                     {i + 1}
                                                                 </TableCell>
-                                                                <TableCell component="th" scope="row">
-                                                                    {row.amount}
+                                                                <TableCell>{moment(row.created_at).format("MMM DD, YYYY hh:mm A")}</TableCell>
+                                                                <TableCell align="right" component="th" scope="row">
+                                                                    P{row.amount.toFixed(2)}
                                                                 </TableCell>
-                                                                <TableCell align="right">{row.created_at}</TableCell>
+                                                                <TableCell align="right" component="th" scope="row">
+                                                                    <IconButton
+                                                                        aria-label="more"
+                                                                        aria-controls="long-menu"
+                                                                        aria-haspopup="true"
+                                                                        onClick={e => this.onMorePayment(e, row)}
+                                                                        size="small"
+                                                                    >
+                                                                        <MoreVertIcon style={{ fontSize: "1.25em" }} />
+                                                                    </IconButton>
+                                                                </TableCell>
                                                             </TableRow>
                                                         ))}
+                                                        <TableRow>
+                                                            <TableCell colSpan={3} align="right">
+                                                                Total Due: P{booking.totalPrice.toFixed(2)}
+                                                            </TableCell>
+                                                            <TableCell align="right"></TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell colSpan={3} align="right">
+                                                                Amount Paid: P{booking.total.toFixed(2)}
+                                                            </TableCell>
+                                                            <TableCell align="right"></TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell colSpan={3} align="right">
+                                                                Balance: P
+                                                                {`${
+                                                                    booking.balance > 0
+                                                                        ? booking.balance.toFixed(2)
+                                                                        : booking.balance.toFixed(2) + " (Change)"
+                                                                }`}
+                                                            </TableCell>
+                                                            <TableCell align="right"></TableCell>
+                                                        </TableRow>
                                                     </TableBody>
+                                                    <Menu id="long-menu" anchorEl={paymentAnchorEl} open={openPayment} onClose={this.onClosePayment}>
+                                                        <MenuItem onClick={this.onOpenEditPayment}>Edit</MenuItem>
+                                                        <MenuItem onClick={this.onOpenDeleteBilling}>Remove</MenuItem>
+                                                    </Menu>
                                                 </Table>
                                             ) : (
                                                 <div style={{ padding: "50px 0", display: "flex", justifyContent: "center" }}>
@@ -309,14 +525,15 @@ export default class ViewBooking extends Component {
                                                 </div>
                                             )}
                                         </div>
-                                        <div
+                                        {/* <div
                                             style={{
+                                                padding: "10px 0",
                                                 display: "flex",
                                                 justifyContent: "flex-end"
                                             }}
                                         >
                                             <Typography variant="h6">Total Due: P{booking.total.toFixed(2)}</Typography>
-                                        </div>
+                                        </div> */}
                                     </div>
                                 </Paper>
                             </Grid>
@@ -324,11 +541,11 @@ export default class ViewBooking extends Component {
                     </div>
                 )}
                 <Formik
-                    initialValues={{ amount: 0 }}
-                    onSubmit={(values, actions) => {
+                    initialValues={{ amount: this.state.initialPayment }}
+                    onSubmit={async (values, actions) => {
                         console.log(actions, values);
                         // this.onCloseAddBilling();
-                        this.onAddBilling(values.amount);
+                        await this.onAddBilling(values.amount);
                     }}
                     validationSchema={function() {
                         let schema = yup.object().shape({
@@ -339,39 +556,75 @@ export default class ViewBooking extends Component {
                         });
                         return schema;
                     }}
+                    enableReinitialize={true}
                     render={props => {
-                        const { values, touched, errors, handleChange, handleBlur, handleSubmit } = props;
+                        const { values, touched, errors, handleChange, handleBlur, handleSubmit, isSubmitting } = props;
                         return (
-                            <Dialog open={this.state.addBilling} onClose={this.onCloseAddBilling} aria-labelledby="form-dialog-title">
-                                <DialogTitle id="form-dialog-title">Add Billing</DialogTitle>
+                            <Dialog
+                                open={this.state.addBilling}
+                                onClose={this.onCloseAddBilling}
+                                aria-labelledby="form-dialog-title"
+                                maxWidth="sm"
+                                fullWidth
+                            >
+                                <DialogTitle id="form-dialog-title">{this.state.editBilling ? "Edit" : "Add"} Billing</DialogTitle>
                                 <DialogContent>
-                                    <DialogContentText>Please provide the amount of billing you want to add</DialogContentText>
-                                    <TextField
-                                        autoFocus
-                                        variant="outlined"
-                                        id="amount"
-                                        label="Amount"
-                                        type="number"
-                                        fullWidth
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                        value={values.amount}
-                                        helperText={touched.amount && errors.amount ? errors.amount : ""}
-                                        error={touched.amount && errors.amount ? true : false}
-                                    />
+                                    {this.state.fetchingViewPayment ? (
+                                        <div style={{ textAlign: "center" }}>
+                                            <CircularProgress />
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <DialogContentText>Please provide the amount of billing you want to add</DialogContentText>
+                                            <TextField
+                                                autoFocus
+                                                variant="outlined"
+                                                id="amount"
+                                                label="Amount"
+                                                type="number"
+                                                fullWidth
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                value={values.amount}
+                                                helperText={touched.amount && errors.amount ? errors.amount : ""}
+                                                error={touched.amount && errors.amount ? true : false}
+                                            />
+                                        </>
+                                    )}
                                 </DialogContent>
                                 <DialogActions>
                                     <Button onClick={this.onCloseAddBilling} color="primary">
                                         Cancel
                                     </Button>
-                                    <Button onClick={handleSubmit} color="primary">
-                                        add
+                                    <Button onClick={handleSubmit} color="primary" disabled={isSubmitting ? true : false}>
+                                        add {isSubmitting && <CircularProgress size={12} style={{ marginLeft: 10 }} />}
                                     </Button>
                                 </DialogActions>
                             </Dialog>
                         );
                     }}
                 />
+                <Dialog
+                    fullWidth
+                    maxWidth="sm"
+                    open={this.state.deletePayment}
+                    onClose={this.onCloseDeleteBilling}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogTitle id="alert-dialog-title">Delete this payment?</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-description">Are you really sure you want to delete this payment?</DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button color="primary" onClick={this.onCloseDeleteBilling}>
+                            Cancel
+                        </Button>
+                        <Button color="primary" onClick={this.onDeleteBilling} autoFocus disabled={this.state.deletingPayment ? true : false}>
+                            Confirm {this.state.deletingPayment && <CircularProgress size={12} style={{ marginLeft: 10 }} />}
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </AdminLayout>
         );
     }

@@ -58,8 +58,20 @@ export default class Reservation extends Component {
         try {
             if (!this.state.fetching) this.setState({ fetching: true });
             let { data } = await axios.get("/api/booking?status=RESERVED");
+            data = data.map(reservation => {
+                reservation.total = reservation.billings.reduce((total, billing) => {
+                    return total + billing.amount;
+                }, 0);
+                reservation.totalPrice = reservation.rooms.reduce((totalPrice, room) => {
+                    return totalPrice + room.price;
+                }, 0);
+                return reservation;
+            });
             console.log(data);
-            this.setState({ fetching: false, reservations: data });
+            this.setState({
+                fetching: false,
+                reservations: data
+            });
         } catch (err) {
             console.log(err);
             this.setState({ fetching: false });
@@ -100,8 +112,7 @@ export default class Reservation extends Component {
     //     //update the status of reservation
     // };
 
-    viewReservation = reservation => {
-        let { id } = reservation.booking;
+    viewReservation = id => {
         let hostname = window.location.hostname;
         let port = window.location.port;
         window.open(`http://${hostname}:${port}/bookings/view/${id}`);
@@ -134,35 +145,38 @@ export default class Reservation extends Component {
                                     <TableHead>
                                         <TableRow>
                                             <TableCell align="left">Reserve Date</TableCell>
+                                            <TableCell align="left">Date</TableCell>
                                             <TableCell align="left">Name</TableCell>
                                             <TableCell align="left">Email</TableCell>
-                                            <TableCell align="left">Contact No</TableCell>
-                                            <TableCell align="left">Room Number</TableCell>
-                                            <TableCell align="left">Number of Guest</TableCell>
-                                            <TableCell align="left">With Breakfast</TableCell>
+                                            <TableCell align="right">Contact No</TableCell>
+                                            <TableCell align="right">Number of Rooms</TableCell>
+                                            <TableCell align="right">Total Price</TableCell>
+                                            <TableCell align="right">Amount Paid</TableCell>
                                             <TableCell align="left">Action</TableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
                                         {this.state.reservations.map((reservation, i, array) => {
-                                            const { booking, room_type, room } = reservation;
-                                            const { user } = booking;
+                                            const { user, rooms, id } = reservation;
                                             return (
                                                 <TableRow key={reservation.id}>
                                                     <TableCell align="left">
-                                                        {moment(booking.from_date).format("MM/DD/YYYY") +
+                                                        {moment(reservation.from_date).format("MM/DD/YYYY") +
                                                             " - " +
-                                                            moment(booking.to_date).format("MM/DD/YYYY")}
+                                                            moment(reservation.to_date).format("MM/DD/YYYY")}
                                                     </TableCell>
-                                                    <TableCell align="left">{`${user.firstname} ${user.middlename[0]}. ${user.lastname}`}</TableCell>
+                                                    <TableCell align="left">{moment(reservation.created_at).format("MM/DD/YYYY hh:mm A")}</TableCell>
+                                                    <TableCell align="left">{`${user.honorific}. ${user.firstname} ${user.middlename[0]}. ${
+                                                        user.lastname
+                                                    }`}</TableCell>
                                                     <TableCell align="left">{user.email}</TableCell>
-                                                    <TableCell align="left">{user.contactno}</TableCell>
-                                                    <TableCell align="left">#{room.room_number + " " + room_type.name}</TableCell>
-                                                    <TableCell align="left" style={{ color: "blue" }}>
-                                                        {reservation.guest_no}
+                                                    <TableCell align="right">{user.contactno}</TableCell>
+                                                    <TableCell align="right">{rooms.length}</TableCell>
+                                                    <TableCell align="right" style={{ color: "blue" }}>
+                                                        P{reservation.totalPrice.toFixed(2)}
                                                     </TableCell>
-                                                    <TableCell align="left" style={{ color: "blue" }}>
-                                                        {reservation.with_breakfast ? "Yes" : "No"}
+                                                    <TableCell align="right" style={{ color: "blue" }}>
+                                                        P{reservation.total.toFixed(2)}
                                                     </TableCell>
                                                     <TableCell align="left">
                                                         <IconButton
@@ -170,7 +184,7 @@ export default class Reservation extends Component {
                                                             aria-controls="long-menu"
                                                             aria-haspopup="true"
                                                             // onClick={e => this.onMoreAction(e, reservation)}
-                                                            onClick={e => this.viewReservation(reservation)}
+                                                            onClick={e => this.viewReservation(id)}
                                                             size="small"
                                                         >
                                                             <OpenInNewIcon style={{ fontSize: "1.25em" }} />

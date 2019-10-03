@@ -27,25 +27,29 @@ class BookingController extends Controller
     {
         // return response()->json($request->query('status'));
         if ($request->query('status')) {
-            $bookings = BookRoom::select('book_rooms.*')->where('status', array($request->query('status')))
-                ->leftJoin('bookings', 'bookings.id', '=', 'book_rooms.booking_id')
-                ->with(['booking.user', 'roomType', 'room'])
-                ->orderBy('from_date', 'asc')->get();
+            $bookings = Booking::whereIn('status', [$request->query('status')])
+                ->with(['user', 'rooms', 'billings'])
+                ->get();
         } else {
-            $bookings = BookRoom::with(['booking.user', 'room'])->get();
+            $bookings = Booking::with(['user', 'rooms', 'billings'])->get();
         }
         return response()->json($bookings, 200);
     }
 
-    public function getOne($id)
+    public function getOne($id, Request $request)
     {
-        $booking = Booking::with([
-            'user',
-            'rooms' => function ($query) {
-                $query->with(['roomType', 'room']);
-            },
-            'billings'
-        ])->find($id);
+        if ($request->query('type') === 'detail') {
+            $booking = Booking::find($id);
+        } else {
+
+            $booking = Booking::with([
+                'user',
+                'rooms' => function ($query) {
+                    $query->with(['roomType', 'room']);
+                },
+                'billings'
+            ])->find($id);
+        }
         if (!$booking) {
             return response()->json([
                 "status" => 404,
@@ -69,11 +73,9 @@ class BookingController extends Controller
                 'from_date' => $request->from_date,
                 'to_date' => $request->to_date,
                 'user_id' => $request->user_id,
-                'room_id' => $request->room_id,
-                'price' => $request->price,
+                'status' => $request->status,
                 'checkin_date' => $request->checkin_date,
                 'checkout_date' => $request->checkout_date,
-                'with_breakfast' => $request->with_breakfast,
             ]);
             $booking->save();
             return response()->json($booking, 200);
@@ -360,13 +362,16 @@ class BookingController extends Controller
         $nights = $from->diffInDays($to);
 
         $bookings = BookRoom::where('room_id', $room_id)
-            ->where('status', "!=", 'CHECKOUT')
-            ->where(function ($query) use ($from_date, $to_date) {
-                $query->whereBetween('from_date', [$from_date, $to_date])
-                    ->orWhereBetween('to_date', [$from_date, $to_date]);
+            ->whereHas('booking', function ($query) use ($from_date, $to_date) {
+                $query->where(function ($query) use ($from_date, $to_date) {
+                    $query->whereBetween('from_date', [$from_date, $to_date])
+                        ->orWhereBetween('to_date', [$from_date, $to_date]);
+                })->where('status', "!=", 'CHECKOUT');
             })
             // ->get();
             ->count();
+
+        // return response()->json($bookings);
         // return response()->json($bookings);
         if ($bookings <= 0) {
             //no bookings on those dates.. proceed
@@ -397,19 +402,24 @@ class BookingController extends Controller
             }
 
             //create user
+            // return response()->json($room->room_type_id);
 
             $booking = Booking::create([
                 'from_date' => $from_date,
                 'to_date' => $to_date,
                 'user_id' => $user->id,
-                'room_type_id' => $room->room_type_id,
-                'room_id' => $room->id,
                 'status' => "RESERVED",
-                'guest_no' => $request->input('guest_no'),
-                'price' => $rate->price * $nights,
-                'with_breakfast' => $rate->breakfast,
                 'checkin_date' => null,
                 'checkout_date' => null
+            ]);
+
+            BookRoom::create([
+                'booking_id' => $booking->id,
+                'room_type_id' => $room->room_type_id,
+                'room_id' => $room->id,
+                'price' => $rate->price * $nights,
+                'with_breakfast' => $rate->breakfast,
+                'guest_no' => $request->input('guest_no'),
             ]);
 
             if ($request->input('paidAmount')) {
@@ -438,6 +448,128 @@ class BookingController extends Controller
         $to = Carbon::parse($to_date);
         // return response()->json([$from,$to], 200);
         $nights = $from->diffInDays($to);
+
+
+        $selectedRooms = array_reduce($request->input('selectedRooms'), function ($output, $item) {
+            // $output[$item['id']] = $item['id'];
+            if (array_key_exists($item['id'], $output)) {
+                $output[$item['id']]['selectedRooms'][] = [
+                    "roomTypeId" => $item['id'],
+                    "rateId" => $item['rate']['id'],
+                    "guest_no" => $item['rate']['adult'],
+                    "price" => $item['rate']['price'],
+                    "breakfast" => $item['rate']['breakfast'],
+                    "roomId" => ""
+                ];
+            } else {
+                $output[$item['id']] = [
+                    "id" => $item['id'],
+                    "selectedRooms" => [[
+                        "roomTypeId" => $item['id'],
+                        "rateId" => $item['rate']['id'],
+                        "guest_no" => $item['rate']['adult'],
+                        "price" => $item['rate']['price'],
+                        "breakfast" => $item['rate']['breakfast'],
+                        "roomId" => ""
+                    ]]
+                ];
+            }
+            return $output;
+            // if (!$roomType) {
+            //     return $output[$item['id']] = [
+            //         "id" => [$item['id']]
+            //     ];
+            // } else {
+            //     return $output;
+            // }
+        }, array());
+
+        $finalRooms = array();
+        foreach ($selectedRooms as $room) {
+            $roomType = RoomType::with([
+                'rooms' => function ($query) use ($from, $to) {
+                    $query->with([
+                        'bookings' => function ($query) use ($from, $to) {
+                            $query->whereHas('booking', function ($query) use ($from, $to) {
+                                $query->whereBetween('from_date', [$from, $to])
+                                    ->orWhereBetween('to_date', [$from, $to])
+                                    ->whereIn('status', ["CHECKEDIN", "RESERVED"]);
+                            });
+                        }
+                    ])->orderBy('room_number');
+                },
+                'rates'
+            ])->find($room['id']);
+            $newRooms = array(); // bakante nga rooms
+            for ($i = 0; $i < count($roomType->rooms); $i++) {
+                if (!(count($roomType->rooms[$i]->bookings) > 0))
+                    $newRooms[] = $roomType->rooms[$i];
+            };
+
+            if (count($newRooms) >= count($room['selectedRooms'])) {
+                $selectedRooms[$room['id']]['bookable'] = true;
+            } else {
+                $selectedRooms[$room['id']]['bookable'] = false;
+            }
+            $selectedRooms[$room['id']]['availableRooms'] = $newRooms;
+            for ($i = 0; $i < count($selectedRooms[$room['id']]['selectedRooms']); $i++) {
+                $selectedRooms[$room['id']]['selectedRooms'][$i]['roomId'] = $newRooms[$i]['id'];
+                $finalRooms[] = $selectedRooms[$room['id']]['selectedRooms'][$i];
+            }
+
+           
+            
+        }
+
+
+        $userDetails = [
+            'email' => $request->email,
+            'role' => $request->newAccount ? "USER" : "GUEST",
+            'honorific' => $request->honorific,
+            'firstname' => $request->firstname,
+            'lastname' => $request->lastname,
+            'middlename' => $request->middlename,
+            'contactno' => $request->contactno,
+            'address' => $request->address,
+            'country' => $request->country
+        ];
+        $userDetails['password'] = Hash::make(Str::random(12));
+        $user = User::firstOrCreate([
+            'email' => $request->email,
+        ], $userDetails);
+        //create the bookings;
+        //from_date, to_date, status, user_id, room_type_id, room_id, price, with_breakfast
+
+        $booking = Booking::create([
+            'from_date' => $from,
+            'to_date' => $to,
+            'user_id' => $user->id,
+            'checkin_date' => null,
+            'checkout_date' => null,
+            'status' => "RESERVED"
+        ]);
+        foreach ($finalRooms as $selectedRoom) {
+            //create one booking
+            BookRoom::create([
+                'booking_id' => $booking->id,
+                'room_type_id' => $selectedRoom["roomTypeId"],
+                'room_id' => $selectedRoom["roomId"],
+                'price' => $selectedRoom["price"] * $nights,
+                'with_breakfast' => $selectedRoom["breakfast"],
+                'guest_no' => $selectedRoom["guest_no"],
+            ]);
+        }
+
+        return response()->json($selectedRooms, 200);
+
+        // return response()->json($finalRooms);
+
+
+
+
+
+        // ==========================================
+
         $selectedRooms = array();
         $ranOutRooms = array();
         foreach ($request->input('selectedRooms') as $room) {
@@ -451,8 +583,9 @@ class BookingController extends Controller
                         'bookings' => function ($query) use ($from, $to) {
                             $query->whereHas('booking', function ($query) use ($from, $to) {
                                 $query->whereBetween('from_date', [$from, $to])
-                                    ->orWhereBetween('to_date', [$from, $to]);
-                            })->whereIn('status', ["CHECKEDIN", "RESERVED"]);
+                                    ->orWhereBetween('to_date', [$from, $to])
+                                    ->whereIn('status', ["CHECKEDIN", "RESERVED"]);
+                            });
                         }
                     ]);
                 },
@@ -460,7 +593,7 @@ class BookingController extends Controller
             ])->find($room['id']);
 
 
-            $newRooms = array();
+            $newRooms = array(); // bakante nga rooms
             for ($i = 0; $i < count($roomType->rooms); $i++) {
                 if (!(count($roomType->rooms[$i]->bookings) > 0))
                     $newRooms[] = $roomType->rooms[$i];
@@ -487,8 +620,9 @@ class BookingController extends Controller
                 ];
             }
         };
+        // return response()->json(["selectedRooms" =>$selectedRooms, "ranOutRooms" => $ranOutRooms]);
 
-        if (count($ranOutRooms) > 0) {
+        if (count($ranOutRooms) > count($selectedRooms)) {
             //return error here that some of the rooms are not available
             //return the seelected rooms and the rooms that ran out;
             return response()->json([
@@ -524,7 +658,8 @@ class BookingController extends Controller
                 'to_date' => $to,
                 'user_id' => $user->id,
                 'checkin_date' => null,
-                'checkout_date' => null
+                'checkout_date' => null,
+                'status' => "RESERVED"
             ]);
             foreach ($selectedRooms as $selectedRoom) {
                 //create one booking
@@ -532,7 +667,6 @@ class BookingController extends Controller
                     'booking_id' => $booking->id,
                     'room_type_id' => $selectedRoom["roomTypeId"],
                     'room_id' => $selectedRoom["roomId"],
-                    'status' => "RESERVED",
                     'price' => $selectedRoom["price"] * $nights,
                     'with_breakfast' => $selectedRoom["breakfast"],
                     'guest_no' => $selectedRoom["guest_no"],

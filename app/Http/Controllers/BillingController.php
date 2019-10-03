@@ -43,7 +43,6 @@ class BillingController extends Controller
             ], 404);
         } else {
             $billing->fill([
-                'type' => $request->type,
                 'amount' => $request->amount,
                 'booking_id' => $request->booking_id,
             ]);

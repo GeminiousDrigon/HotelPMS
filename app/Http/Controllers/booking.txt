@@ -1,0 +1,248 @@
+// // array sa mga room type
+//1. format like this.. the received request body
+// const selectedRooms = [
+//   {
+//     name: "twin room",
+//     selectedRoom: [
+//       {
+//         roomTypeId: "264b7a81-e42b-4c8f-aa23-38851eda7c9f",
+//         rateId: "4d063bd7-ed1c-4727-9466-18f437e9a9f5",
+//         guest_no: 1,
+//         price: 200,
+//         breakfast: 1,
+//         roomId: ""
+//       },
+//       {
+//         roomTypeId: "264b7a81-e42b-4c8f-aa23-38851eda7c9f",
+//         rateId: "4d063bd7-ed1c-4727-9466-18f437e9a9f5",
+//         guest_no: 1,
+//         price: 200,
+//         breakfast: 1,
+//         roomId: ""
+//       },
+//       {
+//         roomTypeId: "264b7a81-e42b-4c8f-aa23-38851eda7c9f",
+//         rateId: "4d063bd7-ed1c-4727-9466-18f437e9a9f5",
+//         guest_no: 1,
+//         price: 200,
+//         breakfast: 1,
+//         roomId: ""
+//       }
+//     ]
+//   },
+// ];
+//2. loop array. and find the available rooms in that roomtype
+//bakante nga rooms
+let newRooms = [
+  {
+    roomId: "264b7a81-e42b-4c8f-aa23-38851eda7c9f"
+  },
+  {
+    roomId: "264b7a81-e42b-4c8f-aa23-38851eda7c9f"
+  },
+  {
+    roomId: "264b7a81-e42b-4c8f-aa23-38851eda7c9f"
+  }
+];
+
+//3. format to this data structure
+// const selectedRooms = [
+//   {
+//     name: "twin room",
+//     selectedRoom: [
+//       {
+//         roomTypeId: "264b7a81-e42b-4c8f-aa23-38851eda7c9f",
+//         rateId: "4d063bd7-ed1c-4727-9466-18f437e9a9f5",
+//         guest_no: 1,
+//         price: 200,
+//         breakfast: 1,
+//         roomId: ""
+//       },
+//       {
+//         roomTypeId: "264b7a81-e42b-4c8f-aa23-38851eda7c9f",
+//         rateId: "4d063bd7-ed1c-4727-9466-18f437e9a9f5",
+//         guest_no: 1,
+//         price: 200,
+//         breakfast: 1,
+//         roomId: ""
+//       },
+//       {
+//         roomTypeId: "264b7a81-e42b-4c8f-aa23-38851eda7c9f",
+//         rateId: "4d063bd7-ed1c-4727-9466-18f437e9a9f5",
+//         guest_no: 1,
+//         price: 200,
+//         breakfast: 1,
+//         roomId: ""
+//       }
+//     ],
+// availableRooms : [
+//   {
+//     roomId: "264b7a81-e42b-4c8f-aa23-38851eda7c9f"
+//   },
+//   {
+//     roomId: "264b7a81-e42b-4c8f-aa23-38851eda7c9f"
+//   },
+//   {
+//     roomId: "264b7a81-e42b-4c8f-aa23-38851eda7c9f"
+//   }
+// ];
+//   },
+// ];
+//
+//4. check if availableRooms.length>= selectedRooms.length
+//5. if false mark the room type as short in rooms or ran out of rooms.
+//6. if true assign rooms to each selected rooms like below.
+const selectedRoom = [
+  {
+    roomTypeId: "264b7a81-e42b-4c8f-aa23-38851eda7c9f",
+    rateId: "4d063bd7-ed1c-4727-9466-18f437e9a9f5",
+    guest_no: 1,
+    price: 200,
+    breakfast: 1,
+    roomId: ""
+  },
+  {
+    roomTypeId: "264b7a81-e42b-4c8f-aa23-38851eda7c9f",
+    rateId: "4d063bd7-ed1c-4727-9466-18f437e9a9f5",
+    guest_no: 1,
+    price: 200,
+    breakfast: 1,
+    roomId: ""
+  },
+  {
+    roomTypeId: "264b7a81-e42b-4c8f-aa23-38851eda7c9f",
+    rateId: "4d063bd7-ed1c-4727-9466-18f437e9a9f5",
+    guest_no: 1,
+    price: 200,
+    breakfast: 1,
+    roomId: ""
+  }
+];
+
+for (let i = 0; i < selectedRoom.length; i++) {
+  const room = selectedRoom[i];
+  room.roomId = newRooms[i].id;
+}
+
+
+// const selectedRooms = [
+//   {
+//     name: "twin room",
+//     selectedRoom: [
+//       {
+//         roomTypeId: "264b7a81-e42b-4c8f-aa23-38851eda7c9f",
+//         rateId: "4d063bd7-ed1c-4727-9466-18f437e9a9f5",
+//         guest_no: 1,
+//         price: 200,
+//         breakfast: 1,
+//         roomId: ""
+//       },
+//       {
+//         roomTypeId: "264b7a81-e42b-4c8f-aa23-38851eda7c9f",
+//         rateId: "4d063bd7-ed1c-4727-9466-18f437e9a9f5",
+//         guest_no: 1,
+//         price: 200,
+//         breakfast: 1,
+//         roomId: ""
+//       },
+//       {
+//         roomTypeId: "264b7a81-e42b-4c8f-aa23-38851eda7c9f",
+//         rateId: "4d063bd7-ed1c-4727-9466-18f437e9a9f5",
+//         guest_no: 1,
+//         price: 200,
+//         breakfast: 1,
+//         roomId: ""
+//       }
+//     ]
+//   },
+//   {
+//     name: "double room",
+//     status: "RanOutOfRooms"
+//     selectedRoom: [
+//       {
+//         roomTypeId: "264b7a81-e42b-4c8f-aa23-38851eda7c9f",
+//         rateId: "4d063bd7-ed1c-4727-9466-18f437e9a9f5",
+//         guest_no: 1,
+//         price: 200,
+//         breakfast: 1,
+//         roomId: ""
+//       },
+//       {
+//         roomTypeId: "264b7a81-e42b-4c8f-aa23-38851eda7c9f",
+//         rateId: "4d063bd7-ed1c-4727-9466-18f437e9a9f5",
+//         guest_no: 1,
+//         price: 200,
+//         breakfast: 1,
+//         roomId: ""
+//       },
+//       {
+//         roomTypeId: "264b7a81-e42b-4c8f-aa23-38851eda7c9f",
+//         rateId: "4d063bd7-ed1c-4727-9466-18f437e9a9f5",
+//         guest_no: 1,
+//         price: 200,
+//         breakfast: 1,
+//         roomId: ""
+//       }
+//     ]
+//   },
+// ];
+
+
+//predefine ka ug array sa finalRooms;//ani i butang ang mga i add sa bookroom
+//foreach the array of room types, if status !== RanOutOfRooms
+//foreach sa selectedRoom
+
+//finalRooms
+//if no roomtype that has RanOurOfRooms status
+// const finalRooms = [
+//       {
+//         roomTypeId: "264b7a81-e42b-4c8f-aa23-38851eda7c9f",
+//         rateId: "4d063bd7-ed1c-4727-9466-18f437e9a9f5",
+//         guest_no: 1,
+//         price: 200,
+//         breakfast: 1,
+//         roomId: ""
+//       },
+//       {
+//         roomTypeId: "264b7a81-e42b-4c8f-aa23-38851eda7c9f",
+//         rateId: "4d063bd7-ed1c-4727-9466-18f437e9a9f5",
+//         guest_no: 1,
+//         price: 200,
+//         breakfast: 1,
+//         roomId: ""
+//       },
+//       {
+//         roomTypeId: "264b7a81-e42b-4c8f-aa23-38851eda7c9f",
+//         rateId: "4d063bd7-ed1c-4727-9466-18f437e9a9f5",
+//         guest_no: 1,
+//         price: 200,
+//         breakfast: 1,
+//         roomId: ""
+//       }
+//       {
+//         roomTypeId: "264b7a81-e42b-4c8f-aa23-38851eda7c9f",
+//         rateId: "4d063bd7-ed1c-4727-9466-18f437e9a9f5",
+//         guest_no: 1,
+//         price: 200,
+//         breakfast: 1,
+//         roomId: ""
+//       },
+//       {
+//         roomTypeId: "264b7a81-e42b-4c8f-aa23-38851eda7c9f",
+//         rateId: "4d063bd7-ed1c-4727-9466-18f437e9a9f5",
+//         guest_no: 1,
+//         price: 200,
+//         breakfast: 1,
+//         roomId: ""
+//       },
+//       {
+//         roomTypeId: "264b7a81-e42b-4c8f-aa23-38851eda7c9f",
+//         rateId: "4d063bd7-ed1c-4727-9466-18f437e9a9f5",
+//         guest_no: 1,
+//         price: 200,
+//         breakfast: 1,
+//         roomId: ""
+//       }
+// ];
+
+//proceed to insertion
