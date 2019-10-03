@@ -24,7 +24,7 @@ import RoomFacilities from "./pages/RoomFacilities";
 import AddFacilities from "./pages/AddFacilities";
 
 //booking
-import Booking from "./booking/Booking";
+import Booking from "./booking/RoomInfo";
 import RoomInfo from "./booking/RoomInfo";
 import GuestInfo from "./booking/GuestInfo";
 import Confirmation from "./booking/Confirmation";
