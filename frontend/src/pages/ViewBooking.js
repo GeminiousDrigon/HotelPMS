@@ -337,31 +337,114 @@ export default class ViewBooking extends Component {
                                         marginBottom: 15
                                     }}
                                 >
-                                    <LocalOfferIcon style={{ marginRight: 10, fontSize: 30 }} />
-                                    <Typography variant="h5">Pricing</Typography>
+                                    <PaymentIcon style={{ marginRight: 10, fontSize: 30 }} />
+                                    <Typography variant="h5">Payment</Typography>
                                 </div>
                                 <Paper>
-                                    <List component="nav" aria-label="secondary mailbox folders">
-                                        {rooms.map((room, i) => {
-                                            return (
-                                                <>
-                                                    <ListItem>
-                                                        <ListItemText>
-                                                            {`${room.room.room_number}. ${room.room_type.name} `}
-                                                            <i>({room.guest_no} Guest)</i>
-                                                        </ListItemText>
-                                                        <ListItemSecondaryAction>P{room.price.toFixed(2)}</ListItemSecondaryAction>
-                                                    </ListItem>
-                                                    <Divider />
-                                                </>
-                                            );
-                                        })}
-                                    </List>
-                                    <div style={{ padding: "10px 20px", display: "flex", justifyContent: "flex-end" }}>
-                                        <Typography variant="body1">P{this.state.booking.totalPrice.toFixed(2)}</Typography>
+                                    {this.state.fetched && this.state.fetchingPayment && <LinearProgress style={{ height: 2 }} />}
+                                    <div style={{ margin: "0 5px 0 5px", padding: "15px" }}>
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                justifyContent: "space-between",
+                                                alignItems: "center",
+                                                marginBottom: 10
+                                            }}
+                                        >
+                                            <Typography variant="h6">Paid</Typography>
+                                            <Button variant="text" color="primary" onClick={this.onOpenAddBilling} size="small">
+                                                Add
+                                            </Button>
+                                        </div>
+                                        <Divider />
+                                        <div>
+                                            <Table>
+                                                <TableHead>
+                                                    <TableRow>
+                                                        <TableCell>#</TableCell>
+                                                        <TableCell>Date added</TableCell>
+                                                        <TableCell align="right">Amount</TableCell>
+                                                        <TableCell align="right">Action</TableCell>
+                                                    </TableRow>
+                                                </TableHead>
+                                                <TableBody>
+                                                    {billings.length > 0 ? (
+                                                        billings.map((row, i) => (
+                                                            <TableRow key={row.name}>
+                                                                <TableCell component="th" scope="row">
+                                                                    {i + 1}
+                                                                </TableCell>
+                                                                <TableCell>{moment(row.created_at).format("MMM DD, YYYY hh:mm A")}</TableCell>
+                                                                <TableCell align="right" component="th" scope="row">
+                                                                    P{row.amount.toFixed(2)}
+                                                                </TableCell>
+                                                                <TableCell align="right" component="th" scope="row">
+                                                                    <IconButton
+                                                                        aria-label="more"
+                                                                        aria-controls="long-menu"
+                                                                        aria-haspopup="true"
+                                                                        onClick={e => this.onMorePayment(e, row)}
+                                                                        size="small"
+                                                                    >
+                                                                        <MoreVertIcon style={{ fontSize: "1.25em" }} />
+                                                                    </IconButton>
+                                                                </TableCell>
+                                                            </TableRow>
+                                                        ))
+                                                    ) : (
+                                                        <TableRow>
+                                                            <TableCell colSpan={4}>
+                                                                <div style={{ padding: "50px 0", display: "flex", justifyContent: "center" }}>
+                                                                    <Typography align="center" variant="button">
+                                                                        No added payment yet
+                                                                    </Typography>
+                                                                </div>
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    )}
+                                                    <TableRow>
+                                                        <TableCell colSpan={3} align="right">
+                                                            Total Due: P{booking.totalPrice.toFixed(2)}
+                                                        </TableCell>
+                                                        <TableCell align="right"></TableCell>
+                                                    </TableRow>
+                                                    <TableRow>
+                                                        <TableCell colSpan={3} align="right">
+                                                            Amount Paid: P{booking.total.toFixed(2)}
+                                                        </TableCell>
+                                                        <TableCell align="right"></TableCell>
+                                                    </TableRow>
+                                                    <TableRow>
+                                                        <TableCell colSpan={3} align="right">
+                                                            Balance: P
+                                                            {`${
+                                                                booking.balance > 0
+                                                                    ? booking.balance.toFixed(2)
+                                                                    : booking.balance.toFixed(2) + " (Change)"
+                                                            }`}
+                                                        </TableCell>
+                                                        <TableCell align="right"></TableCell>
+                                                    </TableRow>
+                                                </TableBody>
+                                                <Menu id="long-menu" anchorEl={paymentAnchorEl} open={openPayment} onClose={this.onClosePayment}>
+                                                    <MenuItem onClick={this.onOpenEditPayment}>Edit</MenuItem>
+                                                    <MenuItem onClick={this.onOpenDeleteBilling}>Remove</MenuItem>
+                                                </Menu>
+                                            </Table>
+                                        </div>
+                                        {/* <div
+                                            style={{
+                                                padding: "10px 0",
+                                                display: "flex",
+                                                justifyContent: "flex-end"
+                                            }}
+                                        >
+                                            <Typography variant="h6">Total Due: P{booking.total.toFixed(2)}</Typography>
+                                        </div> */}
                                     </div>
                                 </Paper>
                             </Grid>
+
                             <Grid item xs={6}>
                                 <div
                                     style={{
@@ -415,13 +498,43 @@ export default class ViewBooking extends Component {
                                             Rooms
                                         </Typography>
                                         <div style={{ padding: "0 20px" }}>
-                                            {rooms.map((room, i) => {
+                                            {/* {rooms.map((room, i) => {
                                                 return (
                                                     <Typography component="div" variant="button" gutterBottom>
                                                         {`#${room.room.room_number} ${room.room_type.name}`}
                                                     </Typography>
                                                 );
-                                            })}
+                                            })} */}
+                                            <Table>
+                                                <TableHead>
+                                                    <TableRow>
+                                                        <TableCell>Room number</TableCell>
+                                                        <TableCell align="left">Room</TableCell>
+                                                        <TableCell align="right">Action</TableCell>
+                                                    </TableRow>
+                                                </TableHead>
+                                                <TableBody>
+                                                    {rooms.map(room => (
+                                                        <TableRow key={room.id}>
+                                                            <TableCell component="th" scope="row">
+                                                                {room.room.room_number}
+                                                            </TableCell>
+                                                            <TableCell align="left">{room.room_type.name}</TableCell>
+                                                            <TableCell align="right">
+                                                                <IconButton
+                                                                    aria-label="more"
+                                                                    aria-controls="long-menu"
+                                                                    aria-haspopup="true"
+                                                                    onClick={e => this.onMorePayment(e, room)}
+                                                                    size="small"
+                                                                >
+                                                                    <MoreVertIcon style={{ fontSize: "1.25em" }} />
+                                                                </IconButton>
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    ))}
+                                                </TableBody>
+                                            </Table>
                                         </div>
                                     </div>
                                 </Paper>
@@ -434,106 +547,28 @@ export default class ViewBooking extends Component {
                                         marginBottom: 15
                                     }}
                                 >
-                                    <PaymentIcon style={{ marginRight: 10, fontSize: 30 }} />
-                                    <Typography variant="h5">Payment</Typography>
+                                    <LocalOfferIcon style={{ marginRight: 10, fontSize: 30 }} />
+                                    <Typography variant="h5">Pricing</Typography>
                                 </div>
                                 <Paper>
-                                    {this.state.fetched && this.state.fetchingPayment && <LinearProgress style={{ height: 2 }} />}
-                                    <div style={{ margin: "0 5px 0 5px", padding: "15px" }}>
-                                        <div
-                                            style={{
-                                                display: "flex",
-                                                justifyContent: "space-between",
-                                                alignItems: "center",
-                                                marginBottom: 10
-                                            }}
-                                        >
-                                            <Typography variant="h6">Paid</Typography>
-                                            <Button variant="text" color="primary" onClick={this.onOpenAddBilling} size="small">
-                                                Add
-                                            </Button>
-                                        </div>
-                                        <Divider />
-                                        <div>
-                                            {billings.length > 0 ? (
-                                                <Table>
-                                                    <TableHead>
-                                                        <TableRow>
-                                                            <TableCell>#</TableCell>
-                                                            <TableCell>Date added</TableCell>
-                                                            <TableCell align="right">Amount</TableCell>
-                                                            <TableCell align="right">Action</TableCell>
-                                                        </TableRow>
-                                                    </TableHead>
-                                                    <TableBody>
-                                                        {billings.map((row, i) => (
-                                                            <TableRow key={row.name}>
-                                                                <TableCell component="th" scope="row">
-                                                                    {i + 1}
-                                                                </TableCell>
-                                                                <TableCell>{moment(row.created_at).format("MMM DD, YYYY hh:mm A")}</TableCell>
-                                                                <TableCell align="right" component="th" scope="row">
-                                                                    P{row.amount.toFixed(2)}
-                                                                </TableCell>
-                                                                <TableCell align="right" component="th" scope="row">
-                                                                    <IconButton
-                                                                        aria-label="more"
-                                                                        aria-controls="long-menu"
-                                                                        aria-haspopup="true"
-                                                                        onClick={e => this.onMorePayment(e, row)}
-                                                                        size="small"
-                                                                    >
-                                                                        <MoreVertIcon style={{ fontSize: "1.25em" }} />
-                                                                    </IconButton>
-                                                                </TableCell>
-                                                            </TableRow>
-                                                        ))}
-                                                        <TableRow>
-                                                            <TableCell colSpan={3} align="right">
-                                                                Total Due: P{booking.totalPrice.toFixed(2)}
-                                                            </TableCell>
-                                                            <TableCell align="right"></TableCell>
-                                                        </TableRow>
-                                                        <TableRow>
-                                                            <TableCell colSpan={3} align="right">
-                                                                Amount Paid: P{booking.total.toFixed(2)}
-                                                            </TableCell>
-                                                            <TableCell align="right"></TableCell>
-                                                        </TableRow>
-                                                        <TableRow>
-                                                            <TableCell colSpan={3} align="right">
-                                                                Balance: P
-                                                                {`${
-                                                                    booking.balance > 0
-                                                                        ? booking.balance.toFixed(2)
-                                                                        : booking.balance.toFixed(2) + " (Change)"
-                                                                }`}
-                                                            </TableCell>
-                                                            <TableCell align="right"></TableCell>
-                                                        </TableRow>
-                                                    </TableBody>
-                                                    <Menu id="long-menu" anchorEl={paymentAnchorEl} open={openPayment} onClose={this.onClosePayment}>
-                                                        <MenuItem onClick={this.onOpenEditPayment}>Edit</MenuItem>
-                                                        <MenuItem onClick={this.onOpenDeleteBilling}>Remove</MenuItem>
-                                                    </Menu>
-                                                </Table>
-                                            ) : (
-                                                <div style={{ padding: "50px 0", display: "flex", justifyContent: "center" }}>
-                                                    <Typography align="center" variant="button">
-                                                        No added billing yet
-                                                    </Typography>
-                                                </div>
-                                            )}
-                                        </div>
-                                        {/* <div
-                                            style={{
-                                                padding: "10px 0",
-                                                display: "flex",
-                                                justifyContent: "flex-end"
-                                            }}
-                                        >
-                                            <Typography variant="h6">Total Due: P{booking.total.toFixed(2)}</Typography>
-                                        </div> */}
+                                    <List component="nav" aria-label="secondary mailbox folders">
+                                        {rooms.map((room, i) => {
+                                            return (
+                                                <>
+                                                    <ListItem>
+                                                        <ListItemText>
+                                                            {`${room.room.room_number}. ${room.room_type.name} `}
+                                                            <i>({room.guest_no} Guest)</i>
+                                                        </ListItemText>
+                                                        <ListItemSecondaryAction>P{room.price.toFixed(2)}</ListItemSecondaryAction>
+                                                    </ListItem>
+                                                    <Divider />
+                                                </>
+                                            );
+                                        })}
+                                    </List>
+                                    <div style={{ padding: "10px 20px", display: "flex", justifyContent: "flex-end" }}>
+                                        <Typography variant="body1">P{this.state.booking.totalPrice.toFixed(2)}</Typography>
                                     </div>
                                 </Paper>
                             </Grid>
