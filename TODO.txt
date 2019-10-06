@@ -2,15 +2,17 @@ ask for confirmation if the user wants to change the dates
 
 DO:
 create view details of the booking
-  add billing process
+  loading state in booking, and successful state
+  add rooms in view booking(get all available rooms),
+
   change rooms,
   update stay( extend or shorten the stay duration),
-  display the facilities in the booking process
-  complete the route redirections in booking process
   qr scans for check in and checkouts
 
   customize the event item
   handle on change date in resource scheduler
+
+  change dates to only consume one box in the calendar
 
   plan for the reports
   

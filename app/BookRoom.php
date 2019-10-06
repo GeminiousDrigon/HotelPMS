@@ -13,7 +13,6 @@ class BookRoom extends Model
     protected $fillable = [
         'room_type_id',
         'room_id',
-        'status',
         'price',
         'with_breakfast',
         'guest_no',

@@ -220,7 +220,7 @@ class Walkin extends Component {
         this.props.setFieldValue("address", user.address);
         this.props.setFieldValue("country", user.country);
         this.props.setFieldValue("email", user.email);
-        this.props.setFieldValue("contactno", user.contactno);
+        this.props.setFieldValue("contactno", user.contactno.substring(4));
         this.props.setFieldValue("userId", user.userId);
     };
 
@@ -1206,7 +1206,7 @@ const WithFormik = withFormik({
                 .required("Gmail is required!"),
             contactno: yup
                 .string("Name must be a word!")
-                .length(6, "Contact number must be 6 digits")
+                .length(9, "Contact number must be 9 digits")
                 .required("Contact number is required!"),
             roomTypeId: yup.string().required("Room type is required!"),
             roomId: yup.string().required("Room is required!"),

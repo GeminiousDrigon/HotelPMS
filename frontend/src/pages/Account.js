@@ -133,7 +133,7 @@ export default class Account extends Component {
                                                     {el.email}
                                                 </TableCell>
                                                 <TableCell align="left">
-                                                    +63ß{el.contactno}
+                                                    {el.contactno}
                                                 </TableCell>
                                                 <TableCell align="left">
                                                     <Fab

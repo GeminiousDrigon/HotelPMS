@@ -17,7 +17,6 @@ class CreateBookRoomsTable extends Migration
             $table->uuid('id');
             $table->uuid('room_type_id');
             $table->uuid('room_id')->nullable();
-            $table->string('status');
             $table->string('color');
             $table->integer('price');
             $table->boolean('with_breakfast');

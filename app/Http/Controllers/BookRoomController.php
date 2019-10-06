@@ -13,9 +13,15 @@ class BookRoomController extends Controller
         return response()->json($bookRoom, 200);
     }
 
-    public function getAll()
+    public function getAll(Request $request)
     {
-        $bookRooms = BookRoom::all();
+        if ($request->query('status')) {
+            $bookRooms = BookRoom::whereHas('booking', function ($query) use ($request) {
+                $query->whereIn('status', [$request->query('status')]);
+            })->with(['booking.user', 'room'])->get();
+        } else {
+            $bookRooms = BookRoom::with(['booking.user', 'room'])->get();
+        }
         return response()->json($bookRooms, 200);
     }
 
@@ -44,7 +50,6 @@ class BookRoomController extends Controller
             $bookRoom->fill([
                 'room_type_id' => $request->room_type_id,
                 'room_id' => $request->room_id,
-                'status' => $request->status,
                 'price' => $request->price,
                 'with_breakfast' => $request->with_breakfast,
                 'guest_no' => $request->guest_no,
