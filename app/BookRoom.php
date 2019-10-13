@@ -45,5 +45,11 @@ class BookRoom extends Model
         return $this->belongsTo('App\Room');
     }
 
+    public function guests()
+    {
+        return $this->hasMany('App\RoomGuest');
+    }
+    
+
     public $incrementing = false;
 }

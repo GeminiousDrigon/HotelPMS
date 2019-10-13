@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\BookRoom;
+use App\RoomGuest;
 
 class BookRoomController extends Controller
 {
@@ -77,4 +78,58 @@ class BookRoomController extends Controller
             ], 200);
         }
     }
+
+    public function getGuest($id)
+    {
+        $bookRoom = BookRoom::with('guests')->find($id);
+        if (!$bookRoom) {
+            return response()->json([
+                "status" => 404,
+                "message" => "No room found"
+            ], 404);
+        }
+        $bookGuest = $bookRoom->guests;
+        return response()->json($bookGuest, 200);
+        if (!$bookGuest) {
+            return response()->json([
+                "status" => 404,
+                "message" => "No guest found"
+            ], 404);
+        }
+        return response()->json($bookGuest, 200);
+    }
+
+    public function addGuest(Request $request, $id)
+    {
+        $bookRoom = BookRoom::find($id);
+        if (!$bookRoom) {
+            return response()->json([
+                "status" => 404,
+                "message" => "No room found"
+            ], 404);
+        }
+        if ($request->input('id')) {
+            $bookGuest = RoomGuest::find($request->id);
+        } else {
+            $bookGuest = RoomGuest::create([
+                'firstname' => $request->input("firstname"),
+                'middlename' => $request->input("middlename"),
+                'lastname' => $request->input("lastname"),
+                'email' => $request->input("email"),
+                'address' => $request->input("address"),
+                'country' => $request->input("country"),
+                'contactno' => $request->input("contactno"),
+                'book_room_id' => $bookRoom->id,
+            ]);
+        }
+        if (!$bookGuest) {
+            return response()->json([
+                "status" => 404,
+                "message" => "No guest found"
+            ], 404);
+        }
+        return response()->json($bookGuest);
+    }
+
+    
 }

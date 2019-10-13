@@ -134,6 +134,15 @@ class Booking extends Component {
                 checkOutDate: moment(values.checkOutDate).format("YYYY-MM-DD")
             });
             console.log(data);
+            this.setState({
+                activeStep: 0,
+                selectedRoomsUnavailable: false,
+                datesFullyBooked: false,
+                snackBar: false,
+                snackBarMessage: null,
+                validatedSteps: [false, false, false, false]
+            });
+            this.props.resetForm()
         } catch (err) {
             if (err.response.data.message === "SelectedRoomsUnavailable") {
                 console.log("show dialog ");

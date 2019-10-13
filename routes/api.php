@@ -33,12 +33,21 @@ Route::get("/amenity", "AmenityController@getAll");
 Route::get("/amenity/{id}", "AmenityController@getOne");
 Route::put("/amenity/{id}", "AmenityController@editOne");
 Route::delete("/amenity/{id}", "AmenityController@deleteOne");
+//bookguest-ok
+Route::post("/guest", "RoomGuestController@create");
+Route::get("/guest", "RoomGuestController@getAll");
+Route::get("/guest/{id}", "RoomGuestController@getOne");
+Route::put("/guest/{id}", "RoomGuestController@editOne");
+Route::delete("/guest/{id}", "RoomGuestController@deleteOne");
 //bookroom-ok
 Route::post("/bookroom", "BookRoomController@create");
 Route::get("/bookroom", "BookRoomController@getAll");
 Route::get("/bookroom/{id}", "BookRoomController@getOne");
 Route::put("/bookroom/{id}", "BookRoomController@editOne");
 Route::delete("/bookroom/{id}", "BookRoomController@deleteOne");
+Route::get("/bookroom/{id}/guest", "BookRoomController@getGuest");
+Route::post("/bookroom/{id}/guest", "BookRoomController@addGuest");
+Route::delete("/bookroom/{id}/guest", "BookRoomController@removeGuest");
 //billing
 Route::post("/billing", "BillingController@create");
 Route::get("/billing", "BillingController@getAll");
@@ -54,6 +63,7 @@ Route::get("/booking", "BookingController@getAll");
 Route::post("/booking/walkin", "BookingController@createWalkInBooking");
 Route::get("/booking/{id}", "BookingController@getOne");
 Route::put("/booking/{id}", "BookingController@editOne");
+Route::put("/booking/{id}/date", "BookingController@changeDate");
 Route::delete("/booking/{id}", "BookingController@deleteOne");
 Route::post("/booking/{id}/user", "BookingController@addUser");
 Route::get("/booking/{id}/user", "BookingController@getUser");
@@ -71,6 +81,7 @@ Route::delete("/booking/{id}/billing", "BookingController@removeBilling");
 Route::post("/room", "RoomController@create");
 Route::get("/room", "RoomController@getAll");
 Route::get("/room/hotelroom", "RoomController@getAllRooms");
+Route::get("/room/available", "RoomController@getAllAvailableRooms");
 Route::get("/room/{id}", "RoomController@getOne");
 Route::put("/room/{id}", "RoomController@editOne");
 Route::delete("/room/{id}", "RoomController@deleteOne");

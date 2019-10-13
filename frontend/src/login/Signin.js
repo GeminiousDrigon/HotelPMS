@@ -36,7 +36,6 @@ class Signin extends Component {
                 let { data } = await axios.post("/api/login", {
                     ...this.props.values
                 });
-                console.log(data)
                 localStorage.setItem("login", data.access_token);
                 localStorage.setItem("user", JSON.stringify(data.user));
                 this.props.history.push("/calendar");

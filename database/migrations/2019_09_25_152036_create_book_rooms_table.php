@@ -14,7 +14,7 @@ class CreateBookRoomsTable extends Migration
     public function up()
     {
         Schema::create('book_rooms', function (Blueprint $table) {
-            $table->uuid('id');
+            $table->uuid('id')->primary();
             $table->uuid('room_type_id');
             $table->uuid('room_id')->nullable();
             $table->string('color');

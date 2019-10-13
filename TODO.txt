@@ -2,11 +2,13 @@ ask for confirmation if the user wants to change the dates
 
 DO:
 create view details of the booking
+
   loading state in booking, and successful state
-  add rooms in view booking(get all available rooms),
+
 
   change rooms,
   update stay( extend or shorten the stay duration),
+  
   qr scans for check in and checkouts
 
   customize the event item
