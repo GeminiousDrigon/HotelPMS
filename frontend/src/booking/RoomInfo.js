@@ -28,6 +28,7 @@ export default class RoomInfo extends Component {
 
         this.state = {
             fetching: true,
+            totalCharge: 0,
             selectedType: null,
             selectedRooms: [],
             roomTypes: [],
@@ -82,9 +83,18 @@ export default class RoomInfo extends Component {
         roomType.rate = room;
         let numberOfRooms = selectedRooms.filter(selectedRoom => selectedRoom.id === roomType.id);
         console.log(numberOfRooms);
+        let { checkInDate, checkOutDate } = this.props.values;
+        let numberOfDays = checkOutDate.diff(checkInDate, "days");
+        console.log(numberOfDays);
         if (numberOfRooms.length < roomType.availableRooms) {
-            let rooms = [...this.props.values.selectedRooms];
-            rooms.push(roomType);
+            let rooms = this.props.values.selectedRooms.concat(roomType);
+            // console.log(rooms);
+            let totalCharge = rooms.reduce((output, room, i) => {
+                console.log(room);
+                let roomRate = numberOfDays * room.rate.price;
+                return output + roomRate;
+            }, 0);
+            this.setState({ totalCharge });
             this.props.setFieldValue("selectedRooms", rooms);
         } else {
             this.setState({
@@ -239,7 +249,9 @@ export default class RoomInfo extends Component {
                                     {this.state.selectedType.amenities.map((amenity, o) => {
                                         return (
                                             <span style={{ display: "flex", marginRight: 15 }}>
-                                                <Icon component="span" color="primary">{amenity.icon}</Icon>
+                                                <Icon component="span" color="primary">
+                                                    {amenity.icon}
+                                                </Icon>
                                                 <Typography component="span">{amenity.name}</Typography>
                                             </span>
                                         );
@@ -363,7 +375,7 @@ export default class RoomInfo extends Component {
                                     Total Charge
                                 </Typography>
                                 <Typography variant="h6" style={{ fontWeight: 300 }}>
-                                    PHP 00.00
+                                    P{this.state.totalCharge.toFixed(2)}
                                 </Typography>
                             </div>
                         </Paper>

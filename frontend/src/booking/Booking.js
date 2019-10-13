@@ -133,7 +133,20 @@ class Booking extends Component {
                 checkInDate: moment(values.checkInDate).format("YYYY-MM-DD"),
                 checkOutDate: moment(values.checkOutDate).format("YYYY-MM-DD")
             });
+<<<<<<< HEAD
             // this.props.history.push("/booking");
+=======
+            console.log(data);
+            this.setState({
+                activeStep: 0,
+                selectedRoomsUnavailable: false,
+                datesFullyBooked: false,
+                snackBar: false,
+                snackBarMessage: null,
+                validatedSteps: [false, false, false, false]
+            });
+            this.props.resetForm()
+>>>>>>> 1290fcd7a1b562bf5bcdd19ca4b21fe79762164f
         } catch (err) {
             if (err.response.data.message === "SelectedRoomsUnavailable") {
                 console.log("show dialog ");

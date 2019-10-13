@@ -34,6 +34,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import LocalOfferIcon from "@material-ui/icons/LocalOffer";
 import EventAvailableIcon from "@material-ui/icons/EventAvailable";
 import PaymentIcon from "@material-ui/icons/Payment";
+import AddCircleIcon from "@material-ui/icons/AddCircle";
 import AdminLayout from "../components/AdminLayout";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import { Formik } from "formik";
@@ -41,6 +42,15 @@ import { Formik } from "formik";
 import axios from "axios";
 import * as yup from "yup";
 import moment from "moment";
+import AddRoom from "../components/ViewBooking/AddRoom";
+import Collapse from "@material-ui/core/Collapse";
+import ExpansionPanel from "@material-ui/core/ExpansionPanel";
+import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
+import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import GuestInfo from "../components/ViewBooking/GuestInfo";
+import Reservation from "../components/ViewBooking/Reservation";
+import Icon from "@material-ui/core/Icon";
 
 export default class ViewBooking extends Component {
     constructor(props) {
@@ -62,7 +72,15 @@ export default class ViewBooking extends Component {
             initialPayment: 0,
             fetchingPayment: false,
             deletePayment: false,
-            deletingPayment: false
+            deletingPayment: false,
+
+            //adding rooms
+            addingRooms: false,
+            fetchingRooms: false,
+            selectedRoom: "dc38e19b-8dc8-4b3a-88f0-1152b6dfcb3b",
+
+            //reservation
+            editReservationDates: false
         };
     }
 
@@ -238,6 +256,73 @@ export default class ViewBooking extends Component {
         }
     };
 
+    onClickAddRoom = async () => {
+        try {
+            this.setState({ addingRooms: true });
+            let { from_date, to_date } = this.state.booking;
+            let { data } = await axios.get("/api/room/available", {
+                params: {
+                    checkin: from_date,
+                    checkout: to_date
+                }
+            });
+            let availableRooms = data.map((room, i) => {
+                room.selected = false;
+                return room;
+            });
+            this.setState({ availableRooms, fetchingRooms: false });
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    cancelAddRoom = refresh => {
+        if (refresh) {
+            this.setState(
+                {
+                    addingRooms: false
+                },
+                () => {
+                    this.getRooms();
+                }
+            );
+        } else {
+            this.setState({
+                addingRooms: false
+            });
+        }
+    };
+
+    //get rooms
+    getRooms = async () => {
+        try {
+            this.setState({ fetchingRooms: true });
+            let { id } = this.props.match.params;
+            let rooms = await axios.get(`/api/booking/${id}/room`);
+            let { booking } = this.state;
+            booking.rooms = rooms.data;
+            this.setState({ booking });
+            this.setState({ fetchingRooms: false });
+        } catch (err) {
+            this.setState({ fetchingRooms: false });
+        }
+    };
+
+    //handle for the expansion
+    handleChangeRoomExpansion = id => {
+        if (this.state.selectedRoom === id) this.setState({ selectedRoom: null });
+        else this.setState({ selectedRoom: id });
+    };
+
+    //=========RESERVATION==============\\
+    openEditReservationDates = () => {
+        this.setState({ editReservationDates: !this.state.editReservationDates });
+    };
+
+    onCloseEditReservationDates = () => {
+        this.setState({ editReservationDates: false });
+    };
+
     render() {
         let { fetching, booking, guestAnchorEl, paymentAnchorEl, selectedPayment } = this.state;
         let { user, rooms, billings } = booking;
@@ -252,7 +337,7 @@ export default class ViewBooking extends Component {
                 ) : (
                     <div style={{ margin: "10px", padding: "25px" }}>
                         <Grid container spacing={3}>
-                            <Grid item xs={6}>
+                            <Grid item xs={8}>
                                 <div
                                     style={{
                                         display: "flex",
@@ -329,104 +414,7 @@ export default class ViewBooking extends Component {
                                     </div>
                                 </Paper>
                             </Grid>
-                            <Grid item xs={6}>
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        marginBottom: 15
-                                    }}
-                                >
-                                    <LocalOfferIcon style={{ marginRight: 10, fontSize: 30 }} />
-                                    <Typography variant="h5">Pricing</Typography>
-                                </div>
-                                <Paper>
-                                    <List component="nav" aria-label="secondary mailbox folders">
-                                        {rooms.map((room, i) => {
-                                            return (
-                                                <>
-                                                    <ListItem>
-                                                        <ListItemText>
-                                                            {`${room.room.room_number}. ${room.room_type.name} `}
-                                                            <i>({room.guest_no} Guest)</i>
-                                                        </ListItemText>
-                                                        <ListItemSecondaryAction>P{room.price.toFixed(2)}</ListItemSecondaryAction>
-                                                    </ListItem>
-                                                    <Divider />
-                                                </>
-                                            );
-                                        })}
-                                    </List>
-                                    <div style={{ padding: "10px 20px", display: "flex", justifyContent: "flex-end" }}>
-                                        <Typography variant="body1">P{this.state.booking.totalPrice.toFixed(2)}</Typography>
-                                    </div>
-                                </Paper>
-                            </Grid>
-                            <Grid item xs={6}>
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        marginBottom: 15
-                                    }}
-                                >
-                                    <EventAvailableIcon style={{ marginRight: 10, fontSize: 30 }} />
-                                    <Typography variant="h5">Reservation</Typography>
-                                </div>
-                                <Paper style={{ padding: "15px" }}>
-                                    <div style={{ marginBottom: 20 }}>
-                                        <br />
-                                        <Grid container>
-                                            <Grid item xs={12} md={6}>
-                                                <div>
-                                                    <Typography align="center" variant="h5" gutterBottom>
-                                                        Checked in
-                                                    </Typography>
-                                                    <Typography align="center" gutterBottom>
-                                                        {moment(booking.from_date).format("MMM DD, YYYY")}
-                                                    </Typography>
-                                                </div>
-                                            </Grid>
-                                            <Grid item xs={12} md={6}>
-                                                <div>
-                                                    <Typography align="center" variant="h5" gutterBottom>
-                                                        Checked Out
-                                                    </Typography>
-                                                    <Typography align="center" gutterBottom>
-                                                        {moment(booking.to_date).format("MMM DD, YYYY")}
-                                                    </Typography>
-                                                </div>
-                                            </Grid>
-                                            {/* <Grid item xs={12} md={4}>
-                                                <div>
-                                                    <Typography align="center" variant="h5" gutterBottom>
-                                                        Arrival
-                                                    </Typography>
-                                                    <Typography align="center" gutterBottom>
-                                                        Sept 19,2019
-                                                    </Typography>
-                                                </div>
-                                            </Grid> */}
-                                        </Grid>
-                                    </div>
-                                    <Divider />
-                                    <div style={{ marginTop: 20 }}>
-                                        <Typography variant="h5" gutterBottom>
-                                            Rooms
-                                        </Typography>
-                                        <div style={{ padding: "0 20px" }}>
-                                            {rooms.map((room, i) => {
-                                                return (
-                                                    <Typography component="div" variant="button" gutterBottom>
-                                                        {`#${room.room.room_number} ${room.room_type.name}`}
-                                                    </Typography>
-                                                );
-                                            })}
-                                        </div>
-                                    </div>
-                                </Paper>
-                            </Grid>
-                            <Grid item xs={6}>
+                            <Grid item xs={4}>
                                 <div
                                     style={{
                                         display: "flex",
@@ -455,18 +443,18 @@ export default class ViewBooking extends Component {
                                         </div>
                                         <Divider />
                                         <div>
-                                            {billings.length > 0 ? (
-                                                <Table>
-                                                    <TableHead>
-                                                        <TableRow>
-                                                            <TableCell>#</TableCell>
-                                                            <TableCell>Date added</TableCell>
-                                                            <TableCell align="right">Amount</TableCell>
-                                                            <TableCell align="right">Action</TableCell>
-                                                        </TableRow>
-                                                    </TableHead>
-                                                    <TableBody>
-                                                        {billings.map((row, i) => (
+                                            <Table>
+                                                <TableHead>
+                                                    <TableRow>
+                                                        <TableCell>#</TableCell>
+                                                        <TableCell>Date added</TableCell>
+                                                        <TableCell align="right">Amount</TableCell>
+                                                        <TableCell align="right">Action</TableCell>
+                                                    </TableRow>
+                                                </TableHead>
+                                                <TableBody>
+                                                    {billings.length > 0 ? (
+                                                        billings.map((row, i) => (
                                                             <TableRow key={row.name}>
                                                                 <TableCell component="th" scope="row">
                                                                     {i + 1}
@@ -487,43 +475,47 @@ export default class ViewBooking extends Component {
                                                                     </IconButton>
                                                                 </TableCell>
                                                             </TableRow>
-                                                        ))}
+                                                        ))
+                                                    ) : (
                                                         <TableRow>
-                                                            <TableCell colSpan={3} align="right">
-                                                                Total Due: P{booking.totalPrice.toFixed(2)}
+                                                            <TableCell colSpan={4}>
+                                                                <div style={{ padding: "50px 0", display: "flex", justifyContent: "center" }}>
+                                                                    <Typography align="center" variant="button">
+                                                                        No added payment yet
+                                                                    </Typography>
+                                                                </div>
                                                             </TableCell>
-                                                            <TableCell align="right"></TableCell>
                                                         </TableRow>
-                                                        <TableRow>
-                                                            <TableCell colSpan={3} align="right">
-                                                                Amount Paid: P{booking.total.toFixed(2)}
-                                                            </TableCell>
-                                                            <TableCell align="right"></TableCell>
-                                                        </TableRow>
-                                                        <TableRow>
-                                                            <TableCell colSpan={3} align="right">
-                                                                Balance: P
-                                                                {`${
-                                                                    booking.balance > 0
-                                                                        ? booking.balance.toFixed(2)
-                                                                        : booking.balance.toFixed(2) + " (Change)"
-                                                                }`}
-                                                            </TableCell>
-                                                            <TableCell align="right"></TableCell>
-                                                        </TableRow>
-                                                    </TableBody>
-                                                    <Menu id="long-menu" anchorEl={paymentAnchorEl} open={openPayment} onClose={this.onClosePayment}>
-                                                        <MenuItem onClick={this.onOpenEditPayment}>Edit</MenuItem>
-                                                        <MenuItem onClick={this.onOpenDeleteBilling}>Remove</MenuItem>
-                                                    </Menu>
-                                                </Table>
-                                            ) : (
-                                                <div style={{ padding: "50px 0", display: "flex", justifyContent: "center" }}>
-                                                    <Typography align="center" variant="button">
-                                                        No added billing yet
-                                                    </Typography>
-                                                </div>
-                                            )}
+                                                    )}
+                                                    <TableRow>
+                                                        <TableCell colSpan={3} align="right">
+                                                            Total Due: P{booking.totalPrice.toFixed(2)}
+                                                        </TableCell>
+                                                        <TableCell align="right"></TableCell>
+                                                    </TableRow>
+                                                    <TableRow>
+                                                        <TableCell colSpan={3} align="right">
+                                                            Amount Paid: P{booking.total.toFixed(2)}
+                                                        </TableCell>
+                                                        <TableCell align="right"></TableCell>
+                                                    </TableRow>
+                                                    <TableRow>
+                                                        <TableCell colSpan={3} align="right">
+                                                            Balance: P
+                                                            {`${
+                                                                booking.balance > 0
+                                                                    ? booking.balance.toFixed(2)
+                                                                    : booking.balance.toFixed(2) + " (Change)"
+                                                            }`}
+                                                        </TableCell>
+                                                        <TableCell align="right"></TableCell>
+                                                    </TableRow>
+                                                </TableBody>
+                                                <Menu id="long-menu" anchorEl={paymentAnchorEl} open={openPayment} onClose={this.onClosePayment}>
+                                                    <MenuItem onClick={this.onOpenEditPayment}>Edit</MenuItem>
+                                                    <MenuItem onClick={this.onOpenDeleteBilling}>Remove</MenuItem>
+                                                </Menu>
+                                            </Table>
                                         </div>
                                         {/* <div
                                             style={{
@@ -534,6 +526,242 @@ export default class ViewBooking extends Component {
                                         >
                                             <Typography variant="h6">Total Due: P{booking.total.toFixed(2)}</Typography>
                                         </div> */}
+                                    </div>
+                                </Paper>
+                            </Grid>
+
+                            <Grid item xs={8}>
+                                <div
+                                    style={{
+                                        marginBottom: 15
+                                    }}
+                                >
+                                    <div style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
+                                        <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                                            <EventAvailableIcon style={{ marginRight: 10, fontSize: 30 }} />
+                                            <Typography variant="h5">Reservation</Typography>
+                                        </div>
+                                        <IconButton onClick={this.openEditReservationDates}>
+                                            <Icon size="small">edit</Icon>
+                                        </IconButton>
+                                    </div>
+                                </div>
+
+                                {!this.state.editReservationDates ? (
+                                    <Paper style={{ padding: "15px" }}>
+                                        <div style={{ marginBottom: 20 }}>
+                                            <br />
+                                            <Grid container>
+                                                <Grid item xs={12} md={6}>
+                                                    <div>
+                                                        <Typography align="center" variant="h5" gutterBottom>
+                                                            Checked in
+                                                        </Typography>
+                                                        <Typography align="center" gutterBottom>
+                                                            {moment(booking.from_date).format("MMM DD, YYYY")}
+                                                        </Typography>
+                                                    </div>
+                                                </Grid>
+                                                <Grid item xs={12} md={6}>
+                                                    <div>
+                                                        <Typography align="center" variant="h5" gutterBottom>
+                                                            Checked Out
+                                                        </Typography>
+                                                        <Typography align="center" gutterBottom>
+                                                            {moment(booking.to_date).format("MMM DD, YYYY")}
+                                                        </Typography>
+                                                    </div>
+                                                </Grid>
+                                                {/* <Grid item xs={12} md={4}>
+                                                    <div>
+                                                        <Typography align="center" variant="h5" gutterBottom>
+                                                            Arrival
+                                                        </Typography>
+                                                        <Typography align="center" gutterBottom>
+                                                            Sept 19,2019
+                                                        </Typography>
+                                                    </div>
+                                                </Grid> */}
+                                            </Grid>
+                                        </div>
+                                    </Paper>
+                                ) : (
+                                    <Reservation
+                                        checkInDate={booking.from_date}
+                                        checkOutDate={booking.to_date}
+                                        edit={this.state.editReservationDates}
+                                        onCloseEditReservationDates={this.onCloseEditReservationDates}
+                                        getBookingDetails={this.getBookingDetails}
+                                        bookingId={this.props.match.params.id}
+                                    />
+                                )}
+                                <div style={{ marginTop: 20 }}>
+                                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                                        <Typography variant="h5">Rooms</Typography>
+                                        <Button variant="outlined" size="small" color="primary" onClick={this.onClickAddRoom}>
+                                            <AddCircleIcon style={{ marginRight: 5 }} />
+                                            Add room
+                                        </Button>
+                                    </div>
+
+                                    <Collapse in={this.state.addingRooms}>
+                                        <Paper>
+                                            <AddRoom
+                                                bookingId={this.props.match.params.id}
+                                                cancelAddRoom={this.cancelAddRoom}
+                                                addingRooms={this.state.addingRooms}
+                                                getRooms={this.getRooms}
+                                            />
+                                        </Paper>
+                                        {/* {this.state.fetchingRooms ? (
+                                                <div style={{ padding: "25px 0", textAlign: "center" }}>
+                                                    <CircularProgress />
+                                                </div>
+                                            ) : (
+                                                <div style={{ margin: "10px 0", padding: "0 20px", width: "100%" }}>
+                                                    <FormControl component="fieldset" style={{ width: "100%" }} error={this.state.errorAddRoom}>
+                                                        <FormLabel component="legend">Assign responsibility</FormLabel>
+                                                        <FormGroup>
+                                                            <Grid container>
+                                                                {this.state.availableRooms.map((room, i) => {
+                                                                    return (
+                                                                        <Grid item xs={12} md={4}>
+                                                                            <FormControlLabel
+                                                                                control={
+                                                                                    <Checkbox
+                                                                                        checked={room.selected}
+                                                                                        onChange={this.onSelectRoom}
+                                                                                        value={room.id}
+                                                                                        color="primary"
+                                                                                    />
+                                                                                }
+                                                                                label={room.room_number + " " + room.room_type.name}
+                                                                            />
+                                                                        </Grid>
+                                                                    );
+                                                                })}
+                                                            </Grid>
+                                                        </FormGroup>
+                                                        {this.state.errorAddRoom && (
+                                                            <FormHelperText>You must select one(1) or more rooms.</FormHelperText>
+                                                        )}
+                                                    </FormControl>
+                                                    <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                                                        <Button
+                                                            variant="outlined"
+                                                            color="primary"
+                                                            style={{ marginTop: 25 }}
+                                                            onClick={this.cancelAddRoom}
+                                                            style={{
+                                                                marginRight: 5
+                                                            }}
+                                                            size="small"
+                                                        >
+                                                            Cancel
+                                                        </Button>
+                                                        <Button
+                                                            variant="outlined"
+                                                            color="primary"
+                                                            style={{ marginTop: 25 }}
+                                                            style={{
+                                                                marginLeft: 5
+                                                            }}
+                                                            onClick={this.onAddRooms}
+                                                            size="small"
+                                                        >
+                                                            Submit
+                                                        </Button>
+                                                    </div>
+                                                </div> */}
+                                        {/* )} */}
+                                    </Collapse>
+                                    <div style={{ marginTop: 20 }}>
+                                        {this.state.fetchingRooms && <LinearProgress style={{ height: 2 }} />}
+                                        <div>
+                                            {rooms.map((room, i) => {
+                                                return (
+                                                    <ExpansionPanel
+                                                        expanded={this.state.selectedRoom === room.id}
+                                                        onChange={() => this.handleChangeRoomExpansion(room.id)}
+                                                        key={room.id}
+                                                    >
+                                                        <ExpansionPanelSummary
+                                                            expandIcon={<ExpandMoreIcon />}
+                                                            aria-controls="panel1a-content"
+                                                            id="panel1a-header"
+                                                        >
+                                                            <Typography> {room.room.room_number + " " + room.room_type.name}</Typography>
+                                                        </ExpansionPanelSummary>
+                                                        <ExpansionPanelDetails>
+                                                            <GuestInfo guests={room.guests} selectedRoom={this.state.selectedRoom} id={room.id} />
+                                                        </ExpansionPanelDetails>
+                                                    </ExpansionPanel>
+                                                );
+                                            })}
+                                            {/* <Table>
+                                                    <TableHead>
+                                                        <TableRow>
+                                                            <TableCell>Room number</TableCell>
+                                                            <TableCell align="left">Room</TableCell>
+                                                            <TableCell align="right">Action</TableCell>
+                                                        </TableRow>
+                                                    </TableHead>
+                                                    <TableBody>
+                                                        {rooms.map(room => (
+                                                            <TableRow key={room.id}>
+                                                                <TableCell component="th" scope="row">
+                                                                    {room.room.room_number}
+                                                                </TableCell>
+                                                                <TableCell align="left">{room.room_type.name}</TableCell>
+                                                                <TableCell align="right">
+                                                                    <IconButton
+                                                                        aria-label="more"
+                                                                        aria-controls="long-menu"
+                                                                        aria-haspopup="true"
+                                                                        onClick={e => this.onMorePayment(e, room)}
+                                                                        size="small"
+                                                                    >
+                                                                        <MoreVertIcon style={{ fontSize: "1.25em" }} />
+                                                                    </IconButton>
+                                                                </TableCell>
+                                                            </TableRow>
+                                                        ))}
+                                                    </TableBody>
+                                                </Table> */}
+                                        </div>
+                                    </div>
+                                </div>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        marginBottom: 15
+                                    }}
+                                >
+                                    <LocalOfferIcon style={{ marginRight: 10, fontSize: 30 }} />
+                                    <Typography variant="h5">Pricing</Typography>
+                                </div>
+                                <Paper>
+                                    <List component="nav" aria-label="secondary mailbox folders">
+                                        {rooms.map((room, i) => {
+                                            return (
+                                                <React.Fragment key={room.id}>
+                                                    <ListItem>
+                                                        <ListItemText>
+                                                            {`${room.room.room_number}. ${room.room_type.name} `}
+                                                            <i>({room.guest_no} Guest)</i>
+                                                        </ListItemText>
+                                                        <ListItemSecondaryAction>P{room.price.toFixed(2)}</ListItemSecondaryAction>
+                                                    </ListItem>
+                                                    <Divider />
+                                                </React.Fragment>
+                                            );
+                                        })}
+                                    </List>
+                                    <div style={{ padding: "10px 20px", display: "flex", justifyContent: "flex-end" }}>
+                                        <Typography variant="body1">P{this.state.booking.totalPrice.toFixed(2)}</Typography>
                                     </div>
                                 </Paper>
                             </Grid>

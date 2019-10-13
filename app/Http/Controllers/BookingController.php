@@ -45,7 +45,13 @@ class BookingController extends Controller
             $booking = Booking::with([
                 'user',
                 'rooms' => function ($query) {
-                    $query->with(['roomType', 'room']);
+                    $query->with([
+                        'roomType',
+                        'room',
+                        'guests' => function ($query) {
+                            $query->orderBy('created_at');
+                        }
+                    ]);
                 },
                 'billings'
             ])->find($id);
@@ -154,6 +160,7 @@ class BookingController extends Controller
 
     public function addRoom($id, Request $request)
     {
+        // return response()->json($request->input('rooms'));
         $booking = Booking::find($id);
         if (!$booking) {
             return response()->json([
@@ -161,15 +168,20 @@ class BookingController extends Controller
                 "message" => "No booking found"
             ], 404);
         }
-        $room = Room::find($request->input('id'));
-        if (!$room) {
-            return response()->json([
-                "status" => 404,
-                "message" => "No room found"
-            ], 404);
+        $rooms = array();
+        foreach ($request->input('rooms') as $room) {
+            $rooms[] = new BookRoom([
+                'room_type_id' => $room['room_type_id'],
+                'room_id' => $room['room_id'],
+                'price' => $room['price'],
+                'with_breakfast' => $room['with_breakfast'],
+                'guest_no' => $room['guest_no'],
+                'booking_id' => $room['booking_id'],
+                // 'color' => $room['id']
+            ]);
         }
-        $booking->room()->associate($room);
-        $booking->save();
+
+        $booking->rooms()->saveMany($rooms);
         return response()->json([
             "status" => 200,
             "message" => "Operation successful"
@@ -185,14 +197,14 @@ class BookingController extends Controller
                 "message" => "No booking found"
             ], 404);
         }
-        $room = $booking->room;
-        if (!$room) {
+        $rooms = $booking->rooms()->with(['room', 'roomType'])->get();
+        if (!$rooms) {
             return response()->json([
                 "status" => 404,
                 "message" => "No room found"
             ], 404);
         }
-        return response()->json($booking->room()->get(), 200);
+        return response()->json($rooms, 200);
     }
 
     public function removeRoom($id, Request $request)
@@ -516,9 +528,6 @@ class BookingController extends Controller
                 $selectedRooms[$room['id']]['selectedRooms'][$i]['roomId'] = $newRooms[$i]['id'];
                 $finalRooms[] = $selectedRooms[$room['id']]['selectedRooms'][$i];
             }
-
-           
-            
         }
 
 
@@ -675,5 +684,57 @@ class BookingController extends Controller
 
             return response()->json($selectedRooms, 200);
         }
+    }
+
+    public function changeDate($id, Request $request)
+    {
+        // $booking = Booking::find($id);
+        // return response()->json($booking);
+        $from_date = $request->input('checkin');
+        $to_date = $request->input('checkout');
+        $from = Carbon::parse($from_date);
+        $to = Carbon::parse($to_date);
+        $booking = Booking::with([
+            'user',
+            'rooms' => function ($query) {
+                $query->with([
+                    // 'roomType',
+                    // 'room',
+                    // 'guests' => function ($query) {
+                    //     $query->orderBy('created_at');
+                    // }
+                ]);
+            },
+        ])->find($id);
+        $rooms = $booking->rooms;
+        foreach ($rooms as $room) {
+            $allBooking = Room::with([
+                'bookings' => function ($query) use ($from, $to) {
+                    // $query->whereHas('bookings', function ($query) use ($from, $to) {
+                    $query->whereHas('booking', function ($query) use ($from, $to) {
+                        $query->where(function ($query) use ($from, $to) {
+                            $query->whereBetween('from_date', [$from, $to])
+                                ->orWhereBetween('to_date', [$from, $to]);
+                        })->where('status', "!=", 'CHECKOUT');
+                    });
+                    // });
+                }
+            ])->find($room->room_id);
+
+            if ($allBooking->bookings->count() > 0) {
+                //error
+                return response()->json([
+                    "code" => "RoomException"
+                ], 404);
+            }
+        }
+
+        //update
+        $getBooking = Booking::find($id);
+        $getBooking->from_date = $request->input('checkin');
+        $getBooking->to_date = $request->input('checkout');
+        $getBooking->save();
+
+        return response()->json($getBooking);
     }
 }

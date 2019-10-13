@@ -155,8 +155,8 @@ class RoomController extends Controller
         if ($request->query('room_type_id')) {
             $room_type_id = $request->query('room_type_id');
             $room = Room::where('room_type_id', $room_type_id)
-            ->whereNotNull('room_number')
-            ->orderBy('room_number', 'asc')
+                ->whereNotNull('room_number')
+                ->orderBy('room_number', 'asc')
                 ->get();
         } else {
             $room = Room::where(function ($query) {
@@ -168,5 +168,74 @@ class RoomController extends Controller
         }
 
         return response()->json($room, 200);
+    }
+
+    public function getAllAvailableRooms(Request $request)
+    {
+        if (!$request->query('checkin') || !$request->query('checkout')) {
+            return response()->json([
+                "message" => "check-in and check-out dates are required"
+            ], 400);
+        } else {
+            $from_date = $request->query('checkin');
+            $to_date = $request->query('checkout');
+            $from = Carbon::parse($from_date);
+            $to = Carbon::parse($to_date);
+            $rooms = Room::with([
+                'bookings' => function ($query) use ($from, $to) {
+                    $query->whereHas('booking', function ($query) use ($from, $to) {
+                        $query->whereBetween('from_date', [$from, $to])
+                            ->orWhereBetween('to_date', [$from, $to])
+                            ->whereIn('status', ["CHECKEDIN", "RESERVED"]);
+                    });
+                },
+                'roomType'
+            ]);
+            // return response()->json($rooms);
+            if ($request->query('room_type_id')) {
+                $rooms = Room::with([
+                    'bookings' => function ($query) use ($from, $to) {
+                        $query->whereHas('booking', function ($query) use ($from, $to) {
+                            $query->whereBetween('from_date', [$from, $to])
+                                ->orWhereBetween('to_date', [$from, $to])
+                                ->whereIn('status', ["CHECKEDIN", "RESERVED"]);
+                        });
+                    },
+                    'roomType'
+                ])->where('room_type_id', $request->query('room_type_id'))->get();
+            } else {
+                $rooms = Room::with([
+                    'bookings' => function ($query) use ($from, $to) {
+                        $query->whereHas('booking', function ($query) use ($from, $to) {
+                            $query->whereBetween('from_date', [$from, $to])
+                                ->orWhereBetween('to_date', [$from, $to])
+                                ->whereIn('status', ["CHECKEDIN", "RESERVED"]);
+                        });
+                    },
+                    'roomType'
+                ])->get();
+            }
+            return response()->json($rooms, 200);
+
+            $finalRoom = array(); //available rooms
+            $unbookableRooms = array(); //not available rooms
+            foreach ($rooms as $room) {
+                if ($room->bookings->count() > 0) {
+                    $unbookableRooms[] = $room;
+
+                    unset($room["bookings"]);
+                } else {
+                    unset($room["bookings"]);
+                    $finalRoom[] = $room;
+                }
+            };
+
+            if (count($rooms) === count($unbookableRooms)) {
+                return response()->json([
+                    "message" => "FullyBookedRooms"
+                ], 404);
+            } else
+                return response()->json($finalRoom, 200);
+        }
     }
 }
