@@ -393,6 +393,7 @@ class BookingController extends Controller
 
             $room = Room::with(['roomType'])->find($room_id);
             $rate = Rate::find($rate_id);
+            // return response()->json($request->country);
 
             if (!$request->input('userId')) {
                 $user = User::firstOrCreate([
