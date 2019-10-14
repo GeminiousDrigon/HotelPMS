@@ -279,19 +279,23 @@ export default class ViewBooking extends Component {
 
     onClickAddRoom = async () => {
         try {
-            this.setState({ addingRooms: true });
-            let { from_date, to_date } = this.state.booking;
-            let { data } = await axios.get("/api/room/available", {
-                params: {
-                    checkin: from_date,
-                    checkout: to_date
-                }
-            });
-            let availableRooms = data.map((room, i) => {
-                room.selected = false;
-                return room;
-            });
-            this.setState({ availableRooms, fetchingRooms: false });
+            if (this.state.addingRooms) {
+                this.setState({ addingRooms: false });
+            } else {
+                this.setState({ addingRooms: true });
+                let { from_date, to_date } = this.state.booking;
+                let { data } = await axios.get("/api/room/available", {
+                    params: {
+                        checkin: from_date,
+                        checkout: to_date
+                    }
+                });
+                let availableRooms = data.map((room, i) => {
+                    room.selected = false;
+                    return room;
+                });
+                this.setState({ availableRooms, fetchingRooms: false });
+            }
         } catch (err) {
             console.log(err);
         }
@@ -366,7 +370,7 @@ export default class ViewBooking extends Component {
                 ) : (
                     <div style={{ margin: "10px", padding: "25px" }}>
                         <Grid container spacing={3}>
-                            <Grid item xs={8}>
+                            <Grid item xs={6}>
                                 <div
                                     style={{
                                         display: "flex",
@@ -443,7 +447,7 @@ export default class ViewBooking extends Component {
                                     </div>
                                 </Paper>
                             </Grid>
-                            <Grid item xs={4}>
+                            <Grid item xs={6}>
                                 <div
                                     style={{
                                         display: "flex",
@@ -559,7 +563,7 @@ export default class ViewBooking extends Component {
                                 </Paper>
                             </Grid>
 
-                            <Grid item xs={8}>
+                            <Grid item xs={6}>
                                 <div
                                     style={{
                                         marginBottom: 15
@@ -626,7 +630,7 @@ export default class ViewBooking extends Component {
                                     />
                                 )}
                                 <div style={{ marginTop: 20 }}>
-                                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
                                         <Typography variant="h5">Rooms</Typography>
                                         <Button variant="outlined" size="small" color="primary" onClick={this.onClickAddRoom}>
                                             <AddCircleIcon style={{ marginRight: 5 }} />
@@ -770,7 +774,7 @@ export default class ViewBooking extends Component {
                                     </div>
                                 </div>
                             </Grid>
-                            <Grid item xs={4}>
+                            <Grid item xs={6}>
                                 <div
                                     style={{
                                         display: "flex",

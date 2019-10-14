@@ -35,11 +35,7 @@ import { FormHelperText } from "@material-ui/core";
 
 import moment from "moment";
 
-import {
-    MuiPickersUtilsProvider,
-    KeyboardTimePicker,
-    KeyboardDatePicker
-} from "@material-ui/pickers";
+import { MuiPickersUtilsProvider, KeyboardTimePicker, KeyboardDatePicker } from "@material-ui/pickers";
 import AddUserDialog from "../components/AddUserDialog";
 
 class Walkin extends Component {
@@ -121,12 +117,8 @@ class Walkin extends Component {
                 async () => {
                     try {
                         let [rooms, rates] = await Promise.all([
-                            axios.get(
-                                "/api/room/hotelroom?room_type_id=" + roomTypeId
-                            ),
-                            axios.get(
-                                `api/roomtype/${this.props.values.roomTypeId}/rate`
-                            )
+                            axios.get("/api/room/hotelroom?room_type_id=" + roomTypeId),
+                            axios.get(`api/roomtype/${this.props.values.roomTypeId}/rate`)
                         ]);
                         this.setState({
                             rates: rates.data,
@@ -185,12 +177,8 @@ class Walkin extends Component {
                             guest_no: this.props.values.numberOfGuest,
                             address: this.props.values.address,
                             country: this.props.values.country,
-                            from_date: moment(
-                                this.props.values.checkInDate
-                            ).format("YYYY-MM-DD"),
-                            to_date: moment(
-                                this.props.values.checkOutDate
-                            ).format("YYYY-MM-DD"),
+                            from_date: moment(this.props.values.checkInDate).format("YYYY-MM-DD"),
+                            to_date: moment(this.props.values.checkOutDate).format("YYYY-MM-DD"),
                             room_id: this.props.values.roomId,
                             rate_id: this.props.values.rateId,
                             paidAmount: this.props.values.paidAmount
@@ -265,8 +253,7 @@ class Walkin extends Component {
                 snackBarMessage: (
                     <span>
                         {`You can't select dates that are the `}
-                        <strong>same</strong> or <strong>before</strong> the
-                        checkin date!
+                        <strong>same</strong> or <strong>before</strong> the checkin date!
                     </span>
                 ),
                 snackBar: true
@@ -289,24 +276,14 @@ class Walkin extends Component {
 
     onChangeNumber = e => {
         if (e.target.value.length > 9) {
-            this.props.setFieldValue(
-                "contactno",
-                e.target.value.substring(0, 9)
-            );
+            this.props.setFieldValue("contactno", e.target.value.substring(0, 9));
         } else {
             this.props.setFieldValue("contactno", e.target.value);
         }
     };
 
     render() {
-        const {
-            values,
-            touched,
-            errors,
-            handleChange,
-            handleBlur,
-            handleSubmit
-        } = this.props;
+        const { values, touched, errors, handleChange, handleBlur, handleSubmit } = this.props;
         let {
             newGuest,
             honorific,
@@ -373,52 +350,26 @@ class Walkin extends Component {
                                 >
                                     <div style={{ display: "flex" }}>
                                         <Icon>account_circle</Icon>
-                                        <Typography
-                                            variant="subtitle1"
-                                            style={{ marginLeft: 5 }}
-                                        >
+                                        <Typography variant="subtitle1" style={{ marginLeft: 5 }}>
                                             About Guest
                                         </Typography>
                                     </div>
                                     <FormControlLabel
-                                        control={
-                                            <Switch
-                                                color="primary"
-                                                checked={newGuest}
-                                                onChange={this.handleCheckbox}
-                                                value={!newGuest}
-                                            />
-                                        }
+                                        control={<Switch color="primary" checked={newGuest} onChange={this.handleCheckbox} value={!newGuest} />}
                                         label="New guest"
                                         labelPlacement="start"
                                     />
                                 </div>
                                 <Collapse in={!newGuest}>
                                     <div style={{ marginBottom: 20 }}>
-                                        <Button
-                                            variant="contained"
-                                            color="primary"
-                                            fullWidth
-                                            onClick={this.handleUserDialog}
-                                        >
+                                        <Button variant="contained" color="primary" fullWidth onClick={this.handleUserDialog}>
                                             Select Guest
                                         </Button>
                                     </div>
                                 </Collapse>
 
-                                <FormControl
-                                    component="fieldset"
-                                    error={
-                                        (validatedCalled ||
-                                            touched.honorific) &&
-                                        errors.honorific
-                                            ? true
-                                            : false
-                                    }
-                                >
-                                    <FormLabel component="legend">
-                                        Honorifics
-                                    </FormLabel>
+                                <FormControl component="fieldset" error={(validatedCalled || touched.honorific) && errors.honorific ? true : false}>
+                                    <FormLabel component="legend">Honorifics</FormLabel>
                                     <RadioGroup
                                         value={values.honorific}
                                         onChange={handleChange}
@@ -430,13 +381,7 @@ class Walkin extends Component {
                                     >
                                         <FormControlLabel
                                             value="Mr"
-                                            control={
-                                                <Radio
-                                                    disabled={!newGuest}
-                                                    color="primary"
-                                                    id="honorific"
-                                                />
-                                            }
+                                            control={<Radio disabled={!newGuest} color="primary" id="honorific" />}
                                             label="Mr"
                                         />
                                         <FormControlLabel
@@ -483,11 +428,7 @@ class Walkin extends Component {
                                         />
                                     </RadioGroup>
                                     <FormHelperText>
-                                        {(validatedCalled ||
-                                            touched.honorific) &&
-                                        errors.honorific
-                                            ? errors.honorific
-                                            : ""}
+                                        {(validatedCalled || touched.honorific) && errors.honorific ? errors.honorific : ""}
                                     </FormHelperText>
                                 </FormControl>
 
@@ -497,20 +438,8 @@ class Walkin extends Component {
                                     variant="standard"
                                     label="Firstname"
                                     margin="normal"
-                                    helperText={
-                                        (validatedCalled ||
-                                            touched.firstname) &&
-                                        errors.firstname
-                                            ? errors.firstname
-                                            : ""
-                                    }
-                                    error={
-                                        (validatedCalled ||
-                                            touched.firstname) &&
-                                        errors.firstname
-                                            ? true
-                                            : false
-                                    }
+                                    helperText={(validatedCalled || touched.firstname) && errors.firstname ? errors.firstname : ""}
+                                    error={(validatedCalled || touched.firstname) && errors.firstname ? true : false}
                                     onBlur={handleBlur}
                                     value={values.firstname}
                                     onChange={handleChange}
@@ -525,20 +454,8 @@ class Walkin extends Component {
                                     variant="standard"
                                     label="Middle name"
                                     margin="normal"
-                                    helperText={
-                                        (validatedCalled ||
-                                            touched.middlename) &&
-                                        errors.middlename
-                                            ? errors.middlename
-                                            : ""
-                                    }
-                                    error={
-                                        (validatedCalled ||
-                                            touched.middlename) &&
-                                        errors.middlename
-                                            ? true
-                                            : false
-                                    }
+                                    helperText={(validatedCalled || touched.middlename) && errors.middlename ? errors.middlename : ""}
+                                    error={(validatedCalled || touched.middlename) && errors.middlename ? true : false}
                                     onBlur={handleBlur}
                                     value={values.middlename}
                                     onChange={handleChange}
@@ -552,18 +469,8 @@ class Walkin extends Component {
                                     variant="standard"
                                     label="Lastname"
                                     margin="normal"
-                                    helperText={
-                                        (validatedCalled || touched.lastname) &&
-                                        errors.lastname
-                                            ? errors.lastname
-                                            : ""
-                                    }
-                                    error={
-                                        (validatedCalled || touched.lastname) &&
-                                        errors.lastname
-                                            ? true
-                                            : false
-                                    }
+                                    helperText={(validatedCalled || touched.lastname) && errors.lastname ? errors.lastname : ""}
+                                    error={(validatedCalled || touched.lastname) && errors.lastname ? true : false}
                                     onBlur={handleBlur}
                                     value={values.lastname}
                                     onChange={handleChange}
@@ -577,18 +484,8 @@ class Walkin extends Component {
                                     variant="standard"
                                     label="Address"
                                     margin="normal"
-                                    helperText={
-                                        (validatedCalled || touched.address) &&
-                                        errors.address
-                                            ? errors.address
-                                            : ""
-                                    }
-                                    error={
-                                        (validatedCalled || touched.address) &&
-                                        errors.address
-                                            ? true
-                                            : false
-                                    }
+                                    helperText={(validatedCalled || touched.address) && errors.address ? errors.address : ""}
+                                    error={(validatedCalled || touched.address) && errors.address ? true : false}
                                     onBlur={handleBlur}
                                     value={values.address}
                                     onChange={handleChange}
@@ -599,18 +496,10 @@ class Walkin extends Component {
                                 <FormControl
                                     variant="standard"
                                     margin="normal"
-                                    error={
-                                        (validatedCalled || touched.country) &&
-                                        errors.country
-                                            ? true
-                                            : false
-                                    }
+                                    error={(validatedCalled || touched.country) && errors.country ? true : false}
                                     fullWidth
                                 >
-                                    <InputLabel
-                                        htmlFor="outlined-age-native-simple"
-                                        ref={el => (this.countryInput = el)}
-                                    >
+                                    <InputLabel htmlFor="outlined-age-native-simple" ref={el => (this.countryInput = el)}>
                                         Country
                                     </InputLabel>
                                     <Select
@@ -632,12 +521,7 @@ class Walkin extends Component {
                                             );
                                         })}
                                     </Select>
-                                    <FormHelperText>
-                                        {(validatedCalled || touched.country) &&
-                                        errors.country
-                                            ? errors.country
-                                            : ""}
-                                    </FormHelperText>
+                                    <FormHelperText>{(validatedCalled || touched.country) && errors.country ? errors.country : ""}</FormHelperText>
                                 </FormControl>
                                 <TextField
                                     id="email"
@@ -645,18 +529,8 @@ class Walkin extends Component {
                                     variant="standard"
                                     label="Email address"
                                     margin="normal"
-                                    helperText={
-                                        (validatedCalled || touched.country) &&
-                                        errors.email
-                                            ? errors.email
-                                            : ""
-                                    }
-                                    error={
-                                        (validatedCalled || touched.country) &&
-                                        errors.email
-                                            ? true
-                                            : false
-                                    }
+                                    helperText={(validatedCalled || touched.country) && errors.email ? errors.email : ""}
+                                    error={(validatedCalled || touched.country) && errors.email ? true : false}
                                     onBlur={handleBlur}
                                     value={values.email}
                                     onChange={handleChange}
@@ -704,20 +578,8 @@ class Walkin extends Component {
                                     variant="standard"
                                     label="Contact Number"
                                     margin="normal"
-                                    helperText={
-                                        (validatedCalled ||
-                                            touched.contactno) &&
-                                        errors.contactno
-                                            ? errors.contactno
-                                            : ""
-                                    }
-                                    error={
-                                        (validatedCalled ||
-                                            touched.contactno) &&
-                                        errors.contactno
-                                            ? true
-                                            : false
-                                    }
+                                    helperText={(validatedCalled || touched.contactno) && errors.contactno ? errors.contactno : ""}
+                                    error={(validatedCalled || touched.contactno) && errors.contactno ? true : false}
                                     onBlur={handleBlur}
                                     value={values.contactno}
                                     onChange={handleChange}
@@ -736,10 +598,7 @@ class Walkin extends Component {
                                     }}
                                 >
                                     <Icon>information</Icon>
-                                    <Typography
-                                        variant="subtitle1"
-                                        style={{ marginLeft: 5 }}
-                                    >
+                                    <Typography variant="subtitle1" style={{ marginLeft: 5 }}>
                                         About Booking
                                     </Typography>
                                 </div>
@@ -775,19 +634,10 @@ class Walkin extends Component {
                                 <FormControl
                                     variant="standard"
                                     margin="normal"
-                                    error={
-                                        (validatedCalled ||
-                                            touched.roomTypeId) &&
-                                        errors.roomTypeId
-                                            ? true
-                                            : false
-                                    }
+                                    error={(validatedCalled || touched.roomTypeId) && errors.roomTypeId ? true : false}
                                     fullWidth
                                 >
-                                    <InputLabel
-                                        htmlFor="outlined-age-native-simple"
-                                        ref={el => (this.roomInput = el)}
-                                    >
+                                    <InputLabel htmlFor="outlined-age-native-simple" ref={el => (this.roomInput = el)}>
                                         Room type
                                     </InputLabel>
                                     <Select
@@ -799,65 +649,30 @@ class Walkin extends Component {
                                             }
                                         }}
                                     >
-                                        {this.state.roomtypes.map(
-                                            (roomType, i) => {
-                                                let [
-                                                    firstLetter,
-                                                    ...bedType
-                                                ] = roomType.bed_type;
-                                                bedType = bedType.reduce(
-                                                    (acc, el) =>
-                                                        acc + el.toLowerCase(),
-                                                    ""
-                                                );
-                                                return (
-                                                    <MenuItem
-                                                        value={i}
-                                                        key={roomType.id}
-                                                    >
-                                                        {`${
-                                                            roomType.name
-                                                        } (${firstLetter +
-                                                            bedType} Bed)`}
-                                                    </MenuItem>
-                                                );
-                                            }
-                                        )}
+                                        {this.state.roomtypes.map((roomType, i) => {
+                                            let [firstLetter, ...bedType] = roomType.bed_type;
+                                            bedType = bedType.reduce((acc, el) => acc + el.toLowerCase(), "");
+                                            return (
+                                                <MenuItem value={i} key={roomType.id}>
+                                                    {`${roomType.name} (${firstLetter + bedType} Bed)`}
+                                                </MenuItem>
+                                            );
+                                        })}
                                     </Select>
                                     <FormHelperText>
-                                        {(validatedCalled ||
-                                            touched.roomTypeId) &&
-                                        errors.roomTypeId
-                                            ? errors.roomTypeId
-                                            : ""}
+                                        {(validatedCalled || touched.roomTypeId) && errors.roomTypeId ? errors.roomTypeId : ""}
                                     </FormHelperText>
                                 </FormControl>
                                 <FormControl
                                     variant="standard"
                                     margin="normal"
-                                    error={
-                                        (validatedCalled || touched.roomId) &&
-                                        errors.roomId
-                                            ? true
-                                            : false
-                                    }
+                                    error={(validatedCalled || touched.roomId) && errors.roomId ? true : false}
                                     fullWidth
-                                    disabled={
-                                        this.state.fetchingRate ||
-                                        roomTypeIndex === ""
-                                    }
+                                    disabled={this.state.fetchingRate || roomTypeIndex === ""}
                                 >
-                                    <InputLabel
-                                        htmlFor="outlined-age-native-simple"
-                                        ref={el => (this.roomInput = el)}
-                                    >
+                                    <InputLabel htmlFor="outlined-age-native-simple" ref={el => (this.roomInput = el)}>
                                         Room
-                                        {this.state.fetchingRate && (
-                                            <CircularProgress
-                                                size={13}
-                                                style={{ marginLeft: 5 }}
-                                            />
-                                        )}
+                                        {this.state.fetchingRate && <CircularProgress size={13} style={{ marginLeft: 5 }} />}
                                     </InputLabel>
                                     <Select
                                         name="rateId"
@@ -870,47 +685,21 @@ class Walkin extends Component {
                                         }}
                                     >
                                         {this.state.rooms.map((room, i) => {
-                                            return (
-                                                <MenuItem
-                                                    value={i}
-                                                    key={room.id}
-                                                >{`Room #${room.room_number}`}</MenuItem>
-                                            );
+                                            return <MenuItem value={i} key={room.id}>{`Room #${room.room_number}`}</MenuItem>;
                                         })}
                                     </Select>
-                                    <FormHelperText>
-                                        {(validatedCalled || touched.roomId) &&
-                                        errors.roomId
-                                            ? errors.roomId
-                                            : ""}
-                                    </FormHelperText>
+                                    <FormHelperText>{(validatedCalled || touched.roomId) && errors.roomId ? errors.roomId : ""}</FormHelperText>
                                 </FormControl>
                                 <FormControl
                                     variant="standard"
                                     margin="normal"
-                                    error={
-                                        (validatedCalled || touched.rateId) &&
-                                        errors.rateId
-                                            ? true
-                                            : false
-                                    }
+                                    error={(validatedCalled || touched.rateId) && errors.rateId ? true : false}
                                     fullWidth
-                                    disabled={
-                                        this.state.fetchingRate ||
-                                        roomTypeIndex === ""
-                                    }
+                                    disabled={this.state.fetchingRate || roomTypeIndex === ""}
                                 >
-                                    <InputLabel
-                                        htmlFor="outlined-age-native-simple"
-                                        ref={el => (this.roomInput = el)}
-                                    >
+                                    <InputLabel htmlFor="outlined-age-native-simple" ref={el => (this.roomInput = el)}>
                                         Rate
-                                        {this.state.fetchingRate && (
-                                            <CircularProgress
-                                                size={13}
-                                                style={{ marginLeft: 5 }}
-                                            />
-                                        )}
+                                        {this.state.fetchingRate && <CircularProgress size={13} style={{ marginLeft: 5 }} />}
                                     </InputLabel>
                                     <Select
                                         name="rateId"
@@ -923,31 +712,14 @@ class Walkin extends Component {
                                         }}
                                     >
                                         {this.state.rates.map((rate, i) => {
-                                            return (
-                                                <MenuItem
-                                                    value={i}
-                                                    key={rate.id}
-                                                >{`P${rate.price} (${rate.name})`}</MenuItem>
-                                            );
+                                            return <MenuItem value={i} key={rate.id}>{`P${rate.price} (${rate.name})`}</MenuItem>;
                                         })}
                                     </Select>
-                                    <FormHelperText>
-                                        {(validatedCalled || touched.rateId) &&
-                                        errors.rateId
-                                            ? errors.rateId
-                                            : ""}
-                                    </FormHelperText>
+                                    <FormHelperText>{(validatedCalled || touched.rateId) && errors.rateId ? errors.rateId : ""}</FormHelperText>
                                 </FormControl>
 
-                                <FormControl
-                                    variant="standard"
-                                    margin="normal"
-                                    fullWidth
-                                    disabled={roomTypeIndex === ""}
-                                >
-                                    <InputLabel htmlFor="outlined-age-native-simple">
-                                        Number of Guests
-                                    </InputLabel>
+                                <FormControl variant="standard" margin="normal" fullWidth disabled={roomTypeIndex === ""}>
+                                    <InputLabel htmlFor="outlined-age-native-simple">Number of Guests</InputLabel>
                                     <Select
                                         name="numberOfGuest"
                                         onChange={this.handleSelectChange}
@@ -982,10 +754,7 @@ class Walkin extends Component {
                                     }}
                                 >
                                     <Icon>account_balance_wallet</Icon>
-                                    <Typography
-                                        variant="subtitle1"
-                                        style={{ marginLeft: 5 }}
-                                    >
+                                    <Typography variant="subtitle1" style={{ marginLeft: 5 }}>
                                         Balance
                                     </Typography>
                                 </div>
@@ -1029,11 +798,7 @@ class Walkin extends Component {
                                     variant="standard"
                                     label="Balance"
                                     margin="normal"
-                                    value={
-                                        values.price - values.paidAmount < 0
-                                            ? 0
-                                            : values.price - values.paidAmount
-                                    }
+                                    value={values.price - values.paidAmount < 0 ? 0 : values.price - values.paidAmount}
                                     InputProps={{ readOnly: true }}
                                     fullWidth
                                 />
@@ -1048,11 +813,7 @@ class Walkin extends Component {
                                 justifyContent: "flex-end"
                             }}
                         >
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={this.onSubmit}
-                            >
+                            <Button variant="contained" color="primary" onClick={this.onSubmit}>
                                 {/* This Button uses a Font Icon, see the installation instructions in the docs. */}
                                 <SaveIcon style={{ marginRight: "20px" }} />
                                 Save
@@ -1092,12 +853,7 @@ class Walkin extends Component {
                     }
                     TransitionComponent={Slide}
                     action={[
-                        <IconButton
-                            key="close"
-                            aria-label="close"
-                            color="inherit"
-                            onClick={this.handleCloseSnackBar}
-                        >
+                        <IconButton key="close" aria-label="close" color="inherit" onClick={this.handleCloseSnackBar}>
                             <Icon>close</Icon>
                         </IconButton>
                     ]}
@@ -1183,27 +939,13 @@ const WithFormik = withFormik({
 
     validationSchema: function() {
         let schema = yup.object().shape({
-            honorific: yup
-                .string("Honorific must be a word!")
-                .required("Honorific is required!"),
-            firstname: yup
-                .string("Name must be a word!")
-                .required("First Name is required!"),
-            middlename: yup
-                .string("Name must be a word!")
-                .required("Middle Name is required!"),
-            lastname: yup
-                .string("Name must be a word!")
-                .required("Last Name is required!"),
-            address: yup
-                .string("Name must be a word!")
-                .required("Address is required!"),
-            country: yup
-                .string("Name must be a word!")
-                .required("Country is required!"),
-            email: yup
-                .string("Name must be a word!")
-                .required("Gmail is required!"),
+            honorific: yup.string("Honorific must be a word!").required("Honorific is required!"),
+            firstname: yup.string("Name must be a word!").required("First Name is required!"),
+            middlename: yup.string("Name must be a word!").required("Middle Name is required!"),
+            lastname: yup.string("Name must be a word!").required("Last Name is required!"),
+            address: yup.string("Name must be a word!").required("Address is required!"),
+            country: yup.string("Name must be a word!").required("Country is required!"),
+            email: yup.string("Name must be a word!").required("Gmail is required!"),
             contactno: yup
                 .string("Name must be a word!")
                 .length(9, "Contact number must be 9 digits")

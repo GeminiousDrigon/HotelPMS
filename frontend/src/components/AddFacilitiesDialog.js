@@ -20,6 +20,7 @@ import PersonIcon from "@material-ui/icons/Person";
 
 import axios from "axios";
 import makeStyles from "@material-ui/styles/makeStyles";
+import { DialogContent } from "@material-ui/core";
 
 export default class AddFacilitiesDialog extends Component {
     constructor(props) {
@@ -32,18 +33,17 @@ export default class AddFacilitiesDialog extends Component {
         };
     }
 
-    onClose = (get) => {
+    onClose = get => {
         this.setState({ fetching: true });
-        this.props.handleClose()
-        if(get)
-            this.props.getFacilities()
+        this.props.handleClose();
+        if (get) this.props.getFacilities();
     };
 
     onEntered = async () => {
-        let [facilities, roomFacilities] = await Promise.all([axios.get("/api/amenity"), axios.get(`/api/roomtype/${this.props.id}/amenity`)])
+        let [facilities, roomFacilities] = await Promise.all([axios.get("/api/amenity"), axios.get(`/api/roomtype/${this.props.id}/amenity`)]);
         //get all facilities of that room
         //use the map function to get the array of the ids
-        let selectedIds = roomFacilities.data.map(el =>el.id);
+        let selectedIds = roomFacilities.data.map(el => el.id);
         let output = facilities.data.map((el, i) => {
             if (selectedIds.includes(el.id)) {
                 el.selected = true;
@@ -67,14 +67,13 @@ export default class AddFacilitiesDialog extends Component {
 
     submitFacilities = async () => {
         try {
-            let facilities = this.state.facilities.filter(el => el.selected).map(el=>el.id);
-            await axios.post(`/api/roomtype/${this.props.id}/amenity`, {id: facilities});
+            let facilities = this.state.facilities.filter(el => el.selected).map(el => el.id);
+            await axios.post(`/api/roomtype/${this.props.id}/amenity`, { id: facilities });
             this.onClose(true);
         } catch (err) {
-            console.log(err)
+            console.log(err);
         }
-    }
-    
+    };
 
     render() {
         let { facilities } = this.state;
@@ -102,64 +101,55 @@ export default class AddFacilitiesDialog extends Component {
                 fullWidth
                 maxWidth="xs"
             >
-                <DialogTitle id="simple-dialog-title">
-                    Select facilities
-                </DialogTitle>
-                {this.state.fetching ? (
-                    <div
-                        style={{
-                            width: "100%",
-                            margin: "10px 0",
-                            textAlign: "center"
-                        }}
-                    >
-                        <CircularProgress />
-                    </div>
-                ) : (
-                    <>
-                        <div style={{ padding: 20 }}>
-                            {selectedNo === 0 ? (
-                                <div
-                                    style={{
-                                        textAlign: "center"
-                                    }}
-                                >
-                                    <Typography variant="subtitle1">
-                                        No facilities Added
-                                    </Typography>
-                                </div>
-                            ) : (
-                                chips
-                            )}
+                <DialogTitle id="simple-dialog-title">Select facilities</DialogTitle>
+                <DialogContent>
+                    {this.state.fetching ? (
+                        <div
+                            style={{
+                                width: "100%",
+                                margin: "10px 0",
+                                textAlign: "center"
+                            }}
+                        >
+                            <CircularProgress />
                         </div>
-                        <List>
-                            {facilities.map(facility => (
-                                <ListItem
-                                    button
-                                    // onClick={() => handleListItemClick(email)}
-                                    key={facility.id}
-                                    onClick={() =>
-                                        this.handleSelectFacility(facility)
-                                    }
-                                >
-                                    <ListItemAvatar>
-                                        <Avatar
-                                            style={{
-                                                backgroundColor: "#3f51b5"
-                                            }}
-                                        >
-                                            <Icon>
-                                                {facility.selected
-                                                    ? "check"
-                                                    : facility.icon}
-                                            </Icon>
-                                        </Avatar>
-                                    </ListItemAvatar>
-                                    <ListItemText primary={facility.name} />
-                                </ListItem>
-                            ))}
+                    ) : (
+                        <>
+                            <div style={{ padding: 20 }}>
+                                {selectedNo === 0 ? (
+                                    <div
+                                        style={{
+                                            textAlign: "center"
+                                        }}
+                                    >
+                                        <Typography variant="subtitle1">No facilities Added</Typography>
+                                    </div>
+                                ) : (
+                                    chips
+                                )}
+                            </div>
+                            <List>
+                                {facilities.map(facility => (
+                                    <ListItem
+                                        button
+                                        // onClick={() => handleListItemClick(email)}
+                                        key={facility.id}
+                                        onClick={() => this.handleSelectFacility(facility)}
+                                    >
+                                        <ListItemAvatar>
+                                            <Avatar
+                                                style={{
+                                                    backgroundColor: "#3f51b5"
+                                                }}
+                                            >
+                                                <Icon>{facility.selected ? "check" : facility.icon}</Icon>
+                                            </Avatar>
+                                        </ListItemAvatar>
+                                        <ListItemText primary={facility.name} />
+                                    </ListItem>
+                                ))}
 
-                            {/* <ListItem
+                                {/* <ListItem
                     button
                     onClick={() => handleListItemClick("addAccount")}
                 >
@@ -170,14 +160,17 @@ export default class AddFacilitiesDialog extends Component {
                     </ListItemAvatar>
                     <ListItemText primary="add account" />
                 </ListItem> */}
-                        </List>
-                    </>
-                )}
+                            </List>
+                        </>
+                    )}
+                </DialogContent>
                 <DialogActions>
                     <Button color="primary" onClick={this.onClose}>
                         Cancel
                     </Button>
-                    <Button color="primary" onClick={this.submitFacilities}>Add</Button>
+                    <Button color="primary" onClick={this.submitFacilities}>
+                        Add
+                    </Button>
                 </DialogActions>
             </Dialog>
         );

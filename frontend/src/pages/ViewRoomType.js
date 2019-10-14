@@ -23,12 +23,12 @@ import TableBody from "@material-ui/core/TableBody";
 import IconButton from "@material-ui/core/IconButton";
 import Menu from "@material-ui/core/Menu";
 
-
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 
 import axios from "axios";
 import AddFacilitiesDialog from "../components/AddFacilitiesDialog";
 import AddRatesDialog from "../components/AddRatesDialog";
+import AddRoomImageDialog from "../components/AddRoomImageDialog";
 
 export default class ViewRoomType extends Component {
     constructor(props) {
@@ -62,18 +62,7 @@ export default class ViewRoomType extends Component {
         try {
             let { id } = this.props.match.params;
             let { data } = await axios.get(`/api/roomtype/${id}`);
-            let {
-                name,
-                description,
-                room_size,
-                room_size_unit,
-                bed_no,
-                bed_type,
-                amenities,
-                max_guest,
-                rates,
-                rooms
-            } = data;
+            let { name, description, room_size, room_size_unit, bed_no, bed_type, amenities, max_guest, rates, rooms } = data;
             this.setState({
                 name,
                 description,
@@ -127,9 +116,7 @@ export default class ViewRoomType extends Component {
 
     getAllRates = async () => {
         try {
-            let { data } = await axios.get(
-                `/api/roomtype/${this.props.match.params.id}/rate`
-            );
+            let { data } = await axios.get(`/api/roomtype/${this.props.match.params.id}/rate`);
             console.log(data);
             this.setState({ rates: data });
         } catch (err) {
@@ -151,18 +138,7 @@ export default class ViewRoomType extends Component {
     editRate = () => this.setState({ rateDialog: true, editRate: true, anchorEl: null });
 
     render() {
-        let {
-            name,
-            description,
-            room_size,
-            room_size_unit,
-            bed_no,
-            bed_type,
-            max_guest,
-            facilities,
-            rates,
-            anchorEl
-        } = this.state;
+        let { name, description, room_size, room_size_unit, bed_no, bed_type, max_guest, facilities, rates, anchorEl } = this.state;
         let open = Boolean(anchorEl);
         return (
             <AdminLayout {...this.props}>
@@ -184,11 +160,7 @@ export default class ViewRoomType extends Component {
                                         <Typography variant="h5" gutterBottom>
                                             Name
                                         </Typography>
-                                        <Typography
-                                            variant="h6"
-                                            gutterBottom
-                                            style={{ paddingLeft: 10 }}
-                                        >
+                                        <Typography variant="h6" gutterBottom style={{ paddingLeft: 10 }}>
                                             {name}
                                         </Typography>
                                     </div>
@@ -198,12 +170,7 @@ export default class ViewRoomType extends Component {
                                         <Typography variant="h5" gutterBottom>
                                             Description
                                         </Typography>
-                                        <Typography
-                                            variant="h6"
-                                            gutterBottom
-                                            style={{ paddingLeft: 10 }}
-                                            component="p"
-                                        >
+                                        <Typography variant="h6" gutterBottom style={{ paddingLeft: 10 }} component="p">
                                             {description}
                                         </Typography>
                                     </div>
@@ -213,11 +180,7 @@ export default class ViewRoomType extends Component {
                                         <Typography variant="h5" gutterBottom>
                                             Room Size
                                         </Typography>
-                                        <Typography
-                                            variant="h6"
-                                            gutterBottom
-                                            style={{ paddingLeft: 10 }}
-                                        >
+                                        <Typography variant="h6" gutterBottom style={{ paddingLeft: 10 }}>
                                             {room_size + room_size_unit}
                                             <sup>2</sup>
                                         </Typography>
@@ -228,11 +191,7 @@ export default class ViewRoomType extends Component {
                                         <Typography variant="h5" gutterBottom>
                                             Number of Beds
                                         </Typography>
-                                        <Typography
-                                            variant="h6"
-                                            gutterBottom
-                                            style={{ paddingLeft: 10 }}
-                                        >
+                                        <Typography variant="h6" gutterBottom style={{ paddingLeft: 10 }}>
                                             {bed_no}
                                         </Typography>
                                     </div>
@@ -241,11 +200,7 @@ export default class ViewRoomType extends Component {
                                     <Typography variant="h5" gutterBottom>
                                         Bed Type
                                     </Typography>
-                                    <Typography
-                                        variant="h6"
-                                        gutterBottom
-                                        style={{ paddingLeft: 10 }}
-                                    >
+                                    <Typography variant="h6" gutterBottom style={{ paddingLeft: 10 }}>
                                         {bed_type}
                                     </Typography>
                                 </Grid>
@@ -253,15 +208,36 @@ export default class ViewRoomType extends Component {
                                     <Typography variant="h5" gutterBottom>
                                         Max Guest
                                     </Typography>
-                                    <Typography
-                                        variant="h6"
-                                        gutterBottom
-                                        style={{ paddingLeft: 10 }}
-                                    >
+                                    <Typography variant="h6" gutterBottom style={{ paddingLeft: 10 }}>
                                         {max_guest}
                                     </Typography>
                                 </Grid>
                             </Grid>
+                        </Paper>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Paper
+                            style={{
+                                padding: "20px 0 "
+                            }}
+                        >
+                            <div
+                                style={{
+                                    display: "flex",
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    alignContent: "center",
+                                    margin: "15px 0",
+                                    padding: "0 20px"
+                                }}
+                            >
+                                <Typography variant="h4">Images</Typography>
+                                <Button variant="outlined" color="primary" style={{ marginLeft: 10 }} onClick={this.addFacility}>
+                                    Add
+                                </Button>
+                            </div>
+
+                            <Divider />
                         </Paper>
                     </Grid>
                     <Grid item md={6} xs={12}>
@@ -281,15 +257,8 @@ export default class ViewRoomType extends Component {
                                         padding: "0 20px"
                                     }}
                                 >
-                                    <Typography variant="h4">
-                                        Facilities
-                                    </Typography>
-                                    <Button
-                                        variant="outlined"
-                                        color="primary"
-                                        style={{ marginLeft: 10 }}
-                                        onClick={this.addFacility}
-                                    >
+                                    <Typography variant="h4">Facilities</Typography>
+                                    <Button variant="outlined" color="primary" style={{ marginLeft: 10 }} onClick={this.addFacility}>
                                         Add
                                     </Button>
                                 </div>
@@ -329,13 +298,10 @@ export default class ViewRoomType extends Component {
                                                         flexDirection: "row",
                                                         alignContent: "center",
                                                         alignItems: "center",
-                                                        margin:
-                                                            "3px 10px 3px 0px"
+                                                        margin: "3px 10px 3px 0px"
                                                     }}
                                                 >
-                                                    <Icon color="primary">
-                                                        {el.icon}
-                                                    </Icon>
+                                                    <Icon color="primary">{el.icon}</Icon>
                                                     <Typography
                                                         variant="h6"
                                                         style={{
@@ -370,12 +336,7 @@ export default class ViewRoomType extends Component {
                                 }}
                             >
                                 <Typography variant="h4">Rates</Typography>
-                                <Button
-                                    variant="outlined"
-                                    color="primary"
-                                    style={{ marginLeft: 10 }}
-                                    onClick={this.addRate}
-                                >
+                                <Button variant="outlined" color="primary" style={{ marginLeft: 10 }} onClick={this.addRate}>
                                     Add
                                 </Button>
                             </div>
@@ -401,56 +362,30 @@ export default class ViewRoomType extends Component {
                                     <TableHead>
                                         <TableRow>
                                             <TableCell>Name</TableCell>
-                                            <TableCell align="right">
-                                                Sleep
-                                            </TableCell>
-                                            <TableCell align="center">
-                                                With breakfast
-                                            </TableCell>
-                                            <TableCell align="right">
-                                                Price
-                                            </TableCell>
-                                            <TableCell align="right">
-                                                Action
-                                            </TableCell>
+                                            <TableCell align="right">Sleep</TableCell>
+                                            <TableCell align="center">With breakfast</TableCell>
+                                            <TableCell align="right">Price</TableCell>
+                                            <TableCell align="right">Action</TableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
                                         {rates.map(rate => (
                                             <TableRow key={rate.id}>
-                                                <TableCell
-                                                    component="th"
-                                                    scope="row"
-                                                >
+                                                <TableCell component="th" scope="row">
                                                     {rate.name}
                                                 </TableCell>
-                                                <TableCell align="right">
-                                                    {rate.sleep}
-                                                </TableCell>
-                                                <TableCell align="center">
-                                                    {rate.breakfast
-                                                        ? "Yes"
-                                                        : "No"}
-                                                </TableCell>
-                                                <TableCell align="right">
-                                                    {rate.price}
-                                                </TableCell>
+                                                <TableCell align="right">{rate.sleep}</TableCell>
+                                                <TableCell align="center">{rate.breakfast ? "Yes" : "No"}</TableCell>
+                                                <TableCell align="right">{rate.price}</TableCell>
                                                 <TableCell align="right">
                                                     <IconButton
                                                         aria-label="more"
                                                         aria-controls="long-menu"
                                                         aria-haspopup="true"
-                                                        onClick={e =>
-                                                            this.handleClickRate(
-                                                                e,
-                                                                rate.id
-                                                            )
-                                                        }
+                                                        onClick={e => this.handleClickRate(e, rate.id)}
                                                         size="small"
                                                     >
-                                                        <Icon fontSize="inherit">
-                                                            more_vert
-                                                        </Icon>
+                                                        <Icon fontSize="inherit">more_vert</Icon>
                                                     </IconButton>
                                                 </TableCell>
                                             </TableRow>
@@ -495,52 +430,25 @@ export default class ViewRoomType extends Component {
                                 <Table>
                                     <TableHead>
                                         <TableRow>
-                                            <TableCell align="left">
-                                                Room Number
-                                            </TableCell>
-                                            <TableCell align="left">
-                                                Room Size
-                                            </TableCell>
-                                            <TableCell align="left">
-                                                Room type
-                                            </TableCell>
-                                            <TableCell align="left">
-                                                Bed Type
-                                            </TableCell>
-                                            <TableCell align="left">
-                                                Number of Beds
-                                            </TableCell>
+                                            <TableCell align="left">Room Number</TableCell>
+                                            <TableCell align="left">Room Size</TableCell>
+                                            <TableCell align="left">Room type</TableCell>
+                                            <TableCell align="left">Bed Type</TableCell>
+                                            <TableCell align="left">Number of Beds</TableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
                                         {this.state.rooms.map((room, i) => {
                                             return (
                                                 <TableRow>
+                                                    <TableCell align="left">{!room.room_number ? "Unassigned" : room.room_number}</TableCell>
                                                     <TableCell align="left">
-                                                        {!room.room_number
-                                                            ? "Unassigned"
-                                                            : room.room_number}
-                                                    </TableCell>
-                                                    <TableCell align="left">
-                                                        {room.room_type
-                                                            .room_size +
-                                                            " " +
-                                                            room.room_type
-                                                                .room_size_unit}
+                                                        {room.room_type.room_size + " " + room.room_type.room_size_unit}
                                                         <sup>2</sup>
                                                     </TableCell>
-                                                    <TableCell align="left">
-                                                        {room.room_type.name}
-                                                    </TableCell>
-                                                    <TableCell align="left">
-                                                        {
-                                                            room.room_type
-                                                                .bed_type
-                                                        }
-                                                    </TableCell>
-                                                    <TableCell align="left">
-                                                        {room.room_type.bed_no}
-                                                    </TableCell>
+                                                    <TableCell align="left">{room.room_type.name}</TableCell>
+                                                    <TableCell align="left">{room.room_type.bed_type}</TableCell>
+                                                    <TableCell align="left">{room.room_type.bed_no}</TableCell>
                                                 </TableRow>
                                             );
                                         })}
@@ -550,12 +458,7 @@ export default class ViewRoomType extends Component {
                         </Paper>
                     </Grid>
                 </Grid>
-                <Menu
-                    anchorEl={anchorEl}
-                    keepMounted
-                    open={open}
-                    onClose={this.handleCloseRate}
-                >
+                <Menu anchorEl={anchorEl} keepMounted open={open} onClose={this.handleCloseRate}>
                     <MenuItem onClick={this.editRate}>Edit</MenuItem>
                     <MenuItem onClick={this.deleteRate}>Delete</MenuItem>
                 </Menu>
@@ -573,6 +476,9 @@ export default class ViewRoomType extends Component {
                     maxGuest={max_guest}
                     edit={this.state.editRate}
                     rateId={this.state.rateId}
+                />
+                <AddRoomImageDialog 
+                    open={true}
                 />
             </AdminLayout>
         );
