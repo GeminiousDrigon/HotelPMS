@@ -207,7 +207,7 @@ class Walkin extends Component {
                                     alignItems: "center"
                                 }}
                             >
-                                <InfoIcon style={{ marginRight: "5" }} />{" "}
+                                <InfoIcon style={{ marginRight: "5" }} />
                                 {` Successfully Added Guest! `}
                             </span>
                         );

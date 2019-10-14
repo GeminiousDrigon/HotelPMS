@@ -20,11 +20,19 @@ export default class RoomTypeItem extends Component {
                     <Paper
                         style={{
                             padding: 20,
-                            backgroundColor: selectedType.id === roomType.id ? "#3f51b5" : "white",
+                            backgroundColor:
+                                selectedType.id === roomType.id
+                                    ? "#3f51b5"
+                                    : "#c89553",
                             color: selectedType.id === roomType.id && "white"
                         }}
                     >
-                        <Typography variant="h5" component="span" gutterBottom style={{ fontWeight: 500 }}>
+                        <Typography
+                            variant="h5"
+                            component="span"
+                            gutterBottom
+                            style={{ fontWeight: 500 }}
+                        >
                             {roomType.name}
                         </Typography>
                         <div>
@@ -56,7 +64,10 @@ export default class RoomTypeItem extends Component {
                             </Typography>
                             <br />
                             <Typography variant="caption" color="inherit">
-                                Someone booked last {moment(roomType.lastBooking).format("MM/DD/YYYY")}
+                                Someone booked last{" "}
+                                {moment(roomType.lastBooking).format(
+                                    "MM/DD/YYYY"
+                                )}
                             </Typography>
                         </div>
                     </Paper>
@@ -78,11 +89,19 @@ export default class RoomTypeItem extends Component {
                     <Paper
                         style={{
                             padding: 20,
-                            backgroundColor: selectedType.id === roomType.id ? "#3f51b5" : "white",
+                            backgroundColor:
+                                selectedType.id === roomType.id
+                                    ? "#3f51b5"
+                                    : "white",
                             color: selectedType.id === roomType.id && "white"
                         }}
                     >
-                        <Typography variant="h5" component="span" gutterBottom style={{ fontWeight: 500 }}>
+                        <Typography
+                            variant="h5"
+                            component="span"
+                            gutterBottom
+                            style={{ fontWeight: 500 }}
+                        >
                             {roomType.name}
                         </Typography>
                         <div>

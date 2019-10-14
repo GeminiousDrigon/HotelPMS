@@ -12,6 +12,12 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import Grid from "@material-ui/core/Grid";
 import MenuItem from "@material-ui/core/MenuItem";
+import Slide from "@material-ui/core/Slide";
+import Snackbar from "@material-ui/core/Snackbar";
+import IconButton from "@material-ui/core/IconButton";
+import Icon from "@material-ui/core/Icon";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import InfoIcon from "@material-ui/icons/Info";
 
 import * as yup from "yup";
 import axios from "axios";
@@ -32,6 +38,8 @@ class AddRoomType extends Component {
             bed_no: 0,
             bed_type: "",
             validateCalled: false,
+            snackbar: false,
+            snackBarMessage: "",
 
             roomSizeUnitLabelWidth: 0,
             bedTypeLabelWidth: 0
@@ -57,6 +65,11 @@ class AddRoomType extends Component {
         this.props.setFieldTouched(name, true);
         // this.setState({ [name]: e.target.value });
     };
+    openSnackBar = snackBarMessage => {
+        this.setState({ snackbar: true, snackBarMessage });
+    };
+
+    handleCloseSnackBar = () => this.setState({ snackbar: false });
 
     onAddRoomType = async e => {
         try {
@@ -89,11 +102,33 @@ class AddRoomType extends Component {
                                 ...roomType
                             });
                             this.props.history.push("/property/roomtype");
+                            this.openSnackBar(
+                                <span
+                                    style={{
+                                        display: "flex",
+                                        alignItems: "center"
+                                    }}
+                                >
+                                    <InfoIcon style={{ marginRight: "5" }} />
+                                    {` Successfully Added Guest! `}
+                                </span>
+                            );
                         } else {
                             await axios.post("/api/roomtype", {
                                 ...roomType
                             });
                             this.props.history.push("/property/roomtype");
+                            this.openSnackBar(
+                                <span
+                                    style={{
+                                        display: "flex",
+                                        alignItems: "center"
+                                    }}
+                                >
+                                    <InfoIcon style={{ marginRight: "5" }} />
+                                    {` Successfully Added Guest! `}
+                                </span>
+                            );
                         }
                     } catch (err) {
                         console.log(err);
@@ -119,7 +154,7 @@ class AddRoomType extends Component {
                 max_guest,
                 bed_type
             } = data;
-            this.props.setFieldValue("name",name);
+            this.props.setFieldValue("name", name);
             this.props.setFieldValue("description", description);
             this.props.setFieldValue("room_size", room_size);
             this.props.setFieldValue("room_size_unit", room_size_unit);
@@ -140,9 +175,7 @@ class AddRoomType extends Component {
             handleBlur,
             handleSubmit
         } = this.props;
-        let {
-            validateCalled,
-        } = this.state;
+        let { validateCalled } = this.state;
         return (
             <AdminLayout {...this.props}>
                 <div
@@ -221,15 +254,13 @@ class AddRoomType extends Component {
                                     onBlur={handleBlur}
                                     value={values.room_size}
                                     helperText={
-                                        (validateCalled ||
-                                            touched.room_size) &&
+                                        (validateCalled || touched.room_size) &&
                                         errors.room_size
                                             ? errors.room_size
                                             : ""
                                     }
                                     error={
-                                        (validateCalled ||
-                                            touched.room_size) &&
+                                        (validateCalled || touched.room_size) &&
                                         errors.room_size
                                     }
                                     type="number"
@@ -367,8 +398,7 @@ class AddRoomType extends Component {
                                         </MenuItem>
                                     </Select>
                                     <FormHelperText>
-                                        {(validateCalled ||
-                                            touched.bed_type) &&
+                                        {(validateCalled || touched.bed_type) &&
                                         errors.bed_type
                                             ? errors.bed_type
                                             : ""}
@@ -385,15 +415,13 @@ class AddRoomType extends Component {
                                     onBlur={handleBlur}
                                     value={values.max_guest}
                                     helperText={
-                                        (validateCalled ||
-                                            touched.max_guest) &&
+                                        (validateCalled || touched.max_guest) &&
                                         errors.max_guest
                                             ? errors.max_guest
                                             : ""
                                     }
                                     error={
-                                        (validateCalled ||
-                                            touched.max_guest) &&
+                                        (validateCalled || touched.max_guest) &&
                                         errors.max_guest
                                     }
                                     type="number"
@@ -419,6 +447,42 @@ class AddRoomType extends Component {
                         </div>
                     </Paper>
                 </div>
+                <Snackbar
+                    anchorOrigin={{
+                        vertical: "bottom",
+                        horizontal: "center"
+                    }}
+                    open={this.state.snackbar}
+                    autoHideDuration={5000}
+                    ContentProps={{
+                        "aria-describedby": "message-id"
+                    }}
+                    onClose={this.handleCloseSnackBar}
+                    message={
+                        <span
+                            id="message-id"
+                            style={{
+                                display: "flex",
+                                flexDirection: "row",
+                                justifyItems: "center"
+                            }}
+                        >
+                            {this.state.snackBarMessage}
+                        </span>
+                    }
+                    ClickAwayListenerProps={{ onClickAway: () => null }}
+                    TransitionComponent={Slide}
+                    action={[
+                        <IconButton
+                            key="close"
+                            aria-label="close"
+                            color="inherit"
+                            onClick={this.handleCloseSnackBar}
+                        >
+                            <Icon>close</Icon>
+                        </IconButton>
+                    ]}
+                />
             </AdminLayout>
         );
     }

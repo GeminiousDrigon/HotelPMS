@@ -11,6 +11,12 @@ import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import MenuItem from "@material-ui/core/MenuItem";
+import Slide from "@material-ui/core/Slide";
+import Snackbar from "@material-ui/core/Snackbar";
+import IconButton from "@material-ui/core/IconButton";
+import Icon from "@material-ui/core/Icon";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import InfoIcon from "@material-ui/icons/Info";
 
 import * as yup from "yup";
 import axios from "axios";
@@ -25,7 +31,9 @@ class AddRoomDialog extends Component {
             roomTypes: [],
             submitting: false,
             roomTypeLabelWidth: 0,
-            validateCalled: false
+            validateCalled: false,
+            snackbar: false,
+            snackBarMessage: ""
         };
     }
 
@@ -57,6 +65,12 @@ class AddRoomDialog extends Component {
 
     onChange = e => this.setState({ [e.target.id]: e.target.value });
 
+    openSnackBar = snackBarMessage => {
+        this.setState({ snackbar: true, snackBarMessage });
+    };
+
+    handleCloseSnackBar = () => this.setState({ snackbar: false });
+
     onSubmit = async () => {
         try {
             await this.props.validateForm();
@@ -74,6 +88,17 @@ class AddRoomDialog extends Component {
                                 room_type_id: values.room_type,
                                 quantity: values.quantity
                             });
+                            // this.openSnackBar(
+                            //     <span
+                            //         style={{
+                            //             display: "flex",
+                            //             alignItems: "center"
+                            //         }}
+                            //     >
+                            //         <InfoIcon style={{ marginRight: "5" }} />
+                            //         {` Successfully Added Guest! `}
+                            //     </span>
+                            // );
                         }
                         this.props.handleClose(true);
                     } catch (err) {
@@ -123,11 +148,13 @@ class AddRoomDialog extends Component {
                 onEntered={this.onEntered}
                 onExit={this.onExit}
             >
-                <DialogTitle id="form-dialog-title">Subscribe</DialogTitle>
+                <DialogTitle id="form-dialog-title" style={{ color: "blue" }}>
+                    Add Room
+                </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        To subscribe to this website, please enter your email
-                        address here. We will send updates occasionally.
+                        To add room this dialog, please choose your room type
+                        and enter your number of rooms.
                     </DialogContentText>
                     {this.props.edit && (
                         <TextField
@@ -204,6 +231,42 @@ class AddRoomDialog extends Component {
                         Submit
                     </Button>
                 </DialogActions>
+                <Snackbar
+                    anchorOrigin={{
+                        vertical: "bottom",
+                        horizontal: "center"
+                    }}
+                    open={this.state.snackbar}
+                    autoHideDuration={5000}
+                    ContentProps={{
+                        "aria-describedby": "message-id"
+                    }}
+                    onClose={this.handleCloseSnackBar}
+                    message={
+                        <span
+                            id="message-id"
+                            style={{
+                                display: "flex",
+                                flexDirection: "row",
+                                justifyItems: "center"
+                            }}
+                        >
+                            {this.state.snackBarMessage}
+                        </span>
+                    }
+                    ClickAwayListenerProps={{ onClickAway: () => null }}
+                    TransitionComponent={Slide}
+                    action={[
+                        <IconButton
+                            key="close"
+                            aria-label="close"
+                            color="inherit"
+                            onClick={this.handleCloseSnackBar}
+                        >
+                            <Icon>close</Icon>
+                        </IconButton>
+                    ]}
+                />
             </Dialog>
         );
     }

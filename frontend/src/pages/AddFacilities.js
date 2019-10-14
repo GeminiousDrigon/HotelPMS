@@ -21,6 +21,10 @@ import CheckOutlinedIcon from "@material-ui/icons/CheckOutlined";
 
 import Icon from "@material-ui/core/Icon";
 import Grid from "@material-ui/core/Grid";
+import InfoIcon from "@material-ui/icons/Info";
+import Snackbar from "@material-ui/core/Snackbar";
+import IconButton from "@material-ui/core/IconButton";
+import Slide from "@material-ui/core/Slide";
 
 import * as yup from "yup";
 import axios from "axios";
@@ -39,7 +43,9 @@ class AddFacilities extends Component {
             icon: "",
             validateCalled: false,
             featured: false,
-            iconLabelWidth: 0
+            iconLabelWidth: 0,
+            snackbar: false,
+            snackBarMessage: ""
         };
     }
 
@@ -59,6 +65,10 @@ class AddFacilities extends Component {
             this.getFacilities(this.props.match.params.id);
         }
     }
+    openSnackBar = snackBarMessage => {
+        this.setState({ snackbar: true, snackBarMessage });
+    };
+    handleCloseSnackBar = () => this.setState({ snackbar: false });
     onSave = async () => {
         try {
             this.setState({ validateCalled: true });
@@ -78,7 +88,17 @@ class AddFacilities extends Component {
                                 }
                             );
                             this.props.history.goBack();
-                            this.props.openSnackBar();
+                            this.openSnackBar(
+                                <span
+                                    style={{
+                                        display: "flex",
+                                        alignItems: "center"
+                                    }}
+                                >
+                                    <InfoIcon style={{ marginRight: "5" }} />
+                                    {` Successfully Added Guest! `}
+                                </span>
+                            );
                         } else {
                             let facility = await axios.post("/api/amenity", {
                                 name: values.name,
@@ -200,6 +220,42 @@ class AddFacilities extends Component {
                         })}
                     </Paper>
                 </div>
+                <Snackbar
+                    anchorOrigin={{
+                        vertical: "bottom",
+                        horizontal: "center"
+                    }}
+                    open={this.state.snackbar}
+                    autoHideDuration={5000}
+                    ContentProps={{
+                        "aria-describedby": "message-id"
+                    }}
+                    onClose={this.handleCloseSnackBar}
+                    message={
+                        <span
+                            id="message-id"
+                            style={{
+                                display: "flex",
+                                flexDirection: "row",
+                                justifyItems: "center"
+                            }}
+                        >
+                            {this.state.snackBarMessage}
+                        </span>
+                    }
+                    ClickAwayListenerProps={{ onClickAway: () => null }}
+                    TransitionComponent={Slide}
+                    action={[
+                        <IconButton
+                            key="close"
+                            aria-label="close"
+                            color="inherit"
+                            onClick={this.handleCloseSnackBar}
+                        >
+                            <Icon>close</Icon>
+                        </IconButton>
+                    ]}
+                />
             </AdminLayout>
         );
     }

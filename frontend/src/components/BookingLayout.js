@@ -92,7 +92,7 @@ export default function BookingLayout(props) {
                     </Typography>
 
                     <div className={classes.grow} />
-                    <div
+                    {/* <div
                         className={classes.sectionDesktop}
                         style={{ paddingRight: "50px" }}
                     >
@@ -117,7 +117,7 @@ export default function BookingLayout(props) {
                         >
                             <MoreIcon />
                         </IconButton>
-                    </div>
+                    </div> */}
                 </Toolbar>
             </AppBar>
             <main className={classes.content} style={{ padding: 25 }}>
