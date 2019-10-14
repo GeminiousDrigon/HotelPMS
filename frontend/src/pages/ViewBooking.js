@@ -152,6 +152,7 @@ export default class ViewBooking extends Component {
             booking.total = total;
             booking.balance = this.state.booking.totalPrice - total;
             this.setState({ booking, fetchingPayment: false });
+            
         } catch (err) {
             console.log(err);
             this.setState({ fetchingPayment: false });
@@ -184,6 +185,7 @@ export default class ViewBooking extends Component {
                 this.setState({ initialPayment: 0 });
                 this.onCloseAddBilling();
                 this.getBillings();
+                
             }
         } catch (err) {
             console.log(err);
@@ -725,7 +727,7 @@ export default class ViewBooking extends Component {
                                                         >
                                                             <Typography> {room.room.room_number + " " + room.room_type.name}</Typography>
                                                         </ExpansionPanelSummary>
-                                                        <ExpansionPanelDetails>
+                                                        <ExpansionPanelDetails  style={{backgroundColor: "#dbd2d2"}}>
                                                             <GuestInfo
                                                                 guests={room.guests}
                                                                 selectedRoom={this.state.selectedRoom}

@@ -10,6 +10,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import FormHelperText from "@material-ui/core/FormHelperText";
+import InfoIcon from "@material-ui/icons/Info";
 
 import * as yup from "yup";
 import { withFormik } from "formik";
@@ -36,7 +37,8 @@ class GuestInfoItem extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if (this.countryInput && this.state.countryLabelWidth === 0) this.setState({ countryLabelWidth: this.countryInput.offsetWidth });
+        if (this.countryInput && this.state.countryLabelWidth === 0)
+            this.setState({ countryLabelWidth: this.countryInput.offsetWidth });
 
         if (!prevProps.show && this.props.show) {
             if (this.props.guest.id) {
@@ -96,8 +98,30 @@ class GuestInfoItem extends Component {
                         ...guest
                     });
                     this.getGuest(data.id);
+                    this.props.openSnackBar(
+                        <span
+                            style={{
+                                display: "flex",
+                                alignItems: "center"
+                            }}
+                        >
+                            {/* <InfoIcon style={{ marginRight: "5" }} />{" "} */}
+                            {` Successfully Added Room! `}
+                        </span>
+                    );
                 }
                 this.setState({ fetching: false });
+                this.props.openSnackBar(
+                    <span
+                        style={{
+                            display: "flex",
+                            alignItems: "center"
+                        }}
+                    >
+                        <InfoIcon style={{ marginRight: "5" }} />
+                        {` Successfully Added Guest! `}
+                    </span>
+                );
             } else {
                 this.setState({ fetching: false });
             }
@@ -109,26 +133,47 @@ class GuestInfoItem extends Component {
 
     onChangeNumber = e => {
         if (e.target.value.length > 9) {
-            this.props.setFieldValue("contactno", e.target.value.substring(0, 9));
+            this.props.setFieldValue(
+                "contactno",
+                e.target.value.substring(0, 9)
+            );
         } else {
             this.props.setFieldValue("contactno", e.target.value);
         }
     };
 
     render() {
-        const { values, touched, errors, handleChange, handleBlur, handleSubmit, show } = this.props;
+        const {
+            values,
+            touched,
+            errors,
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            show
+        } = this.props;
         let { validateCalled, fetching, fetched } = this.state;
         if (show) {
             if (fetching && !fetched) {
                 return (
-                    <div style={{ padding: "30px 0", textAlign: "center", width: "100%" }}>
+                    <div
+                        style={{
+                            padding: "30px 0",
+                            textAlign: "center",
+                            width: "100%"
+                        }}
+                    >
                         <CircularProgress size={30} />
                     </div>
                 );
             } else {
                 return (
                     <div style={{ width: "100%", marginTop: 10 }}>
-                        {this.state.fetching && fetched && <LinearProgress style={{ height: 2, marginBottom: 5 }} />}
+                        {this.state.fetching && fetched && (
+                            <LinearProgress
+                                style={{ height: 2, marginBottom: 5 }}
+                            />
+                        )}
                         <Grid container spacing={2}>
                             <Grid item xs={12} md={6}>
                                 <TextField
@@ -140,8 +185,18 @@ class GuestInfoItem extends Component {
                                     onChange={handleChange}
                                     onBlur={handleBlur}
                                     value={values.firstname}
-                                    helperText={(validateCalled || touched.firstname) && errors.firstname ? errors.firstname : ""}
-                                    error={(validateCalled || touched.firstname) && errors.firstname ? true : false}
+                                    helperText={
+                                        (validateCalled || touched.firstname) &&
+                                        errors.firstname
+                                            ? errors.firstname
+                                            : ""
+                                    }
+                                    error={
+                                        (validateCalled || touched.firstname) &&
+                                        errors.firstname
+                                            ? true
+                                            : false
+                                    }
                                     disabled={this.state.fetching}
                                 />
                             </Grid>
@@ -155,8 +210,20 @@ class GuestInfoItem extends Component {
                                     onChange={handleChange}
                                     onBlur={handleBlur}
                                     value={values.middlename}
-                                    helperText={(validateCalled || touched.middlename) && errors.middlename ? errors.middlename : ""}
-                                    error={(validateCalled || touched.middlename) && errors.middlename ? true : false}
+                                    helperText={
+                                        (validateCalled ||
+                                            touched.middlename) &&
+                                        errors.middlename
+                                            ? errors.middlename
+                                            : ""
+                                    }
+                                    error={
+                                        (validateCalled ||
+                                            touched.middlename) &&
+                                        errors.middlename
+                                            ? true
+                                            : false
+                                    }
                                     disabled={this.state.fetching}
                                 />
                             </Grid>
@@ -170,8 +237,18 @@ class GuestInfoItem extends Component {
                                     onChange={handleChange}
                                     onBlur={handleBlur}
                                     value={values.lastname}
-                                    helperText={(validateCalled || touched.lastname) && errors.lastname ? errors.lastname : ""}
-                                    error={(validateCalled || touched.lastname) && errors.lastname ? true : false}
+                                    helperText={
+                                        (validateCalled || touched.lastname) &&
+                                        errors.lastname
+                                            ? errors.lastname
+                                            : ""
+                                    }
+                                    error={
+                                        (validateCalled || touched.lastname) &&
+                                        errors.lastname
+                                            ? true
+                                            : false
+                                    }
                                     disabled={this.state.fetching}
                                 />
                             </Grid>
@@ -185,8 +262,18 @@ class GuestInfoItem extends Component {
                                     onChange={handleChange}
                                     onBlur={handleBlur}
                                     value={values.email}
-                                    helperText={(validateCalled || touched.email) && errors.email ? errors.email : ""}
-                                    error={(validateCalled || touched.email) && errors.email ? true : false}
+                                    helperText={
+                                        (validateCalled || touched.email) &&
+                                        errors.email
+                                            ? errors.email
+                                            : ""
+                                    }
+                                    error={
+                                        (validateCalled || touched.email) &&
+                                        errors.email
+                                            ? true
+                                            : false
+                                    }
                                     disabled={this.state.fetching}
                                 />
                             </Grid>
@@ -200,8 +287,18 @@ class GuestInfoItem extends Component {
                                     onChange={handleChange}
                                     onBlur={handleBlur}
                                     value={values.address}
-                                    helperText={(validateCalled || touched.address) && errors.address ? errors.address : ""}
-                                    error={(validateCalled || touched.address) && errors.address ? true : false}
+                                    helperText={
+                                        (validateCalled || touched.address) &&
+                                        errors.address
+                                            ? errors.address
+                                            : ""
+                                    }
+                                    error={
+                                        (validateCalled || touched.address) &&
+                                        errors.address
+                                            ? true
+                                            : false
+                                    }
                                     disabled={this.state.fetching}
                                 />
                             </Grid>
@@ -209,11 +306,19 @@ class GuestInfoItem extends Component {
                                 <FormControl
                                     variant="standard"
                                     margin="dense"
-                                    error={(validateCalled || touched.country) && errors.country ? true : false}
+                                    error={
+                                        (validateCalled || touched.country) &&
+                                        errors.country
+                                            ? true
+                                            : false
+                                    }
                                     fullWidth
                                     variant="outlined"
                                 >
-                                    <InputLabel htmlFor="outlined-age-native-simple" ref={el => (this.countryInput = el)}>
+                                    <InputLabel
+                                        htmlFor="outlined-age-native-simple"
+                                        ref={el => (this.countryInput = el)}
+                                    >
                                         Country
                                     </InputLabel>
                                     <Select
@@ -225,7 +330,9 @@ class GuestInfoItem extends Component {
                                                 display: "flex"
                                             }
                                         }}
-                                        labelWidth={this.state.countryLabelWidth}
+                                        labelWidth={
+                                            this.state.countryLabelWidth
+                                        }
                                         MenuProps={{
                                             PaperProps: {
                                                 style: {
@@ -243,7 +350,12 @@ class GuestInfoItem extends Component {
                                             );
                                         })}
                                     </Select>
-                                    <FormHelperText>{(validateCalled || touched.country) && errors.country ? errors.country : ""}</FormHelperText>
+                                    <FormHelperText>
+                                        {(validateCalled || touched.country) &&
+                                        errors.country
+                                            ? errors.country
+                                            : ""}
+                                    </FormHelperText>
                                 </FormControl>
                             </Grid>
                             <Grid item xs={12} md={6}>
@@ -254,20 +366,46 @@ class GuestInfoItem extends Component {
                                     margin="dense"
                                     fullWidth
                                     InputProps={{
-                                        startAdornment: <InputAdornment position="start">+639</InputAdornment>
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                +639
+                                            </InputAdornment>
+                                        )
                                     }}
                                     onChange={this.onChangeNumber}
                                     onBlur={handleBlur}
                                     value={values.contactno}
-                                    helperText={(validateCalled || touched.contactno) && errors.contactno ? errors.contactno : ""}
-                                    error={(validateCalled || touched.contactno) && errors.contactno ? true : false}
+                                    helperText={
+                                        (validateCalled || touched.contactno) &&
+                                        errors.contactno
+                                            ? errors.contactno
+                                            : ""
+                                    }
+                                    error={
+                                        (validateCalled || touched.contactno) &&
+                                        errors.contactno
+                                            ? true
+                                            : false
+                                    }
                                     type="number"
                                     disabled={this.state.fetching}
                                 />
                             </Grid>
                         </Grid>
-                        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 10 }}>
-                            <Button variant="outlined" color="primary" size="small" onClick={this.onSubmitGuestInfo} disabled={this.state.fetching}>
+                        <div
+                            style={{
+                                display: "flex",
+                                justifyContent: "flex-end",
+                                marginTop: 10
+                            }}
+                        >
+                            <Button
+                                variant="outlined"
+                                color="primary"
+                                size="small"
+                                onClick={this.onSubmitGuestInfo}
+                                disabled={this.state.fetching}
+                            >
                                 Submit
                             </Button>
                         </div>

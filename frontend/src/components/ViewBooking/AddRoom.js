@@ -17,6 +17,7 @@ import axios from "axios";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { Typography } from "@material-ui/core";
 import moment from "moment";
+import InfoIcon from "@material-ui/icons/Info";
 
 export default class AddRoom extends Component {
     constructor(props) {
@@ -158,9 +159,14 @@ export default class AddRoom extends Component {
                 this.setState({ submitting: false });
                 this.onCancelAdd(true);
                 this.props.openSnackBar(
-                    <span>
-                        {`You can't select dates that are the `}
-                        <strong style={{ color: "#f50057" }}>same</strong> or <strong style={{ color: "#f50057" }}>before</strong> the checkin date!
+                    <span
+                        style={{
+                            display: "flex",
+                            alignItems: "center"
+                        }}
+                    >
+                        <InfoIcon style={{ marginRight: "5" }} />{" "}
+                        {` Successfully Added Room! `}
                     </span>
                 );
             } else {
@@ -196,13 +202,22 @@ export default class AddRoom extends Component {
     };
 
     render() {
-        let { selectedRoomType, selectedRate, availableRooms, submitting } = this.state;
+        let {
+            selectedRoomType,
+            selectedRate,
+            availableRooms,
+            submitting
+        } = this.state;
         let selectedRooms = availableRooms.filter(room => room.selected).length;
         if (this.state.isFullyBooked) {
             return (
                 //TODO improve design
                 <div style={{ padding: "30px 0" }}>
-                    <Typography variant="h6" color="textSecondary" align="center">
+                    <Typography
+                        variant="h6"
+                        color="textSecondary"
+                        align="center"
+                    >
                         No more rooms available.
                     </Typography>
                 </div>
@@ -216,11 +231,19 @@ export default class AddRoom extends Component {
                 );
             } else {
                 return (
-                    <div style={{ margin: "10px 0", padding: "0 20px", width: "100%" }}>
+                    <div
+                        style={{
+                            margin: "10px 0",
+                            padding: "0 20px",
+                            width: "100%"
+                        }}
+                    >
                         <Grid container spacing={3}>
                             <Grid item xs={12} md={6}>
                                 <FormControl style={{ width: "100%" }}>
-                                    <InputLabel htmlFor="age-simple">Room type</InputLabel>
+                                    <InputLabel htmlFor="age-simple">
+                                        Room type
+                                    </InputLabel>
                                     <Select
                                         value={this.state.selectedRoomType}
                                         // onChange={handleChange}
@@ -231,13 +254,18 @@ export default class AddRoom extends Component {
                                         }}
                                         disabled={submitting}
                                     >
-                                        {this.state.roomTypes.map((roomType, id) => {
-                                            return (
-                                                <MenuItem value={roomType.id} key={roomType.id}>
-                                                    {roomType.name}
-                                                </MenuItem>
-                                            );
-                                        })}
+                                        {this.state.roomTypes.map(
+                                            (roomType, id) => {
+                                                return (
+                                                    <MenuItem
+                                                        value={roomType.id}
+                                                        key={roomType.id}
+                                                    >
+                                                        {roomType.name}
+                                                    </MenuItem>
+                                                );
+                                            }
+                                        )}
                                     </Select>
                                 </FormControl>
                             </Grid>
@@ -246,7 +274,12 @@ export default class AddRoom extends Component {
                                 <FormControl style={{ width: "100%" }}>
                                     <InputLabel htmlFor="age-simple">
                                         Rate
-                                        {this.state.fetchingRates && <CircularProgress style={{ marginLeft: 5 }} size={15} />}
+                                        {this.state.fetchingRates && (
+                                            <CircularProgress
+                                                style={{ marginLeft: 5 }}
+                                                size={15}
+                                            />
+                                        )}
                                     </InputLabel>
                                     <Select
                                         value={this.state.selectedRate}
@@ -255,11 +288,17 @@ export default class AddRoom extends Component {
                                             name: "age",
                                             id: "age-simple"
                                         }}
-                                        disabled={this.state.selectedRoomType === "" || submitting}
+                                        disabled={
+                                            this.state.selectedRoomType ===
+                                                "" || submitting
+                                        }
                                     >
                                         {this.state.rates.map((rate, i) => {
                                             return (
-                                                <MenuItem value={rate.id} key={rate.id}>
+                                                <MenuItem
+                                                    value={rate.id}
+                                                    key={rate.id}
+                                                >
                                                     {rate.name}
                                                 </MenuItem>
                                             );
@@ -270,43 +309,91 @@ export default class AddRoom extends Component {
                             {this.state.selectedRoomType && (
                                 <Grid item xs={12}>
                                     <div>
-                                        <FormControl component="fieldset" style={{ width: "100%" }} error={this.state.failed}>
-                                            <FormLabel component="legend">Select Rooms</FormLabel>
+                                        <FormControl
+                                            component="fieldset"
+                                            style={{ width: "100%" }}
+                                            error={this.state.failed}
+                                        >
+                                            <FormLabel component="legend">
+                                                Select Rooms
+                                            </FormLabel>
                                             <FormGroup>
                                                 {this.state.fetchingRooms ? (
-                                                    <div style={{ padding: "20px 0", width: "100%", textAlign: "center" }}>
-                                                        <CircularProgress size={30} />
+                                                    <div
+                                                        style={{
+                                                            padding: "20px 0",
+                                                            width: "100%",
+                                                            textAlign: "center"
+                                                        }}
+                                                    >
+                                                        <CircularProgress
+                                                            size={30}
+                                                        />
                                                     </div>
                                                 ) : (
                                                     <Grid container>
-                                                        {this.state.availableRooms.map((room, i) => {
-                                                            return (
-                                                                <Grid item xs={12} md={4} key={room.id}>
-                                                                    <FormControlLabel
-                                                                        control={
-                                                                            <Checkbox
-                                                                                checked={room.selected}
-                                                                                onChange={this.onSelectRoom}
-                                                                                disabled={submitting}
-                                                                                value={room.id}
-                                                                                color="primary"
-                                                                            />
+                                                        {this.state.availableRooms.map(
+                                                            (room, i) => {
+                                                                return (
+                                                                    <Grid
+                                                                        item
+                                                                        xs={12}
+                                                                        md={4}
+                                                                        key={
+                                                                            room.id
                                                                         }
-                                                                        label={room.room_number + " " + room.room_type.name}
-                                                                    />
-                                                                </Grid>
-                                                            );
-                                                        })}
+                                                                    >
+                                                                        <FormControlLabel
+                                                                            control={
+                                                                                <Checkbox
+                                                                                    checked={
+                                                                                        room.selected
+                                                                                    }
+                                                                                    onChange={
+                                                                                        this
+                                                                                            .onSelectRoom
+                                                                                    }
+                                                                                    disabled={
+                                                                                        submitting
+                                                                                    }
+                                                                                    value={
+                                                                                        room.id
+                                                                                    }
+                                                                                    color="primary"
+                                                                                />
+                                                                            }
+                                                                            label={
+                                                                                room.room_number +
+                                                                                " " +
+                                                                                room
+                                                                                    .room_type
+                                                                                    .name
+                                                                            }
+                                                                        />
+                                                                    </Grid>
+                                                                );
+                                                            }
+                                                        )}
                                                     </Grid>
                                                 )}
                                             </FormGroup>
-                                            {this.state.failed && <FormHelperText>You must select one(1) or more rooms.</FormHelperText>}
+                                            {this.state.failed && (
+                                                <FormHelperText>
+                                                    You must select one(1) or
+                                                    more rooms.
+                                                </FormHelperText>
+                                            )}
                                         </FormControl>
                                     </div>
                                 </Grid>
                             )}
                             <Grid item xs={12}>
-                                <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        justifyContent: "flex-end"
+                                    }}
+                                >
                                     <Button
                                         variant="outlined"
                                         color="primary"
@@ -328,9 +415,21 @@ export default class AddRoom extends Component {
                                         }}
                                         onClick={this.onAddRooms}
                                         size="small"
-                                        disabled={!(selectedRooms > 0 && selectedRoomType && selectedRate) || submitting}
+                                        disabled={
+                                            !(
+                                                selectedRooms > 0 &&
+                                                selectedRoomType &&
+                                                selectedRate
+                                            ) || submitting
+                                        }
                                     >
-                                        Submit{submitting && <CircularProgress style={{ marginLeft: 5 }} size={15} />}
+                                        Submit
+                                        {submitting && (
+                                            <CircularProgress
+                                                style={{ marginLeft: 5 }}
+                                                size={15}
+                                            />
+                                        )}
                                     </Button>
                                 </div>
                             </Grid>

@@ -25,6 +25,7 @@ import Slide from "@material-ui/core/Slide";
 import Snackbar from "@material-ui/core/Snackbar";
 import IconButton from "@material-ui/core/IconButton";
 import InputAdornment from "@material-ui/core/InputAdornment";
+import InfoIcon from "@material-ui/icons/Info";
 
 import countries from "../country.json";
 
@@ -79,7 +80,7 @@ class Walkin extends Component {
             roomtypes: [],
             fetchingRate: false,
             userDialog: false,
-            snackBar: false,
+            snackbar: false,
             snackBarMessage: "",
             validatedCalled: false
         };
@@ -166,6 +167,9 @@ class Walkin extends Component {
         });
         this.setState({ rateIndex: e.target.value });
     };
+    openSnackBar = snackBarMessage => {
+        this.setState({ snackbar: true, snackBarMessage });
+    };
 
     onSubmit = async () => {
         try {
@@ -195,7 +199,18 @@ class Walkin extends Component {
                             rate_id: this.props.values.rateId,
                             paidAmount: this.props.values.paidAmount
                         });
-                        this.props.history.push("/calendar");
+                        // this.props.history.push("/calendar");
+                        this.openSnackBar(
+                            <span
+                                style={{
+                                    display: "flex",
+                                    alignItems: "center"
+                                }}
+                            >
+                                <InfoIcon style={{ marginRight: "5" }} />{" "}
+                                {` Successfully Added Guest! `}
+                            </span>
+                        );
                     } catch (err) {
                         console.log(err);
                     }
@@ -269,7 +284,7 @@ class Walkin extends Component {
                         checkin date!
                     </span>
                 ),
-                snackBar: true
+                snackbar: true
             });
         } else {
             let diff = checkOutDate.diff(checkInDate, "day");
@@ -285,7 +300,7 @@ class Walkin extends Component {
         }
     };
 
-    handleCloseSnackBar = () => this.setState({ snackBar: false });
+    handleCloseSnackBar = () => this.setState({ snackbar: false });
 
     onChangeNumber = e => {
         if (e.target.value.length > 9) {
@@ -1071,7 +1086,7 @@ class Walkin extends Component {
                         vertical: "bottom",
                         horizontal: "center"
                     }}
-                    open={this.state.snackBar}
+                    open={this.state.snackbar}
                     autoHideDuration={5000}
                     ContentProps={{
                         "aria-describedby": "message-id"
@@ -1086,10 +1101,10 @@ class Walkin extends Component {
                                 justifyItems: "center"
                             }}
                         >
-                            <Icon style={{ marginRight: 10 }}>warning</Icon>
                             {this.state.snackBarMessage}
                         </span>
                     }
+                    ClickAwayListenerProps={{ onClickAway: () => null }}
                     TransitionComponent={Slide}
                     action={[
                         <IconButton

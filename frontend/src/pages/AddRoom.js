@@ -40,8 +40,8 @@ export default class AddRoom extends Component {
         this.setState({
             roomSizeUnitLabelWidth: this.roomSizeUnitInput.offsetWidth
         });
-        if(this.props.match.params.id){
-            this.getRoom()
+        if (this.props.match.params.id) {
+            this.getRoom();
         }
     }
 
@@ -61,7 +61,7 @@ export default class AddRoom extends Component {
     onAddRoom = async e => {
         try {
             if (this.props.match.params.id) {
-                let {id} = this.props.match.params
+                let { id } = this.props.match.params;
                 let {
                     type,
                     description,
@@ -154,7 +154,7 @@ export default class AddRoom extends Component {
                 nonRefundable: non_refundable
             });
         } catch (err) {
-            console.log(err)
+            console.log(err);
         }
     };
 
@@ -185,7 +185,7 @@ export default class AddRoom extends Component {
                     <Paper
                         style={{
                             backgroundColor: "white",
-                            padding: 20,
+                            padding: 20
                         }}
                     >
                         <h1>Add Room</h1>

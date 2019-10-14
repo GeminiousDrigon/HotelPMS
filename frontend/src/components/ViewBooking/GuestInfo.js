@@ -102,8 +102,12 @@ export default class GuestInfo extends Component {
                     guest={guest}
                     getGuest={this.getGuest}
                     key={guest.id ? guest.id : el}
-                    show={el === this.state.selectedGuest && this.props.id === this.props.selectedRoom}
+                    show={
+                        el === this.state.selectedGuest &&
+                        this.props.id === this.props.selectedRoom
+                    }
                     roomId={this.props.id}
+                    openSnackBar={this.props.openSnackBar}
                 />
             );
         });
@@ -114,7 +118,11 @@ export default class GuestInfo extends Component {
                         return (
                             <Button
                                 variant="text"
-                                color={i === this.state.selectedGuest ? "primary" : "default"}
+                                color={
+                                    i === this.state.selectedGuest
+                                        ? "primary"
+                                        : "default"
+                                }
                                 onClick={() => this.onSelectGuest(i)}
                                 key={guest.id ? guest.id : i}
                             >
@@ -123,7 +131,11 @@ export default class GuestInfo extends Component {
                             </Button>
                         );
                     })}
-                    <Button variant="text" color="primary" onClick={this.onAddGuest}>
+                    <Button
+                        variant="text"
+                        color="primary"
+                        onClick={this.onAddGuest}
+                    >
                         <PersonAddIcon />
                     </Button>
                 </div>

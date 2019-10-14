@@ -78,6 +78,7 @@ class AddFacilities extends Component {
                                 }
                             );
                             this.props.history.goBack();
+                            this.props.openSnackBar();
                         } else {
                             let facility = await axios.post("/api/amenity", {
                                 name: values.name,
@@ -101,7 +102,7 @@ class AddFacilities extends Component {
     getFacilities = async id => {
         try {
             let { data } = await axios.get(`/api/amenity/${id}`);
-            this.props.setFieldValue("name", data.name)
+            this.props.setFieldValue("name", data.name);
             this.props.setFieldValue("icon", data.icon);
         } catch (err) {
             console.log(err);
