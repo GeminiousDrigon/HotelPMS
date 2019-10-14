@@ -39,6 +39,8 @@ import AdminLayout from "../components/AdminLayout";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import { Formik } from "formik";
 
+import Slide from "@material-ui/core/Slide";
+
 import axios from "axios";
 import * as yup from "yup";
 import moment from "moment";
@@ -51,6 +53,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import GuestInfo from "../components/ViewBooking/GuestInfo";
 import Reservation from "../components/ViewBooking/Reservation";
 import Icon from "@material-ui/core/Icon";
+import Snackbar from "@material-ui/core/Snackbar";
 
 export default class ViewBooking extends Component {
     constructor(props) {
@@ -80,7 +83,11 @@ export default class ViewBooking extends Component {
             selectedRoom: "dc38e19b-8dc8-4b3a-88f0-1152b6dfcb3b",
 
             //reservation
-            editReservationDates: false
+            editReservationDates: false,
+
+            //snackbar
+            snackbar: false,
+            snackBarMessage: null
         };
     }
 
@@ -198,6 +205,20 @@ export default class ViewBooking extends Component {
     };
 
     //add payment dialog actions
+
+    onExitBilling = () => {
+        this.setState({
+            addBilling: false,
+            paymentAnchorEl: null,
+            selectedPayment: null,
+            fetchingViewPayment: false,
+            initialPayment: 0,
+            fetchingPayment: false,
+            deletePayment: false,
+            deletingPayment: false
+        });
+    };
+
     onOpenAddBilling = () => {
         this.setState({ addBilling: true });
     };
@@ -322,6 +343,14 @@ export default class ViewBooking extends Component {
     onCloseEditReservationDates = () => {
         this.setState({ editReservationDates: false });
     };
+
+    //=========SNACKBAR==============\\
+
+    openSnackBar = snackBarMessage => {
+        this.setState({ snackbar: true, snackBarMessage });
+    };
+
+    handleCloseSnackBar = () => this.setState({ snackbar: false, snackBarMessage: null });
 
     render() {
         let { fetching, booking, guestAnchorEl, paymentAnchorEl, selectedPayment } = this.state;
@@ -593,6 +622,7 @@ export default class ViewBooking extends Component {
                                         onCloseEditReservationDates={this.onCloseEditReservationDates}
                                         getBookingDetails={this.getBookingDetails}
                                         bookingId={this.props.match.params.id}
+                                        openSnackBar={this.openSnackBar}
                                     />
                                 )}
                                 <div style={{ marginTop: 20 }}>
@@ -607,10 +637,13 @@ export default class ViewBooking extends Component {
                                     <Collapse in={this.state.addingRooms}>
                                         <Paper>
                                             <AddRoom
+                                                checkInDate={booking.from_date}
+                                                checkOutDate={booking.to_date}
                                                 bookingId={this.props.match.params.id}
                                                 cancelAddRoom={this.cancelAddRoom}
                                                 addingRooms={this.state.addingRooms}
                                                 getRooms={this.getRooms}
+                                                openSnackBar={this.openSnackBar}
                                             />
                                         </Paper>
                                         {/* {this.state.fetchingRooms ? (
@@ -693,7 +726,12 @@ export default class ViewBooking extends Component {
                                                             <Typography> {room.room.room_number + " " + room.room_type.name}</Typography>
                                                         </ExpansionPanelSummary>
                                                         <ExpansionPanelDetails>
-                                                            <GuestInfo guests={room.guests} selectedRoom={this.state.selectedRoom} id={room.id} />
+                                                            <GuestInfo
+                                                                guests={room.guests}
+                                                                selectedRoom={this.state.selectedRoom}
+                                                                id={room.id}
+                                                                openSnackBar={this.openSnackBar}
+                                                            />
                                                         </ExpansionPanelDetails>
                                                     </ExpansionPanel>
                                                 );
@@ -787,10 +825,17 @@ export default class ViewBooking extends Component {
                     enableReinitialize={true}
                     render={props => {
                         const { values, touched, errors, handleChange, handleBlur, handleSubmit, isSubmitting } = props;
+
+                        const onExit = () => {
+                            props.resetForm();
+                            this.onExitBilling();
+                        };
+
                         return (
                             <Dialog
                                 open={this.state.addBilling}
                                 onClose={this.onCloseAddBilling}
+                                onExit={onExit}
                                 aria-labelledby="form-dialog-title"
                                 maxWidth="sm"
                                 fullWidth
@@ -853,6 +898,37 @@ export default class ViewBooking extends Component {
                         </Button>
                     </DialogActions>
                 </Dialog>
+                <Snackbar
+                    anchorOrigin={{
+                        vertical: "bottom",
+                        horizontal: "center"
+                    }}
+                    open={this.state.snackbar}
+                    autoHideDuration={5000}
+                    ContentProps={{
+                        "aria-describedby": "message-id"
+                    }}
+                    onClose={this.handleCloseSnackBar}
+                    message={
+                        <span
+                            id="message-id"
+                            style={{
+                                display: "flex",
+                                flexDirection: "row",
+                                justifyItems: "center"
+                            }}
+                        >
+                            {this.state.snackBarMessage}
+                        </span>
+                    }
+                    ClickAwayListenerProps={{ onClickAway: () => null }}
+                    TransitionComponent={Slide}
+                    action={[
+                        <IconButton key="close" aria-label="close" color="inherit" onClick={this.handleCloseSnackBar}>
+                            <Icon>close</Icon>
+                        </IconButton>
+                    ]}
+                />
             </AdminLayout>
         );
     }

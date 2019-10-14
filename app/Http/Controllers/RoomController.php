@@ -215,7 +215,7 @@ class RoomController extends Controller
                     'roomType'
                 ])->get();
             }
-            return response()->json($rooms, 200);
+            // return response()->json($rooms, 200);
 
             $finalRoom = array(); //available rooms
             $unbookableRooms = array(); //not available rooms

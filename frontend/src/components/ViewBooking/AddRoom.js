@@ -16,6 +16,7 @@ import Collapse from "@material-ui/core/Collapse";
 import axios from "axios";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { Typography } from "@material-ui/core";
+import moment from "moment";
 
 export default class AddRoom extends Component {
     constructor(props) {
@@ -49,8 +50,8 @@ export default class AddRoom extends Component {
 
     getRoomTypes = async () => {
         try {
-            let checkin = "2019-10-08";
-            let checkout = "2019-10-09";
+            let checkin = moment(this.props.checkInDate).format("YYYY-MM-DD");
+            let checkout = moment(this.props.checkOutDate).format("YYYY-MM-DD");
             let { data } = await axios.get("/api/roomtype/available", {
                 params: {
                     checkin,
@@ -129,33 +130,46 @@ export default class AddRoom extends Component {
     };
 
     onAddRooms = async () => {
-        this.setState({ submitting: true });
-        let { availableRooms } = this.state;
-        let selectedRooms = availableRooms.filter(room => room.selected);
-        console.log(selectedRooms);
-        if (selectedRooms.length > 0) {
-            this.setState({ failed: false, submittingAddRoom: true });
-            //add one rooms to the booking
-            let { bookingId } = this.props;
-            let { selectedRoomType, selectedRate } = this.state;
-            let rate = await axios.get(`/api/rate/${selectedRate}`);
-            rate = rate.data;
-            let rooms = selectedRooms.map((room, i) => {
-                return {
-                    room_type_id: selectedRoomType,
-                    room_id: room.id,
-                    price: rate.price,
-                    with_breakfast: rate.breakfast,
-                    guest_no: 1,
-                    booking_id: bookingId
-                };
-            });
-            await axios.post(`/api/booking/${bookingId}/room`, {
-                rooms
-            });
-            this.setState({ submitting: false });
-            this.onCancelAdd(true);
-        } else {
+        try {
+            this.setState({ submitting: true });
+            let { availableRooms } = this.state;
+            let selectedRooms = availableRooms.filter(room => room.selected);
+            console.log(selectedRooms);
+            if (selectedRooms.length > 0) {
+                this.setState({ failed: false, submittingAddRoom: true });
+                //add one rooms to the booking
+                let { bookingId } = this.props;
+                let { selectedRoomType, selectedRate } = this.state;
+                let rate = await axios.get(`/api/rate/${selectedRate}`);
+                rate = rate.data;
+                let rooms = selectedRooms.map((room, i) => {
+                    return {
+                        room_type_id: selectedRoomType,
+                        room_id: room.id,
+                        price: rate.price,
+                        with_breakfast: rate.breakfast,
+                        guest_no: 1,
+                        booking_id: bookingId
+                    };
+                });
+                await axios.post(`/api/booking/${bookingId}/room`, {
+                    rooms
+                });
+                this.setState({ submitting: false });
+                this.onCancelAdd(true);
+                this.props.openSnackBar(
+                    <span>
+                        {`You can't select dates that are the `}
+                        <strong style={{ color: "#f50057" }}>same</strong> or <strong style={{ color: "#f50057" }}>before</strong> the checkin date!
+                    </span>
+                );
+            } else {
+                this.setState({
+                    failed: true,
+                    submitting: false
+                });
+            }
+        } catch (err) {
             this.setState({
                 failed: true,
                 submitting: false
@@ -187,7 +201,7 @@ export default class AddRoom extends Component {
         if (this.state.isFullyBooked) {
             return (
                 //TODO improve design
-                <div style={{ padding: "30px 0"}}>
+                <div style={{ padding: "30px 0" }}>
                     <Typography variant="h6" color="textSecondary" align="center">
                         No more rooms available.
                     </Typography>

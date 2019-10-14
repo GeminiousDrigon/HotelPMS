@@ -197,7 +197,7 @@ class BookingController extends Controller
                 "message" => "No booking found"
             ], 404);
         }
-        $rooms = $booking->rooms()->with(['room', 'roomType'])->get();
+        $rooms = $booking->rooms()->with(['room', 'roomType', 'guests'])->get();
         if (!$rooms) {
             return response()->json([
                 "status" => 404,
