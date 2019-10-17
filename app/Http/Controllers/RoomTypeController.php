@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use App\RoomType;
 use App\Room;
 use App\Rate;
@@ -27,9 +28,17 @@ class RoomTypeController extends Controller
 
     public function getOne($id)
     {
+        $files = Storage::files("/public/roomtype/" . $id);
+        $files = array_map(function ($file) {
+            return  [
+                "src" => asset(Storage::url($file)),
+                "filename" => basename($file)
+            ];
+        }, $files);
         $roomType = RoomType::with(['amenities', 'rooms' => function ($query) {
             $query->whereNotNull('room_number')->with('roomType');
         }, 'rates', 'bookings'])->find($id);
+        $roomType['images'] = $files;
         if (!$roomType) {
             return response()->json([
                 "status" => 404,
@@ -280,8 +289,51 @@ class RoomTypeController extends Controller
                 return response()->json([
                     "message" => "FullyBookedRooms"
                 ], 404);
-            } else
+            } else {
+
+                for ($i = 0; $i < count($finalRoomType); $i++) {
+                    // return response()->json($finalRoomType[$i]);
+                    $roomType = $finalRoomType[$i];
+                    $files = Storage::files("/public/roomtype/" . $roomType['id']);
+                    $files = array_map(function ($file) {
+                        return  [
+                            "src" => asset(Storage::url($file)),
+                            "filename" => basename($file)
+                        ];
+                    }, $files);
+
+                    $finalRoomType[$i]['images'] = $files;
+                }
+
                 return response()->json($finalRoomType, 200);
+            }
         }
+    }
+
+    public function getFiles($id, Request $request)
+    {
+        $files = Storage::files("/public/roomtype/" . $id);
+        $files = array_map(function ($file) {
+            return  [
+                "src" => asset(Storage::url($file)),
+                "filename" => basename($file)
+            ];
+        }, $files);
+        return response()->json($files);
+    }
+
+    public function uploadFile($id, Request $request)
+    {
+        $file = $request->file('image');
+        // return response()->json($files);
+        $file->store('public/roomtype/' . $id);
+        return response()->json($request->all());
+    }
+
+    public function deleteFile($id, Request $request)
+    {
+        $path = 'public/roomtype/' . $id . "/" . $request->query('filename');
+        Storage::delete($path);
+        return response()->json(200);
     }
 }

@@ -13,12 +13,11 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import Snackbar from "@material-ui/core/Snackbar";
 import Slide from "@material-ui/core/Slide";
-import {
-    MuiPickersUtilsProvider,
-    KeyboardTimePicker,
-    KeyboardDatePicker,
-    validate
-} from "@material-ui/pickers";
+import Dialog from "@material-ui/core/Dialog";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogActions from "@material-ui/core/DialogActions";
+import { MuiPickersUtilsProvider, KeyboardTimePicker, KeyboardDatePicker, validate } from "@material-ui/pickers";
+import Carousel from "react-bootstrap/Carousel";
 
 import axios from "axios";
 import { CircularProgress } from "@material-ui/core";
@@ -26,6 +25,7 @@ import RateItem from "./RateItem";
 import ConfirmDialog from "../Dialog/ConfirmDialog";
 import moment from "moment";
 import RoomTypeItem from "./RoomTypeItem";
+import PhotoLibraryIcon from "@material-ui/icons/PhotoLibrary";
 
 export default class RoomInfo extends Component {
     constructor(props) {
@@ -52,9 +52,7 @@ export default class RoomInfo extends Component {
             let { values } = this.props;
             let checkin = moment(values.checkInDate).format("YYYY-MM-DD");
             let checkout = moment(values.checkOutDate).format("YYYY-MM-DD");
-            let { data } = await axios.get(
-                `/api/roomtype/available?checkin=${checkin}&checkout=${checkout}`
-            );
+            let { data } = await axios.get(`/api/roomtype/available?checkin=${checkin}&checkout=${checkout}`);
             let selectedType = {};
             for (let i = 0; i < data.length; i++) {
                 const element = data[i];
@@ -88,9 +86,7 @@ export default class RoomInfo extends Component {
         let { selectedRooms } = this.props.values;
         let { amenities, rates, ...roomType } = selectedType;
         roomType.rate = room;
-        let numberOfRooms = selectedRooms.filter(
-            selectedRoom => selectedRoom.id === roomType.id
-        );
+        let numberOfRooms = selectedRooms.filter(selectedRoom => selectedRoom.id === roomType.id);
         console.log(numberOfRooms);
         let { checkInDate, checkOutDate } = this.props.values;
         let numberOfDays = checkOutDate.diff(checkInDate, "days");
@@ -110,8 +106,7 @@ export default class RoomInfo extends Component {
                 snackBarMessage: (
                     <span>
                         {`You have selected the maximum available rooms for `}
-                        <strong>{`${roomType.name}`}</strong>.
-                        {`Available rooms:` + roomType.availableRooms}
+                        <strong>{`${roomType.name}`}</strong>.{`Available rooms:` + roomType.availableRooms}
                     </span>
                 ),
                 snackBar: true
@@ -159,11 +154,7 @@ export default class RoomInfo extends Component {
                 snackBarMessage: (
                     <span>
                         {`You can't select dates that are the `}
-                        <strong style={{ color: "#f50057" }}>
-                            same
-                        </strong> or{" "}
-                        <strong style={{ color: "#f50057" }}>before</strong> the
-                        checkin date!
+                        <strong style={{ color: "#f50057" }}>same</strong> or <strong style={{ color: "#f50057" }}>before</strong> the checkin date!
                     </span>
                 ),
                 snackBar: true
@@ -177,36 +168,27 @@ export default class RoomInfo extends Component {
 
     handleCloseSnackBar = () => this.setState({ snackBar: false });
 
+    handleViewImages = () => this.setState({ viewImages: true });
+
+    handleCloseImages = () => this.setState({ viewImages: false });
+
     render() {
         let { selectedType, validateCalled } = this.state;
 
-        const {
-            values,
-            touched,
-            errors,
-            handleChange,
-            handleBlur,
-            handleSubmit
-        } = this.props;
+        const { values, touched, errors, handleChange, handleBlur, handleSubmit } = this.props;
 
         if (this.props.datesFullyBooked) {
             return (
                 <div style={{ textAlign: "center", padding: "20px 0" }}>
-                    <Typography style={{ fontSize: "4em" }}>
-                        Opppss, Sorry
-                    </Typography>
-                    <Typography style={{ fontSize: "2em" }}>
-                        We are fully booked on dates
-                    </Typography>
+                    <Typography style={{ fontSize: "4em" }}>Opppss, Sorry</Typography>
+                    <Typography style={{ fontSize: "2em" }}>We are fully booked on dates</Typography>
                     <Typography style={{ fontSize: "2em" }}>
                         {moment(values.checkInDate).format("MMMM D, YYYY")}
                         &nbsp;-&nbsp;
                         {moment(values.checkOutDate).format("MMMM D, YYYY")}
                     </Typography>
                     <br />
-                    <Typography style={{ fontSize: "2em" }}>
-                        Please go back &amp; change the dates.
-                    </Typography>
+                    <Typography style={{ fontSize: "2em" }}>Please go back &amp; change the dates.</Typography>
                 </div>
             );
         } else if (this.state.fetching) {
@@ -234,13 +216,7 @@ export default class RoomInfo extends Component {
                         }}
                     >
                         {this.state.roomTypes.map((roomType, i) => {
-                            return (
-                                <RoomTypeItem
-                                    roomType={roomType}
-                                    onChangeType={this.onChangeType}
-                                    selectedType={selectedType}
-                                />
-                            );
+                            return <RoomTypeItem roomType={roomType} onChangeType={this.onChangeType} selectedType={selectedType} />;
                         })}
                     </div>
                     <div style={{ width: "100%" }}>
@@ -257,62 +233,88 @@ export default class RoomInfo extends Component {
                                     marginBottom: 25
                                 }}
                             >
-                                <Typography
-                                    variant="h5"
-                                    component="div"
-                                    style={{
-                                        fontSize: "2.5rem",
-                                        fontWeight: "300"
-                                    }}
-                                >
-                                    {this.state.selectedType.name}
-                                </Typography>
-                                <Typography variant="subtitle2" component="div">
-                                    Room size:{" "}
-                                    {this.state.selectedType.room_size +
-                                        this.state.selectedType.room_size_unit}
-                                    <sup>2</sup>
-                                </Typography>
-                                <Typography variant="subtitle2" component="div">
-                                    Bed type: {this.state.selectedType.bed_type}
-                                </Typography>
-                                <Typography variant="subtitle2" component="div">
-                                    Number of beds:{" "}
-                                    {this.state.selectedType.bed_no}
-                                </Typography>
-                                <Typography variant="subtitle2" component="div">
-                                    Facilities:
-                                </Typography>
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        justifyContent: "flex-start",
-                                        flexWrap: "wrap"
-                                    }}
-                                >
-                                    {this.state.selectedType.amenities.map(
-                                        (amenity, o) => {
-                                            return (
-                                                <span
-                                                    style={{
-                                                        display: "flex",
-                                                        marginRight: 15
-                                                    }}
-                                                >
-                                                    <Icon
-                                                        component="span"
-                                                        color="primary"
+                                <Grid container spacing={3}>
+                                    <Grid item xs={6}>
+                                        {selectedType.images.length > 0 ? (
+                                            <div >
+                                                <img
+                                                    src={selectedType.images[0].src}
+                                                    style={{ width: "100%", cursor: "pointer" }}
+                                                    onClick={this.handleViewImages}
+                                                />
+                                            </div>
+                                        ) : (
+                                            <div
+                                                style={{
+                                                    width: "100%",
+                                                    display: "flex",
+                                                    justifyContent: "center",
+                                                    alignItems: "center",
+                                                    flexDirection: "column"
+                                                }}
+                                            >
+                                                <PhotoLibraryIcon style={{ fontSize: 100, marginBottom: 10 }} color="primary" />
+                                                <Typography component="span">No images</Typography>
+                                            </div>
+                                        )}
+                                    </Grid>
+                                    <Grid xs={6}>
+                                        <Typography
+                                            variant="h5"
+                                            component="div"
+                                            style={{
+                                                fontSize: "2.5rem",
+                                                fontWeight: "300"
+                                            }}
+                                        >
+                                            {this.state.selectedType.name}
+                                        </Typography>
+                                        <Typography variant="subtitle2" component="div">
+                                            Description:
+                                        </Typography>
+                                        <Typography variant="subtitle2" component="div" gutterBottom>
+                                            {selectedType.description}
+                                        </Typography>
+                                        <Typography variant="subtitle2" component="div">
+                                            Room size: {this.state.selectedType.room_size + this.state.selectedType.room_size_unit}
+                                            <sup>2</sup>
+                                        </Typography>
+                                        <Typography variant="subtitle2" component="div">
+                                            Bed type: {this.state.selectedType.bed_type}
+                                        </Typography>
+                                        <Typography variant="subtitle2" component="div">
+                                            Number of beds: {this.state.selectedType.bed_no}
+                                        </Typography>
+                                        <Typography variant="subtitle2" component="div">
+                                            Facilities:
+                                        </Typography>
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                justifyContent: "flex-start",
+                                                flexWrap: "wrap"
+                                            }}
+                                        >
+                                            {this.state.selectedType.amenities.map((amenity, o) => {
+                                                return (
+                                                    <span
+                                                        style={{
+                                                            display: "flex",
+                                                            marginRight: 15
+                                                        }}
                                                     >
-                                                        {amenity.icon}
-                                                    </Icon>
-                                                    <Typography component="span">
-                                                        {amenity.name}
-                                                    </Typography>
-                                                </span>
-                                            );
-                                        }
-                                    )}
-                                </div>
+                                                        <Icon component="span" color="primary" fontSize="small">
+                                                            {amenity.icon}
+                                                        </Icon>
+                                                        <Typography component="span" variant="caption">
+                                                            {amenity.name}
+                                                        </Typography>
+                                                    </span>
+                                                );
+                                            })}
+                                        </div>
+                                    </Grid>
+                                </Grid>
                             </Paper>
                             <Typography variant="h5" gutterBottom>
                                 Available Rates
@@ -320,26 +322,17 @@ export default class RoomInfo extends Component {
                             <div style={{ display: "flex" }}>
                                 <Grid container>
                                     {this.state.selectedType &&
-                                        this.state.selectedType.rates.map(
-                                            (rate, i) => {
-                                                return (
-                                                    <RateItem
-                                                        key={rate.id}
-                                                        rate={rate}
-                                                        validateCalled={
-                                                            validateCalled
-                                                        }
-                                                        onAddRoom={
-                                                            this.onAddRoom
-                                                        }
-                                                        roomTypeId={
-                                                            this.state
-                                                                .selectedType.id
-                                                        }
-                                                    />
-                                                );
-                                            }
-                                        )}
+                                        this.state.selectedType.rates.map((rate, i) => {
+                                            return (
+                                                <RateItem
+                                                    key={rate.id}
+                                                    rate={rate}
+                                                    validateCalled={validateCalled}
+                                                    onAddRoom={this.onAddRoom}
+                                                    roomTypeId={this.state.selectedType.id}
+                                                />
+                                            );
+                                        })}
                                 </Grid>
                             </div>
                         </div>
@@ -361,42 +354,20 @@ export default class RoomInfo extends Component {
                             }}
                         >
                             <div style={{ marginBottom: 25 }}>
-                                <Typography
-                                    variant="h5"
-                                    style={{ fontWeight: 300 }}
-                                    gutterBottom
-                                >
+                                <Typography variant="h5" style={{ fontWeight: 300 }} gutterBottom>
                                     Booking Dates
                                 </Typography>
-                                <Typography
-                                    variant="h6"
-                                    style={{ fontWeight: 50, color: "gold" }}
-                                >
+                                <Typography variant="h6" style={{ fontWeight: 50, color: "gold" }}>
                                     Check-in Date:
                                 </Typography>
-                                <Typography
-                                    variant="h6"
-                                    style={{ fontWeight: 300 }}
-                                    align="center"
-                                >
-                                    {moment(values.checkInDate).format(
-                                        "MMMM DD,  YYYY"
-                                    )}
+                                <Typography variant="h6" style={{ fontWeight: 300 }} align="center">
+                                    {moment(values.checkInDate).format("MMMM DD,  YYYY")}
                                 </Typography>
-                                <Typography
-                                    variant="h6"
-                                    style={{ fontWeight: 50, color: "gold" }}
-                                >
+                                <Typography variant="h6" style={{ fontWeight: 50, color: "gold" }}>
                                     Check-out Date:
                                 </Typography>
-                                <Typography
-                                    variant="h6"
-                                    style={{ fontWeight: 300 }}
-                                    align="center"
-                                >
-                                    {moment(values.checkOutDate).format(
-                                        "MMMM DD,  YYYY"
-                                    )}
+                                <Typography variant="h6" style={{ fontWeight: 300 }} align="center">
+                                    {moment(values.checkOutDate).format("MMMM DD,  YYYY")}
                                 </Typography>
                             </div>
                             <div style={{ marginBottom: 25 }}>
@@ -407,20 +378,12 @@ export default class RoomInfo extends Component {
                                         alignItems: "center"
                                     }}
                                 >
-                                    <Typography
-                                        variant="h5"
-                                        style={{ fontWeight: 300 }}
-                                    >
+                                    <Typography variant="h5" style={{ fontWeight: 300 }}>
                                         Rooms Selected
                                     </Typography>
                                     <Tooltip title="Reset">
-                                        <IconButton
-                                            aria-label="delete"
-                                            onClick={this.handleReset}
-                                        >
-                                            <Icon fontSize="small">
-                                                refresh
-                                            </Icon>
+                                        <IconButton aria-label="delete" onClick={this.handleReset}>
+                                            <Icon fontSize="small">refresh</Icon>
                                         </IconButton>
                                     </Tooltip>
                                 </div>
@@ -449,8 +412,7 @@ export default class RoomInfo extends Component {
                                                             fontWeight: 300
                                                         }}
                                                     >
-                                                        {room.rate.adult}{" "}
-                                                        Adult(s)
+                                                        {room.rate.adult} Adult(s)
                                                     </Typography>
                                                     <Typography
                                                         variant="subtitle2"
@@ -475,9 +437,7 @@ export default class RoomInfo extends Component {
                                                         style={{
                                                             marginTop: 10
                                                         }}
-                                                        onClick={() =>
-                                                            this.removeRoom(i)
-                                                        }
+                                                        onClick={() => this.removeRoom(i)}
                                                     >
                                                         remove
                                                     </Button>
@@ -506,16 +466,10 @@ export default class RoomInfo extends Component {
                                     justifyContent: "space-between"
                                 }}
                             >
-                                <Typography
-                                    variant="h6"
-                                    style={{ fontWeight: 50, color: "gold" }}
-                                >
+                                <Typography variant="h6" style={{ fontWeight: 50, color: "gold" }}>
                                     Total Charge
                                 </Typography>
-                                <Typography
-                                    variant="h6"
-                                    style={{ fontWeight: 300 }}
-                                >
+                                <Typography variant="h6" style={{ fontWeight: 300 }}>
                                     P{this.state.totalCharge.toFixed(2)}
                                 </Typography>
                             </div>
@@ -550,10 +504,7 @@ export default class RoomInfo extends Component {
                                     justifyItems: "center"
                                 }}
                             >
-                                <Icon
-                                    color="secondary"
-                                    style={{ marginRight: 10 }}
-                                >
+                                <Icon color="secondary" style={{ marginRight: 10 }}>
                                     warning
                                 </Icon>
                                 {this.state.snackBarMessage}
@@ -562,16 +513,38 @@ export default class RoomInfo extends Component {
                         ClickAwayListenerProps={{ onClickAway: () => null }}
                         TransitionComponent={Slide}
                         action={[
-                            <IconButton
-                                key="close"
-                                aria-label="close"
-                                color="inherit"
-                                onClick={this.handleCloseSnackBar}
-                            >
+                            <IconButton key="close" aria-label="close" color="inherit" onClick={this.handleCloseSnackBar}>
                                 <Icon>close</Icon>
                             </IconButton>
                         ]}
                     />
+                    <Dialog
+                        open={this.state.viewImages}
+                        fullWidth
+                        maxWidth="md"
+                        onClose={this.handleViewImages}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description"
+                    >
+                        <DialogContent>
+                            <div>
+                                <Carousel>
+                                    {selectedType.images.map(image => {
+                                        return (
+                                            <Carousel.Item>
+                                                <img className="d-block w-100" src={image.src} alt="First slide" key={image.filename} />
+                                            </Carousel.Item>
+                                        );
+                                    })}
+                                </Carousel>
+                            </div>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={this.handleCloseImages} color="primary" autoFocus>
+                                close
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
                 </div>
             );
     }

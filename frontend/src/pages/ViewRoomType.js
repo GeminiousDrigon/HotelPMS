@@ -22,13 +22,21 @@ import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import IconButton from "@material-ui/core/IconButton";
 import Menu from "@material-ui/core/Menu";
+import Fab from "@material-ui/core/Fab";
 
-import MoreVertIcon from "@material-ui/icons/MoreVert";
+import CloseIcon from "@material-ui/icons/Close";
 
 import axios from "axios";
 import AddFacilitiesDialog from "../components/AddFacilitiesDialog";
 import AddRatesDialog from "../components/AddRatesDialog";
 import AddRoomImageDialog from "../components/AddRoomImageDialog";
+
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import { LinearProgress } from "@material-ui/core";
 
 export default class ViewRoomType extends Component {
     constructor(props) {
@@ -46,11 +54,16 @@ export default class ViewRoomType extends Component {
             facilities: [],
             rates: [],
             rooms: [],
+            images: [],
             addFacilitiesDialog: false,
             rateDialog: false,
             editRate: false,
             rateId: null,
-            anchorEl: null
+            anchorEl: null,
+
+            deleteImage: false,
+            selectedImage: null,
+            fetchingImages: false
         };
     }
 
@@ -62,7 +75,7 @@ export default class ViewRoomType extends Component {
         try {
             let { id } = this.props.match.params;
             let { data } = await axios.get(`/api/roomtype/${id}`);
-            let { name, description, room_size, room_size_unit, bed_no, bed_type, amenities, max_guest, rates, rooms } = data;
+            let { name, description, room_size, room_size_unit, bed_no, bed_type, amenities, max_guest, rates, rooms, images } = data;
             this.setState({
                 name,
                 description,
@@ -73,7 +86,10 @@ export default class ViewRoomType extends Component {
                 max_guest,
                 facilities: amenities,
                 rates,
-                rooms
+                rooms,
+                images,
+                //add image dialog
+                addImage: false
             });
         } catch (err) {
             console.log(err);
@@ -137,8 +153,52 @@ export default class ViewRoomType extends Component {
 
     editRate = () => this.setState({ rateDialog: true, editRate: true, anchorEl: null });
 
+    //add images
+    handleImage = () => this.setState({ addImage: !this.state.addImage });
+
+    handleCloseImage = fetchImages => {
+        if (fetchImages) {
+            //get images
+            console.log("getImages")
+            this.getImages();
+        }
+        this.setState({ addImage: false });
+    };
+
+    openDeleteImage = selectedImage => {
+        this.setState({ deleteImage: true, selectedImage });
+    };
+
+    closeDeleteImage = () => {
+        this.setState({ deleteImage: false, selectedImage: null });
+    };
+
+    onDeleteImage = async () => {
+        try {
+            let { id } = this.props.match.params;
+            await axios.delete(`/api/roomtype/${id}/file?filename=${this.state.selectedImage}`);
+            this.closeDeleteImage();
+            this.getImages();
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    getImages = async () => {
+        try {
+            this.setState({ fetchingImages: true });
+            let { id } = this.props.match.params;
+            let { data } = await axios.get(`/api/roomtype/${id}/file`);
+            this.setState({ images: data });
+
+            this.setState({ fetchingImages: false });
+        } catch (err) {
+            this.setState({ fetchingImages: false });
+        }
+    };
+
     render() {
-        let { name, description, room_size, room_size_unit, bed_no, bed_type, max_guest, facilities, rates, anchorEl } = this.state;
+        let { name, description, room_size, room_size_unit, bed_no, bed_type, max_guest, facilities, rates, anchorEl, images } = this.state;
         let open = Boolean(anchorEl);
         return (
             <AdminLayout {...this.props}>
@@ -232,12 +292,42 @@ export default class ViewRoomType extends Component {
                                 }}
                             >
                                 <Typography variant="h4">Images</Typography>
-                                <Button variant="outlined" color="primary" style={{ marginLeft: 10 }} onClick={this.addFacility}>
+                                <Button variant="outlined" color="primary" style={{ marginLeft: 10 }} onClick={this.handleImage}>
                                     Add
                                 </Button>
                             </div>
 
                             <Divider />
+                            {this.state.fetchingImages && <LinearProgress style={{ height: 2 }} />}
+                            <div style={{ display: "flex", flexDirection: "row", marginTop: 30, flexWrap: "wrap", padding: "0 20px" }}>
+                                {images.map((el, i) => {
+                                    return (
+                                        <div
+                                            style={{
+                                                backgroundColor: "#ecf0f1",
+                                                height: 188,
+                                                width: 250,
+                                                backgroundImage: `url(${el.src})`,
+                                                backgroundPosition: "center",
+                                                backgroundSize: "cover",
+                                                display: "inline-block",
+                                                margin: 5,
+                                                position: "relative"
+                                            }}
+                                            key={el.filename}
+                                        >
+                                            <Fab
+                                                size="small"
+                                                style={{ position: "absolute", top: 5, right: 5 }}
+                                                color="primary"
+                                                onClick={() => this.openDeleteImage(el.filename)}
+                                            >
+                                                <CloseIcon style={{ color: "white" }} />
+                                            </Fab>
+                                        </div>
+                                    );
+                                })}
+                            </div>
                         </Paper>
                     </Grid>
                     <Grid item md={6} xs={12}>
@@ -477,9 +567,32 @@ export default class ViewRoomType extends Component {
                     edit={this.state.editRate}
                     rateId={this.state.rateId}
                 />
-                <AddRoomImageDialog 
-                    open={true}
+                <AddRoomImageDialog
+                    open={this.state.addImage}
+                    roomId={this.props.match.params.id}
+                    handleImage={this.handleImage}
+                    handleCloseImage={this.handleCloseImage}
                 />
+
+                <Dialog
+                    open={this.state.deleteImage}
+                    onClose={this.closeDeleteImage}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogTitle id="alert-dialog-title">Are you sure?</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-description">Are you sure you want to delete this image?</DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={this.closeDeleteImage} color="primary">
+                            Disagree
+                        </Button>
+                        <Button onClick={this.onDeleteImage} color="primary" autoFocus>
+                            Agree
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </AdminLayout>
         );
     }
