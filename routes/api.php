@@ -116,6 +116,9 @@ Route::get("/roomtype/{id}/rate", "RoomTypeController@getRates");
 Route::post("/roomtype/{id}/booking", "RoomTypeController@addBooking");
 Route::get("/roomtype/{id}/booking", "RoomTypeController@getBookings");
 
+Route::get('/reports', "ReportController@getReports");
+Route::get('/reports/roomtype/{id}', "ReportController@getRoomTypeReport");
+
 
 Route::post("/email/test", function (Request $request) {
     $to_name = 'John Bill Suarez';
