@@ -67,7 +67,7 @@ export default class Component extends React.PureComponent {
                     maxWidth="md"
                     fullWidth
                 >
-                    <DialogTitle id="alert-dialog-title">{"Use Google's location service?"}</DialogTitle>
+                    <DialogTitle id="alert-dialog-title">Scan QR Code</DialogTitle>
                     <DialogContent>
                         <QrReader delay={this.state.delay} style={previewStyle} onError={this.handleError} onScan={this.handleScan} />
                     </DialogContent>

@@ -104,6 +104,9 @@ Route::get("/roomtype/available", "RoomTypeController@getAvailableRoomsTypes");
 Route::get("/roomtype/{id}", "RoomTypeController@getOne");
 Route::put("/roomtype/{id}", "RoomTypeController@editOne");
 Route::delete("/roomtype/{id}", "RoomTypeController@deleteOne");
+Route::get("/roomtype/{id}/file", "RoomTypeController@getFiles");
+Route::post("/roomtype/{id}/file", "RoomTypeController@uploadFile");
+Route::delete("/roomtype/{id}/file", "RoomTypeController@deleteFile");
 Route::get("/roomtype/{id}/amenity", "RoomTypeController@getAmenities");
 Route::post("/roomtype/{id}/amenity", "RoomTypeController@addAmenities");
 Route::post("/roomtype/{id}/room", "RoomTypeController@addRoom");
@@ -126,7 +129,6 @@ Route::post("/email/test", function (Request $request) {
     //         ->subject('Artisans Web Testing Mail');
     //     $message->from('bluepoolgarden2@gmail.com', 'Artisans Web');
     // });
-
 });
 
 Route::fallback(function () {

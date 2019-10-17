@@ -85,8 +85,9 @@ export default function BookingLayout(props) {
                     <Typography
                         className={classes.title}
                         variant="h6"
-                        style={{ paddingLeft: "75px" }}
+                        style={{ paddingLeft: "75px", cursor: "pointer" }}
                         noWrap
+                        onClick={() => props.history.push("/")}
                     >
                         Bluepool Garden
                     </Typography>

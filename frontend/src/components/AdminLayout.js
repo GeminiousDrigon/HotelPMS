@@ -169,7 +169,7 @@ export default function AdminLayout(props) {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" className={classes.title}>
+                    <Typography variant="h6" className={classes.title} onClick={()=>props.history.push('/')} style={{ cursor: 'pointer'}}>
                         Bluepool Garden
                     </Typography>
                     <div>
