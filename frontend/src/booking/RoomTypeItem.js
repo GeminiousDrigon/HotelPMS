@@ -12,8 +12,6 @@ export default class RoomTypeItem extends Component {
                 <div
                     style={{
                         marginRight: 10,
-                        maxWidth: 193,
-                        width: "100%",
                         marginBottom: 10
                     }}
                     key={roomType.id}
@@ -82,7 +80,6 @@ export default class RoomTypeItem extends Component {
                 <div
                     style={{
                         marginRight: 10,
-                        maxWidth: 193,
                         marginBottom: 10,
                         cursor: "pointer"
                     }}

@@ -7,7 +7,24 @@ export default class Report extends Component {
     render() {
         return (
             <AdminLayout {...this.props}>
-                <div></div>
+                <div>
+                    <Grid container spacing={3}>
+                        <Grid item xs={6} sm={2}>
+                            <Paper>xs=6 sm=3</Paper>
+                            <Paper>xs=6 sm=3</Paper>
+                        </Grid>
+                        <Grid item xs={6} sm={8}>
+                            <Paper>xs=6 sm=3</Paper>
+                        </Grid>
+
+                        <Grid item xs={6} sm={2}>
+                            <Paper>xs=6 sm=3</Paper>
+                        </Grid>
+                        <Grid item xs={6} sm={8}>
+                            <Paper>xs=6 sm=3</Paper>
+                        </Grid>
+                    </Grid>
+                </div>
             </AdminLayout>
         );
     }

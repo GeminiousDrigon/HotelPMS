@@ -40,93 +40,89 @@ export default class RateItem extends Component {
             );
         }
         return (
-            <Grid item xs={12} sm={12} md={4}>
-                <Paper
+            <Paper
+                style={{
+                    marginBottom: 25,
+                    padding: 10,
+                    minHeight: 225,
+                    display: "flex",
+                    flexDirection: "column",
+                    backgroundColor: "#E6E6E6"
+                }}
+            >
+                <Typography
+                    variant="h5"
                     style={{
-                        marginBottom: 25,
-                        padding: 25,
-                        margin: 5,
-                        minHeight: 225,
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "space-between",
-                        backgroundColor: "#E6E6E6"
+                        fontWeight: 300
                     }}
                 >
+                    {rate.name}
+                </Typography>
+
+                <div>
+                    <FormControl
+                        variant="standard"
+                        margin="normal"
+                        // error={(validateCalled || touched.country) && errors.country ? true : false}
+                        fullWidth
+                    >
+                        <InputLabel
+                            htmlFor="outlined-age-native-simple"
+                            ref={el => (this.countryInput = el)}
+                        >
+                            Adult
+                        </InputLabel>
+                        <Select
+                            name="country"
+                            onChange={this.handleSelectChange}
+                            value={this.state.adult}
+                            SelectDisplayProps={{
+                                style: {
+                                    display: "flex"
+                                }
+                            }}
+                        >
+                            {sleep}
+                        </Select>
+                        {/* <FormHelperText>{(validatedCalled || touched.country) && errors.country ? errors.country : ""}</FormHelperText> */}
+                    </FormControl>
                     <Typography
-                        variant="h5"
+                        variant="subtitle2"
                         style={{
                             fontWeight: 300
                         }}
                     >
-                        {rate.name}
+                        PHP {rate.price}
+                        /night
                     </Typography>
-
-                    <div>
-                        <FormControl
-                            variant="standard"
-                            margin="normal"
-                            // error={(validateCalled || touched.country) && errors.country ? true : false}
-                            fullWidth
-                        >
-                            <InputLabel
-                                htmlFor="outlined-age-native-simple"
-                                ref={el => (this.countryInput = el)}
-                            >
-                                Adult
-                            </InputLabel>
-                            <Select
-                                name="country"
-                                onChange={this.handleSelectChange}
-                                value={this.state.adult}
-                                SelectDisplayProps={{
-                                    style: {
-                                        display: "flex"
-                                    }
-                                }}
-                            >
-                                {sleep}
-                            </Select>
-                            {/* <FormHelperText>{(validatedCalled || touched.country) && errors.country ? errors.country : ""}</FormHelperText> */}
-                        </FormControl>
-                        <Typography
-                            variant="subtitle2"
-                            style={{
-                                fontWeight: 300
-                            }}
-                        >
-                            PHP {rate.price}
-                            /night
-                        </Typography>
-                        <Typography
-                            variant="subtitle2"
-                            style={{
-                                fontWeight: 300,
-                                color: "red"
-                            }}
-                        >
-                            Not cancellable
-                        </Typography>
-                        <Typography
-                            variant="subtitle2"
-                            gutterBottom
-                            style={{
-                                fontWeight: 300,
-                                color: "red"
-                            }}
-                        >
-                            Not rebookable
-                        </Typography>
-                        <Button
-                            style={{ backgroundColor: "#f9a600" }}
-                            fullWidth
-                            onClick={this.onAddRoom}
-                        >
-                            + Book this room
-                        </Button>
-                    </div>
-                </Paper>
-            </Grid>
+                    <Typography
+                        variant="subtitle2"
+                        style={{
+                            fontWeight: 300,
+                            color: "red"
+                        }}
+                    >
+                        Not cancellable
+                    </Typography>
+                    <Typography
+                        variant="subtitle2"
+                        gutterBottom
+                        style={{
+                            fontWeight: 300,
+                            color: "red"
+                        }}
+                    >
+                        Not rebookable
+                    </Typography>
+                    <Button
+                        style={{ backgroundColor: "#f9a600" }}
+                        fullWidth
+                        onClick={this.onAddRoom}
+                    >
+                        + Book this room
+                    </Button>
+                </div>
+            </Paper>
         );
     }
 }
