@@ -65,8 +65,8 @@ class ReportController extends Controller
         return response()->json([
             "dailyBookings" => $dailyReservation,
             "monthlyBookings" => $monthlyReservation,
-            "monthlyIncome" => $monthlyIncome,
-            "yearlyIncome" => $yearlyIncome,
+            "monthlyIncome" => number_format((float) $monthlyIncome, 2, '.', ''),
+            "yearlyIncome" => number_format((float) $yearlyIncome, 2, '.', ''),
             "daysInMonth" => $daysInMonth,
             "bookingMonth" => $bookingMonth,
             "monthlyRoomtype" => $monthlyRoomtype,

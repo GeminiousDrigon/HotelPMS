@@ -149,7 +149,7 @@ export default class Report extends Component {
                             <Typography variant="h5" component="div">
                                 Reserved Rooms
                             </Typography>
-                            <Typography variant="h2" component="div" style={{ display: "flex", justifyContent: "flex-end" }}>
+                            <Typography variant="h4" component="div" style={{ display: "flex", justifyContent: "flex-end" }}>
                                 {dailyBookings}
                             </Typography>
                         </Paper>
@@ -164,7 +164,7 @@ export default class Report extends Component {
                             <Typography variant="h5" component="div">
                                 Monthly Reservation
                             </Typography>
-                            <Typography variant="h2" component="div" style={{ display: "flex", justifyContent: "flex-end" }}>
+                            <Typography variant="h4" component="div" style={{ display: "flex", justifyContent: "flex-end" }}>
                                 {monthlyBookings}
                             </Typography>
                         </Paper>
@@ -179,7 +179,7 @@ export default class Report extends Component {
                             <Typography variant="h5" component="div">
                                 Monthly Income
                             </Typography>
-                            <Typography variant="h2" component="div" style={{ display: "flex", justifyContent: "flex-end" }}>
+                            <Typography variant="h4" component="div" style={{ display: "flex", justifyContent: "flex-end" }}>
                                 &#8369;{monthlyIncome}
                             </Typography>
                         </Paper>
@@ -194,7 +194,7 @@ export default class Report extends Component {
                             <Typography variant="h5" component="div">
                                 Yearly Income
                             </Typography>
-                            <Typography variant="h2" component="div" style={{ display: "flex", justifyContent: "flex-end" }}>
+                            <Typography variant="h4" component="div" style={{ display: "flex", justifyContent: "flex-end" }}>
                                 &#8369;{yearlyIncome}
                             </Typography>
                         </Paper>
