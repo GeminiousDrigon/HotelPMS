@@ -6,6 +6,9 @@ import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import Icon from "@material-ui/core/Icon";
+import ExpansionPanel from "@material-ui/core/ExpansionPanel";
+import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
+import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
@@ -13,6 +16,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import Snackbar from "@material-ui/core/Snackbar";
 import Slide from "@material-ui/core/Slide";
+import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import {
     MuiPickersUtilsProvider,
     KeyboardTimePicker,
@@ -217,103 +221,113 @@ export default class RoomInfo extends Component {
             );
         } else
             return (
-                <div
-                    style={{
-                        display: "flex",
-                        flexDirection: "row",
-                        alignItems: "stretch"
-                    }}
-                >
-                    <div
+                <div>
+                    <Typography
+                        variant="h6"
+                        component="div"
                         style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            marginRight: 20,
-                            maxWidth: 300,
-                            width: "100%"
+                            fontWeight: "300"
                         }}
                     >
-                        {this.state.roomTypes.map((roomType, i) => {
-                            return (
-                                <RoomTypeItem
-                                    roomType={roomType}
-                                    onChangeType={this.onChangeType}
-                                    selectedType={selectedType}
-                                />
-                            );
-                        })}
-                    </div>
-                    <div style={{ width: "100%" }}>
-                        <div
-                            style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                alignItems: "stretch"
-                            }}
-                        >
-                            <Paper
-                                style={{
-                                    padding: 25,
-                                    marginBottom: 25
-                                }}
-                            >
-                                <Typography
-                                    variant="h5"
-                                    component="div"
-                                    style={{
-                                        fontSize: "2.5rem",
-                                        fontWeight: "300"
-                                    }}
-                                >
-                                    {this.state.selectedType.name}
-                                </Typography>
-                                <Typography variant="subtitle2" component="div">
-                                    Room size:{" "}
-                                    {this.state.selectedType.room_size +
-                                        this.state.selectedType.room_size_unit}
-                                    <sup>2</sup>
-                                </Typography>
-                                <Typography variant="subtitle2" component="div">
-                                    Bed type: {this.state.selectedType.bed_type}
-                                </Typography>
-                                <Typography variant="subtitle2" component="div">
-                                    Number of beds:{" "}
-                                    {this.state.selectedType.bed_no}
-                                </Typography>
-                                <Typography variant="subtitle2" component="div">
-                                    Facilities:
-                                </Typography>
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        justifyContent: "flex-start",
-                                        flexWrap: "wrap"
-                                    }}
-                                >
-                                    {this.state.selectedType.amenities.map(
-                                        (amenity, o) => {
-                                            return (
-                                                <span
-                                                    style={{
-                                                        display: "flex",
-                                                        marginRight: 15
-                                                    }}
-                                                >
-                                                    <Icon
-                                                        component="span"
-                                                        color="primary"
-                                                    >
-                                                        {amenity.icon}
-                                                    </Icon>
-                                                    <Typography component="span">
-                                                        {amenity.name}
-                                                    </Typography>
-                                                </span>
-                                            );
-                                        }
-                                    )}
+                        Select Room Type
+                    </Typography>
+                    <Grid container spacing={1}>
+                        <Grid item xs={12} sm={2} container>
+                            {this.state.roomTypes.map((roomType, i) => {
+                                return (
+                                    <RoomTypeItem
+                                        roomType={roomType}
+                                        onChangeType={this.onChangeType}
+                                        selectedType={selectedType}
+                                    />
+                                );
+                            })}
+                        </Grid>
+
+                        <Grid item xs={12} sm={8}>
+                            <div style={{ width: "100%" }}>
+                                <div>
+                                    <Paper
+                                        style={{
+                                            padding: 25,
+                                            marginBottom: 25,
+                                            backgroundColor: "#E6E6E6"
+                                        }}
+                                        border={0}
+                                    >
+                                        <Typography
+                                            variant="h5"
+                                            component="div"
+                                            style={{
+                                                fontSize: "2.5rem",
+                                                fontWeight: "300"
+                                            }}
+                                        >
+                                            {this.state.selectedType.name}
+                                        </Typography>
+                                        <Typography
+                                            variant="subtitle2"
+                                            component="div"
+                                        >
+                                            Room size:{" "}
+                                            {this.state.selectedType.room_size +
+                                                this.state.selectedType
+                                                    .room_size_unit}
+                                            <sup>2</sup>
+                                        </Typography>
+                                        <Typography
+                                            variant="subtitle2"
+                                            component="div"
+                                        >
+                                            Bed type:{" "}
+                                            {this.state.selectedType.bed_type}
+                                        </Typography>
+                                        <Typography
+                                            variant="subtitle2"
+                                            component="div"
+                                        >
+                                            Number of beds:{" "}
+                                            {this.state.selectedType.bed_no}
+                                        </Typography>
+                                        <Typography
+                                            variant="subtitle2"
+                                            component="div"
+                                        >
+                                            Facilities:
+                                        </Typography>
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                justifyContent: "flex-start",
+                                                flexWrap: "wrap"
+                                            }}
+                                        >
+                                            {this.state.selectedType.amenities.map(
+                                                (amenity, o) => {
+                                                    return (
+                                                        <span
+                                                            style={{
+                                                                display: "flex",
+                                                                marginRight: 15
+                                                            }}
+                                                        >
+                                                            <Icon
+                                                                component="span"
+                                                                color="primary"
+                                                            >
+                                                                {amenity.icon}
+                                                            </Icon>
+                                                            <Typography component="span">
+                                                                {amenity.name}
+                                                            </Typography>
+                                                        </span>
+                                                    );
+                                                }
+                                            )}
+                                        </div>
+                                    </Paper>
                                 </div>
-                            </Paper>
+                            </div>
                             <Typography variant="h5" gutterBottom>
                                 Available Rates
                             </Typography>
@@ -342,185 +356,221 @@ export default class RoomInfo extends Component {
                                         )}
                                 </Grid>
                             </div>
-                        </div>
-                    </div>
-                    <div
-                        style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            marginLeft: 20,
-                            maxWidth: 400,
-                            width: "100%"
-                        }}
-                    >
-                        <Paper
-                            style={{
-                                padding: 25,
-                                backgroundColor: "gray",
-                                color: "white"
-                            }}
-                        >
-                            <div style={{ marginBottom: 25 }}>
-                                <Typography
-                                    variant="h5"
-                                    style={{ fontWeight: 300 }}
-                                    gutterBottom
-                                >
-                                    Booking Dates
-                                </Typography>
-                                <Typography
-                                    variant="h6"
-                                    style={{ fontWeight: 50, color: "gold" }}
-                                >
-                                    Check-in Date:
-                                </Typography>
-                                <Typography
-                                    variant="h6"
-                                    style={{ fontWeight: 300 }}
-                                    align="center"
-                                >
-                                    {moment(values.checkInDate).format(
-                                        "MMMM DD,  YYYY"
-                                    )}
-                                </Typography>
-                                <Typography
-                                    variant="h6"
-                                    style={{ fontWeight: 50, color: "gold" }}
-                                >
-                                    Check-out Date:
-                                </Typography>
-                                <Typography
-                                    variant="h6"
-                                    style={{ fontWeight: 300 }}
-                                    align="center"
-                                >
-                                    {moment(values.checkOutDate).format(
-                                        "MMMM DD,  YYYY"
-                                    )}
-                                </Typography>
-                            </div>
-                            <div style={{ marginBottom: 25 }}>
+                        </Grid>
+                        <Grid item xs={12} sm={2}>
+                            <Paper
+                                style={{
+                                    padding: 15,
+                                    backgroundColor: "#3c3b3b",
+                                    color: "white"
+                                }}
+                            >
+                                {" "}
                                 <div
                                     style={{
                                         display: "flex",
-                                        justifyContent: "space-between",
-                                        alignItems: "center"
+                                        flexDirection: "column",
+                                        marginLeft: 2,
+                                        maxWidth: 400,
+                                        width: "100%"
                                     }}
                                 >
-                                    <Typography
-                                        variant="h5"
-                                        style={{ fontWeight: 300 }}
-                                    >
-                                        Rooms Selected
-                                    </Typography>
-                                    <Tooltip title="Reset">
-                                        <IconButton
-                                            aria-label="delete"
-                                            onClick={this.handleReset}
-                                        >
-                                            <Icon fontSize="small">
-                                                refresh
-                                            </Icon>
-                                        </IconButton>
-                                    </Tooltip>
-                                </div>
-                                {values.selectedRooms.length > 0 ? (
-                                    <>
-                                        {values.selectedRooms.map((room, i) => (
-                                            <Paper
-                                                style={{
-                                                    padding: 10,
-                                                    marginBottom: 15
-                                                }}
-                                                key={room.id + i}
-                                            >
-                                                <div>
-                                                    <Typography
-                                                        variant="h5"
-                                                        style={{
-                                                            fontWeight: 300
-                                                        }}
-                                                    >
-                                                        {room.name}
-                                                    </Typography>
-                                                    <Typography
-                                                        variant="subtitle2"
-                                                        style={{
-                                                            fontWeight: 300
-                                                        }}
-                                                    >
-                                                        {room.rate.adult}{" "}
-                                                        Adult(s)
-                                                    </Typography>
-                                                    <Typography
-                                                        variant="subtitle2"
-                                                        style={{
-                                                            fontWeight: 300
-                                                        }}
-                                                    >
-                                                        {room.rate.name}
-                                                    </Typography>
-                                                    <Typography
-                                                        variant="subtitle2"
-                                                        style={{
-                                                            fontWeight: 300
-                                                        }}
-                                                    >
-                                                        Price: PHP
-                                                        {room.rate.price}
-                                                    </Typography>
-                                                    <Button
-                                                        variant="outlined"
-                                                        fullWidth
-                                                        style={{
-                                                            marginTop: 10
-                                                        }}
-                                                        onClick={() =>
-                                                            this.removeRoom(i)
-                                                        }
-                                                    >
-                                                        remove
-                                                    </Button>
-                                                </div>
-                                            </Paper>
-                                        ))}
-                                    </>
-                                ) : (
-                                    <div style={{ margin: "25px 0" }}>
+                                    <div style={{ marginBottom: 25 }}>
                                         <Typography
-                                            variant="subtitle1"
+                                            variant="h6"
                                             style={{
-                                                fontWeight: 300,
-                                                textAlign: "center",
-                                                color: "red"
+                                                fontWeight: 50
+                                            }}
+                                            gutterBottom
+                                        >
+                                            Booking Summary
+                                        </Typography>
+                                        <ExpansionPanel square>
+                                            <ExpansionPanelSummary>
+                                                <Typography
+                                                    style={{
+                                                        fontWeight: 50,
+                                                        display: "flex",
+                                                        justifyContent: "center"
+                                                    }}
+                                                >
+                                                    <b>Booking Date</b>
+                                                    <ArrowDropDownIcon />
+                                                </Typography>
+                                            </ExpansionPanelSummary>
+                                            <ExpansionPanelDetails
+                                                style={{
+                                                    display: "flex",
+                                                    flexDirection: "column"
+                                                }}
+                                            >
+                                                <Typography>
+                                                    Check-in Date:
+                                                </Typography>
+                                                <Typography align="center">
+                                                    {moment(
+                                                        values.checkInDate
+                                                    ).format("MMMM DD,  YYYY")}
+                                                </Typography>
+                                                <br />
+                                                <Typography>
+                                                    Check-out Date:
+                                                </Typography>
+                                                <Typography align="center">
+                                                    {moment(
+                                                        values.checkOutDate
+                                                    ).format("MMMM DD,  YYYY")}
+                                                </Typography>
+                                            </ExpansionPanelDetails>
+                                        </ExpansionPanel>
+                                    </div>
+                                    <div style={{ marginBottom: 25 }}>
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                justifyContent: "space-between",
+                                                alignItems: "center"
                                             }}
                                         >
-                                            No added rooms
+                                            <Typography
+                                                variant="h6"
+                                                style={{
+                                                    fontWeight: 50
+                                                }}
+                                                gutterBottom
+                                            >
+                                                Rooms Selected
+                                            </Typography>
+                                            <Tooltip title="Reset">
+                                                <IconButton
+                                                    aria-label="delete"
+                                                    onClick={this.handleReset}
+                                                >
+                                                    <Icon fontSize="small">
+                                                        refresh
+                                                    </Icon>
+                                                </IconButton>
+                                            </Tooltip>
+                                        </div>
+                                        {values.selectedRooms.length > 0 ? (
+                                            <>
+                                                {values.selectedRooms.map(
+                                                    (room, i) => (
+                                                        <Paper
+                                                            style={{
+                                                                padding: 10,
+                                                                marginBottom: 15
+                                                            }}
+                                                            key={room.id + i}
+                                                        >
+                                                            <div>
+                                                                <Typography
+                                                                    variant="h5"
+                                                                    style={{
+                                                                        fontWeight: 300
+                                                                    }}
+                                                                >
+                                                                    {room.name}
+                                                                </Typography>
+                                                                <Typography
+                                                                    variant="subtitle2"
+                                                                    style={{
+                                                                        fontWeight: 300
+                                                                    }}
+                                                                >
+                                                                    {
+                                                                        room
+                                                                            .rate
+                                                                            .adult
+                                                                    }{" "}
+                                                                    Adult(s)
+                                                                </Typography>
+                                                                <Typography
+                                                                    variant="subtitle2"
+                                                                    style={{
+                                                                        fontWeight: 300
+                                                                    }}
+                                                                >
+                                                                    {
+                                                                        room
+                                                                            .rate
+                                                                            .name
+                                                                    }
+                                                                </Typography>
+                                                                <Typography
+                                                                    variant="subtitle2"
+                                                                    style={{
+                                                                        fontWeight: 300
+                                                                    }}
+                                                                >
+                                                                    Price: PHP
+                                                                    {
+                                                                        room
+                                                                            .rate
+                                                                            .price
+                                                                    }
+                                                                </Typography>
+                                                                <Button
+                                                                    variant="outlined"
+                                                                    fullWidth
+                                                                    style={{
+                                                                        marginTop: 10
+                                                                    }}
+                                                                    onClick={() =>
+                                                                        this.removeRoom(
+                                                                            i
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    remove
+                                                                </Button>
+                                                            </div>
+                                                        </Paper>
+                                                    )
+                                                )}
+                                            </>
+                                        ) : (
+                                            <div style={{ margin: "25px 0" }}>
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    style={{
+                                                        fontWeight: 300,
+                                                        textAlign: "center",
+                                                        color: "red"
+                                                    }}
+                                                >
+                                                    No added rooms
+                                                </Typography>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            justifyContent: "space-between"
+                                        }}
+                                    >
+                                        <Typography
+                                            variant="h6"
+                                            style={{
+                                                fontWeight: 50,
+                                                color: "#E6E6E6"
+                                            }}
+                                        >
+                                            Total Charge
+                                        </Typography>
+                                        <Typography
+                                            variant="h6"
+                                            style={{ fontWeight: 300 }}
+                                        >
+                                            P{this.state.totalCharge.toFixed(2)}
                                         </Typography>
                                     </div>
-                                )}
-                            </div>
-                            <div
-                                style={{
-                                    display: "flex",
-                                    justifyContent: "space-between"
-                                }}
-                            >
-                                <Typography
-                                    variant="h6"
-                                    style={{ fontWeight: 50, color: "gold" }}
-                                >
-                                    Total Charge
-                                </Typography>
-                                <Typography
-                                    variant="h6"
-                                    style={{ fontWeight: 300 }}
-                                >
-                                    P{this.state.totalCharge.toFixed(2)}
-                                </Typography>
-                            </div>
-                        </Paper>
-                    </div>
+                                </div>
+                            </Paper>
+                        </Grid>
+                    </Grid>
+
                     {/* <div style={{ flexGrow: 1, marginLeft: 10, alignItems: 'flex-start' }}>
                 </div> */}
                     <ConfirmDialog

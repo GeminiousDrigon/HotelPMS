@@ -27,6 +27,8 @@ import * as yup from "yup";
 import { withFormik } from "formik";
 import moment from "moment";
 import axios from "axios";
+import { width } from "@material-ui/system";
+import { Grid } from "@material-ui/core";
 
 class Booking extends Component {
     constructor(props) {
@@ -155,13 +157,26 @@ class Booking extends Component {
         switch (activeStep) {
             case 0:
                 return (
-                    <Paper style={{ padding: "30px" }}>
-                        <DatePicker
-                            setStateValue={this.setStateValue}
-                            {...this.props}
-                            validateCalled={this.state.validatedSteps[0]}
-                        />
-                    </Paper>
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            marginTop: "5%"
+                        }}
+                    >
+                        <Paper
+                            style={{
+                                padding: "20px",
+                                backgroundColor: "#E6E6E6"
+                            }}
+                        >
+                            <DatePicker
+                                setStateValue={this.setStateValue}
+                                {...this.props}
+                                validateCalled={this.state.validatedSteps[0]}
+                            />
+                        </Paper>
+                    </div>
                 );
             case 1:
                 return (

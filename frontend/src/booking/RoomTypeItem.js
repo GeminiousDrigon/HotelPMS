@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import moment from "moment";
+import Grid from "@material-ui/core/Grid";
 
 export default class RoomTypeItem extends Component {
     render() {
@@ -11,7 +12,7 @@ export default class RoomTypeItem extends Component {
                 <div
                     style={{
                         marginRight: 10,
-                        maxWidth: 350,
+                        maxWidth: 193,
                         width: "100%",
                         marginBottom: 10
                     }}
@@ -31,7 +32,7 @@ export default class RoomTypeItem extends Component {
                             variant="h5"
                             component="span"
                             gutterBottom
-                            style={{ fontWeight: 500 }}
+                            style={{ fontWeight: 500, color: "white" }}
                         >
                             {roomType.name}
                         </Typography>
@@ -42,7 +43,8 @@ export default class RoomTypeItem extends Component {
                                 gutterBottom
                                 style={{
                                     display: "inline-block",
-                                    fontWeight: 300
+                                    fontWeight: 300,
+                                    color: "white"
                                 }}
                             >
                                 Bed Type:&nbsp;
@@ -52,12 +54,14 @@ export default class RoomTypeItem extends Component {
                                 component="span"
                                 style={{
                                     display: "inline-block",
-                                    fontWeight: 300
+                                    fontWeight: 300,
+                                    color: "white"
                                 }}
                             >
                                 {roomType.name}
                             </Typography>
                         </div>
+
                         <div style={{ color: "red" }}>
                             <Typography variant="caption" color="inherit">
                                 Not available anymore
@@ -78,8 +82,7 @@ export default class RoomTypeItem extends Component {
                 <div
                     style={{
                         marginRight: 10,
-                        maxWidth: 350,
-                        width: "100%",
+                        maxWidth: 193,
                         marginBottom: 10,
                         cursor: "pointer"
                     }}
@@ -91,7 +94,7 @@ export default class RoomTypeItem extends Component {
                             padding: 20,
                             backgroundColor:
                                 selectedType.id === roomType.id
-                                    ? "#3f51b5"
+                                    ? "#f9a600"
                                     : "white",
                             color: selectedType.id === roomType.id && "white"
                         }}

@@ -6,8 +6,14 @@ import Snackbar from "@material-ui/core/Snackbar";
 import Icon from "@material-ui/core/Icon";
 import Slide from "@material-ui/core/Slide";
 import IconButton from "@material-ui/core/IconButton";
+import Divider from "@material-ui/core/Divider";
 import DateFnsUtils from "@date-io/date-fns";
-import { MuiPickersUtilsProvider, KeyboardTimePicker, KeyboardDatePicker } from "@material-ui/pickers";
+import AccessTimeIcon from "@material-ui/icons/AccessTime";
+import {
+    MuiPickersUtilsProvider,
+    KeyboardTimePicker,
+    KeyboardDatePicker
+} from "@material-ui/pickers";
 import { Paper } from "@material-ui/core";
 import moment from "moment";
 
@@ -46,7 +52,11 @@ export default class DatePicker extends React.Component {
                 snackBarMessage: (
                     <span>
                         {`You can't select dates that are the `}
-                        <strong style={{ color: "#f50057" }}>same</strong> or <strong style={{ color: "#f50057" }}>before</strong> the checkin date!
+                        <strong style={{ color: "#f50057" }}>
+                            same
+                        </strong> or{" "}
+                        <strong style={{ color: "#f50057" }}>before</strong> the
+                        checkin date!
                     </span>
                 ),
                 snackBar: true
@@ -69,45 +79,58 @@ export default class DatePicker extends React.Component {
     render() {
         let selectedDate = moment();
 
-        const { values, touched, errors, handleChange, handleBlur, handleSubmit } = this.props;
+        const {
+            values,
+            touched,
+            errors,
+            handleChange,
+            handleBlur,
+            handleSubmit
+        } = this.props;
         return (
-            <Grid container justify="space-around">
-                <KeyboardDatePicker
-                    margin="normal"
-                    id="date-picker-dialog"
-                    label="Check-in"
-                    format="MM/dd/yyyy"
-                    value={values.checkInDate}
-                    onChange={this.handleCheckinDate}
-                    KeyboardButtonProps={{
-                        "aria-label": "change date"
-                    }}
-                    minDate={new Date()}
-                    showDisabledMonthNavigation
-                />
-                <KeyboardDatePicker
-                    margin="normal"
-                    id="date-picker-dialog"
-                    label="Check-out"
-                    format="MM/dd/yyyy"
-                    value={values.checkOutDate}
-                    onChange={this.handleCheckoutDate}
-                    KeyboardButtonProps={{
-                        "aria-label": "change date"
-                    }}
-                    minDate={new Date()}
-                    showDisabledMonthNavigation
-                />
-                <KeyboardTimePicker
-                    margin="normal"
-                    id="time-picker"
-                    label="Time Arrival"
-                    value={values.timeArrival}
-                    onChange={this.handleTimeArrivalChange}
-                    KeyboardButtonProps={{
-                        "aria-label": "change time"
-                    }}
-                />
+            <Grid container spacing={3}>
+                <Grid item xs={12} xl={12} align="center">
+                    <KeyboardDatePicker
+                        margin="normal"
+                        id="date-picker-dialog"
+                        label="Check-in"
+                        format="MM/dd/yyyy"
+                        value={values.checkInDate}
+                        onChange={this.handleCheckinDate}
+                        KeyboardButtonProps={{
+                            "aria-label": "change date"
+                        }}
+                        minDate={new Date()}
+                        showDisabledMonthNavigation
+                        style={{ marginRight: "10px" }}
+                    />
+
+                    <KeyboardDatePicker
+                        margin="normal"
+                        id="date-picker-dialog"
+                        label="Check-out"
+                        format="MM/dd/yyyy"
+                        value={values.checkOutDate}
+                        onChange={this.handleCheckoutDate}
+                        KeyboardButtonProps={{
+                            "aria-label": "change date"
+                        }}
+                        minDate={new Date()}
+                        showDisabledMonthNavigation
+                        style={{ marginRight: "10px" }}
+                    />
+
+                    <KeyboardTimePicker
+                        margin="normal"
+                        id="time-picker"
+                        label="Time Arrival"
+                        value={values.timeArrival}
+                        onChange={this.handleTimeArrivalChange}
+                        KeyboardButtonProps={{
+                            "aria-label": "change time"
+                        }}
+                    />
+                </Grid>
                 <Snackbar
                     anchorOrigin={{
                         vertical: "bottom",
@@ -137,7 +160,12 @@ export default class DatePicker extends React.Component {
                     ClickAwayListenerProps={{ onClickAway: () => null }}
                     TransitionComponent={Slide}
                     action={[
-                        <IconButton key="close" aria-label="close" color="inherit" onClick={this.handleCloseSnackBar}>
+                        <IconButton
+                            key="close"
+                            aria-label="close"
+                            color="inherit"
+                            onClick={this.handleCloseSnackBar}
+                        >
                             <Icon>close</Icon>
                         </IconButton>
                     ]}

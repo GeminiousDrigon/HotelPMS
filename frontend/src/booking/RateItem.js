@@ -33,7 +33,11 @@ export default class RateItem extends Component {
 
         let sleep = [];
         for (let i = 1; i <= rate.sleep; i++) {
-            sleep.push(<MenuItem value={i} key={i}>{i}</MenuItem>);
+            sleep.push(
+                <MenuItem value={i} key={i}>
+                    {i}
+                </MenuItem>
+            );
         }
         return (
             <Grid item xs={12} sm={12} md={4}>
@@ -45,7 +49,8 @@ export default class RateItem extends Component {
                         minHeight: 225,
                         display: "flex",
                         flexDirection: "column",
-                        justifyContent: "space-between"
+                        justifyContent: "space-between",
+                        backgroundColor: "#E6E6E6"
                     }}
                 >
                     <Typography
@@ -64,7 +69,10 @@ export default class RateItem extends Component {
                             // error={(validateCalled || touched.country) && errors.country ? true : false}
                             fullWidth
                         >
-                            <InputLabel htmlFor="outlined-age-native-simple" ref={el => (this.countryInput = el)}>
+                            <InputLabel
+                                htmlFor="outlined-age-native-simple"
+                                ref={el => (this.countryInput = el)}
+                            >
                                 Adult
                             </InputLabel>
                             <Select
@@ -93,7 +101,8 @@ export default class RateItem extends Component {
                         <Typography
                             variant="subtitle2"
                             style={{
-                                fontWeight: 300
+                                fontWeight: 300,
+                                color: "red"
                             }}
                         >
                             Not cancellable
@@ -102,13 +111,18 @@ export default class RateItem extends Component {
                             variant="subtitle2"
                             gutterBottom
                             style={{
-                                fontWeight: 300
+                                fontWeight: 300,
+                                color: "red"
                             }}
                         >
                             Not rebookable
                         </Typography>
-                        <Button variant="outlined" color="primary" fullWidth onClick={this.onAddRoom}>
-                            Add
+                        <Button
+                            style={{ backgroundColor: "#f9a600" }}
+                            fullWidth
+                            onClick={this.onAddRoom}
+                        >
+                            + Book this room
                         </Button>
                     </div>
                 </Paper>

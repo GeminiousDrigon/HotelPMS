@@ -7,6 +7,8 @@ import LockIcon from "@material-ui/icons/Lock";
 import Button from "@material-ui/core/Button";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Grid from "@material-ui/core/Grid";
+import Fab from "@material-ui/core/Fab";
 
 import * as yup from "yup";
 import axios from "axios";
@@ -39,8 +41,8 @@ class Signin extends Component {
                 localStorage.setItem("login", data.access_token);
                 localStorage.setItem("user", JSON.stringify(data.user));
                 this.props.history.push("/calendar");
-            }else{
-                this.setState({logging:false})
+            } else {
+                this.setState({ logging: false });
             }
         } catch (err) {
             this.setState({ failed: true, logging: false });
@@ -49,10 +51,10 @@ class Signin extends Component {
 
     checkAccount = async () => {
         try {
-            let token = localStorage.getItem('login')
+            let token = localStorage.getItem("login");
             let { data } = await axios.get("/api/user", {
                 headers: {
-                    "Authorization": "Bearer "+token
+                    Authorization: "Bearer " + token
                 }
             });
             this.setState({ checking: false });
@@ -88,119 +90,128 @@ class Signin extends Component {
         } else
             return (
                 <div>
-                    <div>
-                        <img
-                            src="img/logo1.jpg"
-                            style={{
-                                width: "30%",
-                                marginLeft: "35%",
-                                marginTop: "5%"
-                            }}
-                        ></img>
-                    </div>
-
-                    <Paper
-                        style={{
-                            width: "30%",
-                            margin: "auto",
-                            height: "250px"
-                        }}
+                    <Grid
+                        container
+                        spacing={3}
+                        style={{ display: "flex", justifyContent: "center" }}
                     >
-                        {this.state.logging && (
-                            <LinearProgress style={{ height: 2 }} />
-                        )}
-                        <div
-                            style={{
-                                width: "80%",
-                                margin: "auto",
-                                paddingTop: "30px"
-                            }}
-                        >
-                            <TextField
-                                style={{
-                                    width: "100%"
-                                }}
-                                id="email"
-                                placeholder="Username"
-                                InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <AccountCircle />
-                                        </InputAdornment>
-                                    )
-                                }}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                value={values.email}
-                                helperText={
-                                    (validateCalled || touched.email) &&
-                                    errors.email
-                                        ? errors.email
-                                        : ""
-                                }
-                                error={
-                                    (validateCalled || touched.email) &&
-                                    errors.email
-                                }
-                            />
-                            <br></br>
-                            <br></br>
-                            <TextField
-                                style={{
-                                    width: "100%"
-                                }}
-                                id="password"
-                                placeholder="Password"
-                                type="password"
-                                InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <LockIcon />
-                                        </InputAdornment>
-                                    )
-                                }}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                value={values.password}
-                                helperText={
-                                    (validateCalled || touched.password) &&
-                                    errors.password
-                                        ? errors.password
-                                        : ""
-                                }
-                                error={
-                                    (validateCalled || touched.password) &&
-                                    errors.password
-                                }
-                            />
-                        </div>
-                        <br></br>
-                        <div
-                            style={{
-                                float: "right",
-                                marginRight: "10%"
-                            }}
-                        >
-                            <a href="">
-                                <i>Forgot Password?</i>
-                            </a>
-                        </div>
-                        <br></br>
+                        <Grid xs={10} sm={4}>
+                            <div>
+                                <img
+                                    src="img/logo1.jpg"
+                                    style={{
+                                        width: "70%",
+                                        marginLeft: "15%",
+                                        marginTop: "8%"
+                                    }}
+                                ></img>
+                            </div>
 
-                        <div style={{ margin: "5% 5% 5% 10%" }}>
-                            <Button
-                                variant="contained"
+                            <Paper
                                 style={{
-                                    backgroundColor: "#1093bd",
-                                    color: "white",
-                                    width: "95%"
+                                    height: "290px",
+                                    backgroundColor: "#E6E6E6"
                                 }}
-                                onClick={this.onSignin}
                             >
-                                LOGIN
-                            </Button>
-                        </div>
-                    </Paper>
+                                {this.state.logging && (
+                                    <LinearProgress style={{ height: 2 }} />
+                                )}
+                                <div
+                                    style={{
+                                        width: "80%",
+                                        margin: "auto",
+                                        paddingTop: "30px"
+                                    }}
+                                >
+                                    <TextField
+                                        style={{
+                                            width: "100%"
+                                        }}
+                                        id="email"
+                                        placeholder="Username"
+                                        InputProps={{
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <AccountCircle />
+                                                </InputAdornment>
+                                            )
+                                        }}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        value={values.email}
+                                        helperText={
+                                            (validateCalled || touched.email) &&
+                                            errors.email
+                                                ? errors.email
+                                                : ""
+                                        }
+                                        error={
+                                            (validateCalled || touched.email) &&
+                                            errors.email
+                                        }
+                                    />
+                                    <br></br>
+                                    <br></br>
+                                    <TextField
+                                        style={{
+                                            width: "100%"
+                                        }}
+                                        id="password"
+                                        placeholder="Password"
+                                        type="password"
+                                        InputProps={{
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <LockIcon />
+                                                </InputAdornment>
+                                            )
+                                        }}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        value={values.password}
+                                        helperText={
+                                            (validateCalled ||
+                                                touched.password) &&
+                                            errors.password
+                                                ? errors.password
+                                                : ""
+                                        }
+                                        error={
+                                            (validateCalled ||
+                                                touched.password) &&
+                                            errors.password
+                                        }
+                                    />
+                                </div>
+                                <br></br>
+                                <div
+                                    style={{
+                                        float: "right",
+                                        marginRight: "10%"
+                                    }}
+                                >
+                                    <a href="">
+                                        <i>Forgot Password?</i>
+                                    </a>
+                                </div>
+                                <br></br>
+
+                                <div style={{ margin: "5% 5% 5% 10%" }}>
+                                    <Fab
+                                        variant="contained"
+                                        style={{
+                                            backgroundColor: "#1093bd",
+                                            color: "white",
+                                            width: "95%"
+                                        }}
+                                        onClick={this.onSignin}
+                                    >
+                                        LOGIN
+                                    </Fab>
+                                </div>
+                            </Paper>
+                        </Grid>
+                    </Grid>
                 </div>
             );
     }
