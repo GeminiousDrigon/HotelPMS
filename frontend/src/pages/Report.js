@@ -2,7 +2,13 @@ import React, { Component } from "react";
 import AdminLayout from "../components/AdminLayout";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
-import { Typography, Divider, CircularProgress, Button, LinearProgress } from "@material-ui/core";
+import {
+    Typography,
+    Divider,
+    CircularProgress,
+    Button,
+    LinearProgress
+} from "@material-ui/core";
 
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -82,13 +88,20 @@ export default class Report extends Component {
         this.fetchingReports()
             .then(({ data }) => {
                 // let { dailyBookings, monthlyBookings, monthlyIncome, yearlyIncome, daysInMonth, monthlyRoomtype}
-                this.setState({ ...data, fetching: false, selectedRoomType: 0 }, () => {
-                    this.monthlyBooking.data.datasets[0].data = data.bookingMonth;
-                    this.monthlyBooking.update();
-                    this.monthlyRoomType.data.datasets[0].data = data.monthlyRoomtype;
-                    this.monthlyRoomType.data.datasets[0].label = this.state.roomTypes[this.state.selectedRoomType].name;
-                    this.monthlyRoomType.update();
-                });
+                this.setState(
+                    { ...data, fetching: false, selectedRoomType: 0 },
+                    () => {
+                        this.monthlyBooking.data.datasets[0].data =
+                            data.bookingMonth;
+                        this.monthlyBooking.update();
+                        this.monthlyRoomType.data.datasets[0].data =
+                            data.monthlyRoomtype;
+                        this.monthlyRoomType.data.datasets[0].label = this.state.roomTypes[
+                            this.state.selectedRoomType
+                        ].name;
+                        this.monthlyRoomType.update();
+                    }
+                );
             })
             .catch(err => {
                 console.log(err);
@@ -101,14 +114,20 @@ export default class Report extends Component {
 
     handleChange = e => {
         this.setState({ selectedRoomType: e.target.value });
-        this.getRoomTypeReport(this.state.roomTypes[e.target.value].id, this.state.roomTypes[e.target.value].name);
+        this.getRoomTypeReport(
+            this.state.roomTypes[e.target.value].id,
+            this.state.roomTypes[e.target.value].name
+        );
     };
 
     getRoomTypeReport = async (id, name) => {
         try {
             this.setState({ fetchingMonthlyRoomType: true });
             let { data } = await axios.get(`/api/reports/roomtype/${id}`);
-            this.setState({ fetchingMonthlyRoomType: false, monthlyRoomtype: data });
+            this.setState({
+                fetchingMonthlyRoomType: false,
+                monthlyRoomtype: data
+            });
 
             this.monthlyRoomType.data.datasets[0].data = data;
             this.monthlyRoomType.data.datasets[0].label = name;
@@ -119,7 +138,13 @@ export default class Report extends Component {
     };
 
     render() {
-        let { fetching, dailyBookings, monthlyBookings, monthlyIncome, yearlyIncome } = this.state;
+        let {
+            fetching,
+            dailyBookings,
+            monthlyBookings,
+            monthlyIncome,
+            yearlyIncome
+        } = this.state;
 
         // if (fetching) {
         //     return (
@@ -149,7 +174,14 @@ export default class Report extends Component {
                             <Typography variant="h5" component="div">
                                 Reserved Rooms
                             </Typography>
-                            <Typography variant="h4" component="div" style={{ display: "flex", justifyContent: "flex-end" }}>
+                            <Typography
+                                variant="h4"
+                                component="div"
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "flex-end"
+                                }}
+                            >
                                 {dailyBookings}
                             </Typography>
                         </Paper>
@@ -164,7 +196,14 @@ export default class Report extends Component {
                             <Typography variant="h5" component="div">
                                 Monthly Reservation
                             </Typography>
-                            <Typography variant="h4" component="div" style={{ display: "flex", justifyContent: "flex-end" }}>
+                            <Typography
+                                variant="h4"
+                                component="div"
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "flex-end"
+                                }}
+                            >
                                 {monthlyBookings}
                             </Typography>
                         </Paper>
@@ -179,7 +218,14 @@ export default class Report extends Component {
                             <Typography variant="h5" component="div">
                                 Monthly Income
                             </Typography>
-                            <Typography variant="h4" component="div" style={{ display: "flex", justifyContent: "flex-end" }}>
+                            <Typography
+                                variant="h4"
+                                component="div"
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "flex-end"
+                                }}
+                            >
                                 &#8369;{monthlyIncome}
                             </Typography>
                         </Paper>
@@ -194,7 +240,14 @@ export default class Report extends Component {
                             <Typography variant="h5" component="div">
                                 Yearly Income
                             </Typography>
-                            <Typography variant="h4" component="div" style={{ display: "flex", justifyContent: "flex-end" }}>
+                            <Typography
+                                variant="h4"
+                                component="div"
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "flex-end"
+                                }}
+                            >
                                 &#8369;{yearlyIncome}
                             </Typography>
                         </Paper>
@@ -205,12 +258,25 @@ export default class Report extends Component {
                                 padding: 10
                             }}
                         >
-                            <Typography variant="h5" component="div" gutterBottom>
+                            <Typography
+                                variant="h5"
+                                component="div"
+                                gutterBottom
+                            >
                                 Bookings for the month
                             </Typography>
                             <Divider />
-                            <div style={{ width: "100%", minHeight: 400, position: "relative" }}>
-                                <canvas id="testChart" ref={el => (this.monthlyBookingRef = el)} />
+                            <div
+                                style={{
+                                    width: "100%",
+                                    minHeight: 400,
+                                    position: "relative"
+                                }}
+                            >
+                                <canvas
+                                    id="testChart"
+                                    ref={el => (this.monthlyBookingRef = el)}
+                                />
                             </div>
                         </Paper>
                     </Grid>
@@ -232,8 +298,10 @@ export default class Report extends Component {
                                 <Typography variant="h5" component="div">
                                     Room type Monthly Bookings
                                 </Typography>
-                                <FormControl style={{ minWidth: 150 }} margin="dense">
-                                    <InputLabel htmlFor="age-simple">Age</InputLabel>
+                                <FormControl
+                                    style={{ minWidth: 150 }}
+                                    margin="dense"
+                                >
                                     <Select
                                         value={this.state.selectedRoomType}
                                         onChange={this.handleChange}
@@ -253,10 +321,21 @@ export default class Report extends Component {
                                     </Select>
                                 </FormControl>
                             </div>
-                            {this.state.fetchingMonthlyRoomType && <LinearProgress style={{ height: 2 }} />}
+                            {this.state.fetchingMonthlyRoomType && (
+                                <LinearProgress style={{ height: 2 }} />
+                            )}
                             <Divider />
-                            <div style={{ width: "100%", minHeight: 400, position: "relative" }}>
-                                <canvas id="testChart" ref={el => (this.monthlyRoomTypeRef = el)} />
+                            <div
+                                style={{
+                                    width: "100%",
+                                    minHeight: 400,
+                                    position: "relative"
+                                }}
+                            >
+                                <canvas
+                                    id="testChart"
+                                    ref={el => (this.monthlyRoomTypeRef = el)}
+                                />
                             </div>
                         </Paper>
                     </Grid>

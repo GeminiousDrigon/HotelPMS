@@ -199,18 +199,18 @@ class Walkin extends Component {
                             rate_id: this.props.values.rateId,
                             paidAmount: this.props.values.paidAmount
                         });
-                        // this.props.history.push("/calendar");
-                        this.openSnackBar(
-                            <span
-                                style={{
-                                    display: "flex",
-                                    alignItems: "center"
-                                }}
-                            >
-                                <InfoIcon style={{ marginRight: "5" }} />
-                                {` Successfully Added Guest! `}
-                            </span>
-                        );
+                        this.props.history.push("/calendar");
+                        // this.openSnackBar(
+                        //     <span
+                        //         style={{
+                        //             display: "flex",
+                        //             alignItems: "center"
+                        //         }}
+                        //     >
+                        //         <InfoIcon style={{ marginRight: "5" }} />
+                        //         {` Successfully Added Guest! `}
+                        //     </span>
+                        // );
                     } catch (err) {
                         console.log(err);
                     }
