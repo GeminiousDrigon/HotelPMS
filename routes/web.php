@@ -1,6 +1,8 @@
 <?php
 
 use App\Mail\BookingCreated;
+use App\User;
+use App\Booking;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -29,6 +31,8 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/mail', function () {
     // $invoice = App\Invoice::find(1);
-
+    $booking = new Booking();
+    $user = new User();
+    $user->firstname = "John Doe"
     return (new App\Mail\BookingCreated())->render();
 });

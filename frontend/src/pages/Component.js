@@ -24,7 +24,7 @@ export default class Component extends React.PureComponent {
             //.....currentDate: "",
             currentViewName: "Day",
 
-            delay: 3000,
+            delay: 1000,
             result: "No result",
             qrDialog: false
         };
