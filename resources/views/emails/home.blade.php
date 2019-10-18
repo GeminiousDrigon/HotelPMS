@@ -12,7 +12,7 @@
                 Thank you for booking at Bluepool Garden!</p>
 
             <h3>Get your QR Code</h3>
-            <img src="{!!$message->embedData(QrCode::format('png')->size(200)->generate('www.facebook.com'), 'QrCode.png', 'image/png')!!}">
+            <img src="{!!$message->embedData(QrCode::format('png')->size(200)->generate($booking->id), 'QrCode.png', 'image/png')!!}">
             <br><br>
             <p>Please show this Qr code to the frontdesk for check-in</p>
 
