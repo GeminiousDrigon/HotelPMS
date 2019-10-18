@@ -330,7 +330,8 @@ export default class RoomInfo extends Component {
                                     style={{
                                         display: "flex",
                                         justifyContent: "flex-start",
-                                        flexWrap: "wrap"
+                                        flexWrap: "wrap",
+                                        color: "red"
                                     }}
                                 >
                                     {this.state.selectedType.amenities.map(
@@ -488,7 +489,7 @@ export default class RoomInfo extends Component {
                                                     (room, i) => (
                                                         <Paper
                                                             style={{
-                                                                padding: 5,
+                                                                padding: 15,
                                                                 display: "flex",
                                                                 flexDirection:
                                                                     "column"
