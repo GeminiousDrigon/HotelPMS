@@ -27,8 +27,13 @@ import * as yup from "yup";
 import { withFormik } from "formik";
 import moment from "moment";
 import axios from "axios";
-import { width } from "@material-ui/system";
-import { Grid } from "@material-ui/core";
+
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 class Booking extends Component {
     constructor(props) {
@@ -40,7 +45,11 @@ class Booking extends Component {
             datesFullyBooked: false,
             snackBar: false,
             snackBarMessage: null,
-            validatedSteps: [false, false, false, false]
+            validatedSteps: [false, false, false, false],
+
+            handleDialog: false,
+            dialogType: null,
+            submitting: false
         };
     }
 
@@ -90,11 +99,7 @@ class Booking extends Component {
                             this.setState({
                                 snackBarMessage: (
                                     <span>
-                                        Please select at{" "}
-                                        <strong style={{ color: "#f50057" }}>
-                                            least
-                                        </strong>{" "}
-                                        1 room.
+                                        Please select at <strong style={{ color: "#f50057" }}>least</strong> 1 room.
                                     </span>
                                 ),
                                 snackBar: true
@@ -124,6 +129,7 @@ class Booking extends Component {
 
     submitBooking = async () => {
         try {
+            this.setState({ submitting: true})
             let { values } = this.props;
             let { data } = await axios.post("/api/booking", {
                 honorific: values.honorific,
@@ -140,7 +146,11 @@ class Booking extends Component {
                 checkOutDate: moment(values.checkOutDate).format("YYYY-MM-DD")
             });
             // this.props.history.push("/booking");
+            
+            this.setState({ submitting: false})
+            this.handleBookingPrompt("SUCCESS");
         } catch (err) {
+            this.setState({ submitting: false})
             if (err.response.data.message === "SelectedRoomsUnavailable") {
                 console.log("show dialog ");
                 const { selectedRooms, ranOutRooms } = err.response.data.body;
@@ -149,6 +159,9 @@ class Booking extends Component {
                     selectedRooms,
                     ranOutRooms
                 });
+            } else if (err.response.data.exception === "Swift_TransportException") {
+            } else {
+                this.handleBookingPrompt("ERROR");
             }
         }
     };
@@ -170,11 +183,7 @@ class Booking extends Component {
                                 backgroundColor: "#E6E6E6"
                             }}
                         >
-                            <DatePicker
-                                setStateValue={this.setStateValue}
-                                {...this.props}
-                                validateCalled={this.state.validatedSteps[0]}
-                            />
+                            <DatePicker setStateValue={this.setStateValue} {...this.props} validateCalled={this.state.validatedSteps[0]} />
                         </Paper>
                     </div>
                 );
@@ -188,49 +197,43 @@ class Booking extends Component {
                     />
                 );
             case 2:
-                return (
-                    <GuestInfo
-                        setStateValue={this.setStateValue}
-                        {...this.props}
-                        validateCalled={this.state.validatedSteps[2]}
-                    />
-                );
+                return <GuestInfo setStateValue={this.setStateValue} {...this.props} validateCalled={this.state.validatedSteps[2]} />;
             case 3:
-                return (
-                    <Confirmation
-                        setStateValue={this.setStateValue}
-                        {...this.props}
-                        validateCalled={this.state.validatedSteps[3]}
-                    />
-                );
+                return <Confirmation setStateValue={this.setStateValue} {...this.props} validateCalled={this.state.validatedSteps[3]} />;
         }
     };
 
     handleCloseSnackBar = () => this.setState({ snackBar: false });
 
+    handleBookingPrompt = dialogType => {
+        this.setState({
+            handleDialog: true,
+            dialogType
+        });
+    };
+
+    closeBookingPrompt = () => {
+        if (this.state.dialogType === "ERROR") {
+            this.setState({ activeStep: 0, handleDialog: false, dialogType: null });
+        } else {
+            //reset
+            window.location.reload();
+        }
+    };
+
     render() {
         let steps = this.getSteps();
         let { activeStep } = this.state;
 
-        const {
-            values,
-            touched,
-            errors,
-            handleChange,
-            handleBlur,
-            handleSubmit
-        } = this.props;
+        const { values, touched, errors, handleChange, handleBlur, handleSubmit } = this.props;
 
         if (this.state.selectedRoomsUnavailable) {
             return (
                 <BookingLayout {...this.props}>
                     <div style={{ textAlign: "center", padding: "20px 0" }}>
-                        <Typography style={{ fontSize: "4em" }}>
-                            Opppss, Sorry
-                        </Typography>
+                        <Typography style={{ fontSize: "4em" }}>Opppss, Sorry</Typography>
                         <Typography style={{ fontSize: "2em" }}>
-                            The following rooms are no longer available on{" "}
-                            <br />
+                            The following rooms are no longer available on <br />
                             {moment(values.checkInDate).format("MMMM D, YYYY")}
                             &nbsp;-&nbsp;
                             {moment(values.checkOutDate).format("MMMM D, YYYY")}
@@ -239,16 +242,11 @@ class Booking extends Component {
                         <div>
                             {this.state.ranOutRooms.map((el, i, array) => {
                                 return (
-                                    <Typography
-                                        style={{ fontSize: "2em" }}
-                                        component="span"
-                                    >
+                                    <Typography style={{ fontSize: "2em" }} component="span">
                                         {el.name}
-                                        {array.length === 2 &&
-                                        i != array.length - 1
+                                        {array.length === 2 && i != array.length - 1
                                             ? " and "
-                                            : array.length > 0 &&
-                                              i != array.length - 2
+                                            : array.length > 0 && i != array.length - 2
                                             ? i != array.length - 1
                                                 ? ", "
                                                 : null
@@ -258,15 +256,9 @@ class Booking extends Component {
                             })}
                         </div>
                         <br />
-                        <Typography style={{ fontSize: "2em" }}>
-                            Please go back &amp; change the booking details.
-                        </Typography>
+                        <Typography style={{ fontSize: "2em" }}>Please go back &amp; change the booking details.</Typography>
                         <br />
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={() => window.location.reload()}
-                        >
+                        <Button variant="contained" color="primary" onClick={() => window.location.reload()}>
                             Refresh
                         </Button>
                     </div>
@@ -276,11 +268,7 @@ class Booking extends Component {
             return (
                 <div>
                     <BookingLayout {...this.props}>
-                        <Stepper
-                            activeStep={activeStep}
-                            alternativeLabel
-                            style={{ backgroundColor: "#f7f7f7" }}
-                        >
+                        <Stepper activeStep={activeStep} alternativeLabel style={{ backgroundColor: "#f7f7f7" }}>
                             {steps.map(label => (
                                 <Step key={label.title}>
                                     <StepLabel>
@@ -299,11 +287,7 @@ class Booking extends Component {
                                 </Step>
                             ))}
                         </Stepper>
-                        {this.state.selectedRoomsUnavailable ? (
-                            <div></div>
-                        ) : (
-                            <div>{this.getContents(activeStep)}</div>
-                        )}
+                        {this.state.selectedRoomsUnavailable ? <div></div> : <div>{this.getContents(activeStep)}</div>}
                         <div
                             style={{
                                 display: "flex",
@@ -317,6 +301,7 @@ class Booking extends Component {
                                     style={{ marginRight: 20 }}
                                     disabled={activeStep === 0}
                                     onClick={this.handleBack}
+                                    disabled={this.state.submitting}
                                 >
                                     Back
                                 </Button>
@@ -325,11 +310,10 @@ class Booking extends Component {
                                     variant="contained"
                                     color="primary"
                                     onClick={this.handleNext}
-                                    disabled={this.state.datesFullyBooked}
+                                    disabled={this.state.datesFullyBooked || this.state.submitting}
                                 >
-                                    {activeStep === steps.length - 1
-                                        ? "Finish"
-                                        : "Next"}
+                                    {activeStep === steps.length - 1 ? "Finish" : "Next"}
+                                    {this.state.submitting && <CircularProgress size={10} style={{ marginLeft: 10 }} />}
                                 </Button>
                             </div>
                         </div>
@@ -354,10 +338,7 @@ class Booking extends Component {
                                     justifyItems: "center"
                                 }}
                             >
-                                <Icon
-                                    color="secondary"
-                                    style={{ marginRight: 10 }}
-                                >
+                                <Icon color="secondary" style={{ marginRight: 10 }}>
                                     warning
                                 </Icon>
                                 {this.state.snackBarMessage}
@@ -366,16 +347,33 @@ class Booking extends Component {
                         ClickAwayListenerProps={{ onClickAway: () => null }}
                         TransitionComponent={Slide}
                         action={[
-                            <IconButton
-                                key="close"
-                                aria-label="close"
-                                color="inherit"
-                                onClick={this.handleCloseSnackBar}
-                            >
+                            <IconButton key="close" aria-label="close" color="inherit" onClick={this.handleCloseSnackBar}>
                                 <Icon>close</Icon>
                             </IconButton>
                         ]}
                     />
+                    <Dialog
+                        open={this.state.handleDialog}
+                        onClose={this.closeBookingPrompt}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description"
+                    >
+                        <DialogTitle id="alert-dialog-title">
+                            {this.state.dialogType === "ERROR" ? "Something went wrong" : "Booking has made Successfully"}
+                        </DialogTitle>
+                        <DialogContent>
+                            <DialogContentText id="alert-dialog-description">
+                                {this.state.dialogType === "ERROR"
+                                    ? "Failed to add the booking, Please check the rooms again or Try again later."
+                                    : "Thank you for booking with us, your booking has been successfully made. We have sent you an email with a QR code. Please present the QR code when you check-in"}
+                            </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={this.closeBookingPrompt} color="primary" autoFocus>
+                                Okay
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
                 </div>
             );
     }
@@ -404,24 +402,12 @@ export default withFormik({
 
     validationSchema: function() {
         let schema = yup.object().shape({
-            honorific: yup
-                .string("Honorific must be a word!")
-                .required("Honorific is required!"),
-            firstname: yup
-                .string("First name must be a word!")
-                .required("First Name is required!"),
-            middlename: yup
-                .string("Middle name must be a word!")
-                .required("Middle Name is required!"),
-            lastname: yup
-                .string("Last name must be a word!")
-                .required("Last Name is required!"),
-            address: yup
-                .string("Address must be a word!")
-                .required("Address is required!"),
-            country: yup
-                .string("Country must be a word!")
-                .required("Country is required!"),
+            honorific: yup.string("Honorific must be a word!").required("Honorific is required!"),
+            firstname: yup.string("First name must be a word!").required("First Name is required!"),
+            middlename: yup.string("Middle name must be a word!").required("Middle Name is required!"),
+            lastname: yup.string("Last name must be a word!").required("Last Name is required!"),
+            address: yup.string("Address must be a word!").required("Address is required!"),
+            country: yup.string("Country must be a word!").required("Country is required!"),
             email: yup
                 .string("Email address must be a word!")
                 .email("Please provide a valid email address!")
