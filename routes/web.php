@@ -33,6 +33,6 @@ Route::get('/mail', function () {
     // $invoice = App\Invoice::find(1);
     $booking = new Booking();
     $user = new User();
-    $user->firstname = "John Doe"
+    $user->firstname = "John Doe";
     return (new App\Mail\BookingCreated())->render();
 });
