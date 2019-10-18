@@ -216,7 +216,7 @@ export default class Confirmation extends Component {
                                     )}
                                 </Typography>
                             </Grid>
-                            <Grid
+                            {/* <Grid
                                 item
                                 xs={12}
                                 md={3}
@@ -243,7 +243,7 @@ export default class Confirmation extends Component {
                                         "hh:mm A"
                                     )}
                                 </Typography>
-                            </Grid>
+                            </Grid> */}
                         </Grid>
                     </Grid>
                     <div style={{ marginTop: 25 }}>
