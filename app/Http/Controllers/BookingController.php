@@ -14,6 +14,8 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use App\Mail\BookingCreated;
+use Illuminate\Support\Facades\Mail;
 
 class BookingController extends Controller
 {
@@ -442,6 +444,17 @@ class BookingController extends Controller
                 ]);
             }
 
+            $to_name = $user->firstname;
+            $to_email = $user->email;
+            $data = array("name" => 'Ogbonna', "body" => 'A test mail');
+            // return response()->json($user);
+            Mail::to($user)->send(new BookingCreated($user));
+            // Mail::send('emails.home', [], function ($message) use ($to_name, $to_email) {
+            //     $message->to($to_email, $to_name)
+            //         ->subject('Artisans Web Testing Mail');
+            //     $message->from('bluepoolgarden2@gmail.com', 'Artisans Web');
+            // });
+
             return response()->json($booking);
         } else {
             //
@@ -569,6 +582,8 @@ class BookingController extends Controller
                 'guest_no' => $selectedRoom["guest_no"],
             ]);
         }
+
+        Mail::to($user)->send(new BookingCreated($user));
 
         return response()->json($selectedRooms, 200);
 

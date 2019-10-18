@@ -124,9 +124,9 @@ Route::post("/email/test", function (Request $request) {
     $to_name = 'John Bill Suarez';
     $to_email = 'geminiousdrigon@gmail.com';
     $data = array("name" => 'Ogbonna', "body" => 'A test mail');
-    $user = User::find("9dacef69-4cf6-4384-965c-78d8642afe6c");
+    $user = User::find("ced8cce6-0571-4c5d-a71d-8078f8de42bd");
     // return response()->json($user);
-    Mail::to($user)->send(new BookingCreated());
+    Mail::to($user)->send(new BookingCreated($user));
     // Mail::send('emails.home', [], function ($message) use ($to_name, $to_email) {
     //     $message->to($to_email, $to_name)
     //         ->subject('Artisans Web Testing Mail');

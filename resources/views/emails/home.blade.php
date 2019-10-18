@@ -8,7 +8,7 @@
     <div>
         <div class="w3-panel w3-card" style="width: 50%;">
 
-            <p style="font-size: 25px; color: blue;">Hi Junrex, <br>
+            <p style="font-size: 25px; color: blue;">Hi {{$user->firstname}} {{$user->lastname}}, <br>
                 Thank you for booking at Bluepool Garden!</p>
 
             <h3>Get your QR Code</h3>
