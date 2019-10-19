@@ -459,6 +459,7 @@ class BookingController extends Controller
         } else {
             //
             return response()->json([
+                "error" => "RoomNotAvailable",
                 "message" => "Room is not available in the following dates"
             ], 500);
         }
