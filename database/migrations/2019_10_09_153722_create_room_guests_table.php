@@ -22,8 +22,7 @@ class CreateRoomGuestsTable extends Migration
             $table->string('address');
             $table->string('country');
             $table->string('contactno');
-            $table->uuid('book_room_id')->nullable();
-            $table->foreign('book_room_id')->references('id')->on('book_rooms');
+            $table->integer('noOfChild');
             $table->timestamps();
         });
     }

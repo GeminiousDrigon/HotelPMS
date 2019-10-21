@@ -129,7 +129,7 @@ class Booking extends Component {
 
     submitBooking = async () => {
         try {
-            this.setState({ submitting: true})
+            this.setState({ submitting: true });
             let { values } = this.props;
             let { data } = await axios.post("/api/booking", {
                 honorific: values.honorific,
@@ -146,11 +146,11 @@ class Booking extends Component {
                 checkOutDate: moment(values.checkOutDate).format("YYYY-MM-DD")
             });
             // this.props.history.push("/booking");
-            
-            this.setState({ submitting: false})
+
+            this.setState({ submitting: false });
             this.handleBookingPrompt("SUCCESS");
         } catch (err) {
-            this.setState({ submitting: false})
+            this.setState({ submitting: false });
             if (err.response.data.message === "SelectedRoomsUnavailable") {
                 console.log("show dialog ");
                 const { selectedRooms, ranOutRooms } = err.response.data.body;
@@ -297,12 +297,7 @@ class Booking extends Component {
                             }}
                         >
                             <div>
-                                <Button
-                                    style={{ marginRight: 20 }}
-                                    disabled={activeStep === 0}
-                                    onClick={this.handleBack}
-                                    disabled={this.state.submitting}
-                                >
+                                <Button style={{ marginRight: 20 }} onClick={this.handleBack} disabled={this.state.submitting || activeStep === 0}>
                                     Back
                                 </Button>
                                 <Button

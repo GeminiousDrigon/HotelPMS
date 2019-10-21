@@ -247,13 +247,15 @@ class RoomTypeController extends Controller
             $to_date = $request->query('checkout');
             $from = Carbon::parse($from_date);
             $to = Carbon::parse($to_date);
-            $roomTypes = RoomType::with([
+            $roomTypes = RoomType::has('rooms')->with([
                 'rooms' => function ($query) use ($from, $to) {
                     $query->with([
                         'bookings' => function ($query) use ($from, $to) {
                             $query->whereHas('booking', function ($query) use ($from, $to) {
-                                $query->whereBetween('from_date', [$from, $to])
-                                    ->orWhereBetween('to_date', [$from, $to])
+                                $query->where(function ($query) use ($from, $to) {
+                                    $query->whereBetween('from_date', [$from, $to])
+                                        ->orWhereBetween('to_date', [$from, $to]);
+                                })
                                     ->whereIn('status', ["CHECKEDIN", "RESERVED"]);
                             });
                         }

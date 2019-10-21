@@ -113,6 +113,7 @@ export default class Reservation extends Component {
     // };
 
     viewReservation = id => {
+        console.log(id)
         let hostname = window.location.hostname;
         let port = window.location.port;
         window.open(`http://${hostname}:${port}/bookings/view/${id}`);

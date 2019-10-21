@@ -48,8 +48,8 @@ class RoomGuestController extends Controller
                 'email'=> $request->email, 
                 'address'=> $request->address, 
                 'country'=> $request->country, 
-                'contactno'=> $request->contactno, 
-                'book_room_id'=> $request->book_room_id,
+                'contactno'=> $request->contactno,
+                'noOfChild'=> $request->noOfChild
             ]);
             $roomGuest->save();
             return response()->json($roomGuest, 200);

@@ -47,7 +47,7 @@ class BookRoom extends Model
 
     public function guests()
     {
-        return $this->hasMany('App\RoomGuest');
+        return $this->belongsToMany('App\RoomGuest')->withTimestamps();
     }
     
 
