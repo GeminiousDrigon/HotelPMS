@@ -152,7 +152,6 @@ export default class ViewBooking extends Component {
             booking.total = total;
             booking.balance = this.state.booking.totalPrice - total;
             this.setState({ booking, fetchingPayment: false });
-            
         } catch (err) {
             console.log(err);
             this.setState({ fetchingPayment: false });
@@ -185,7 +184,6 @@ export default class ViewBooking extends Component {
                 this.setState({ initialPayment: 0 });
                 this.onCloseAddBilling();
                 this.getBillings();
-                
             }
         } catch (err) {
             console.log(err);
@@ -266,14 +264,20 @@ export default class ViewBooking extends Component {
 
     onChangeStatus = async e => {
         try {
-            console.log("here");
-            let { billings, rooms, user, ...booking } = this.state.booking;
-            booking.status = e.target.value;
-            await axios.put("/api/booking/" + booking.id, {
-                ...booking
-            });
-            // console.log()
-            this.getBookingDetails();
+            if (e.target.value === "NOSHOW") {
+                //open confirm dialog
+            } else if (e.target.value === "CHECKEDOUT") {
+                //open confirm dialog
+            } else {
+                console.log("here");
+                let { billings, rooms, user, ...booking } = this.state.booking;
+                booking.status = e.target.value;
+                await axios.put("/api/booking/" + booking.id, {
+                    ...booking
+                });
+                // console.log()
+                this.getBookingDetails();
+            }
         } catch (err) {
             console.log(err);
         }
@@ -399,10 +403,10 @@ export default class ViewBooking extends Component {
                                                 id: "status"
                                             }}
                                         >
+                                            <MenuItem value="NOSHOW">Mark as no-show</MenuItem>
                                             <MenuItem value="RESERVED">Reserved</MenuItem>
                                             <MenuItem value="CHECKEDIN">Check-in</MenuItem>
                                             <MenuItem value="CHECKEDOUT">Check-out</MenuItem>
-                                            <MenuItem value="NOSHOW">Mark as no-show</MenuItem>
                                         </Select>
                                     </FormControl>
                                     {/* <IconButton
@@ -731,7 +735,7 @@ export default class ViewBooking extends Component {
                                                         >
                                                             <Typography> {room.room.room_number + " " + room.room_type.name}</Typography>
                                                         </ExpansionPanelSummary>
-                                                        <ExpansionPanelDetails  style={{backgroundColor: "#dbd2d2"}}>
+                                                        <ExpansionPanelDetails style={{ backgroundColor: "#dbd2d2" }}>
                                                             <GuestInfo
                                                                 guests={room.guests}
                                                                 selectedRoom={this.state.selectedRoom}

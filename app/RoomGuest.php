@@ -9,12 +9,12 @@ class RoomGuest extends Model
     use Uuid;
 
     protected $fillable = [
-        'firstname', 'middlename', 'lastname', 'email', 'address', 'country', 'contactno', 'book_room_id',
+        'firstname', 'middlename', 'lastname', 'email', 'address', 'country', 'contactno', 'book_room_id', 'noOfChild'
     ];
 
     public function bookRoom()
     {
-        return $this->belongsTo('App\BookRoom', 'book_room_id');
+        return $this->belongsToMany('App\BookRoom')->withTimestamps();
     }
 
     public $incrementing = false;

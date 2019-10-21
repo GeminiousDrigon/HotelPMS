@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\BookRoom;
 use App\RoomGuest;
+use Illuminate\Support\Facades\Validator;
 
 class BookRoomController extends Controller
 {
@@ -16,9 +17,9 @@ class BookRoomController extends Controller
 
     public function getAll(Request $request)
     {
-        if ($request->query('status')) {
+        if ($request->query('type')) {
             $bookRooms = BookRoom::whereHas('booking', function ($query) use ($request) {
-                $query->whereIn('status', [$request->query('status')]);
+                $query->whereIn('status', explode(',', $request->query('type')));
             })->with(['booking.user', 'room'])->get();
         } else {
             $bookRooms = BookRoom::with(['booking.user', 'room'])->get();
@@ -101,35 +102,54 @@ class BookRoomController extends Controller
 
     public function addGuest(Request $request, $id)
     {
-        $bookRoom = BookRoom::find($id);
-        if (!$bookRoom) {
-            return response()->json([
-                "status" => 404,
-                "message" => "No room found"
-            ], 404);
-        }
-        if ($request->input('id')) {
-            $bookGuest = RoomGuest::find($request->id);
-        } else {
-            $bookGuest = RoomGuest::create([
-                'firstname' => $request->input("firstname"),
-                'middlename' => $request->input("middlename"),
-                'lastname' => $request->input("lastname"),
-                'email' => $request->input("email"),
-                'address' => $request->input("address"),
-                'country' => $request->input("country"),
-                'contactno' => $request->input("contactno"),
-                'book_room_id' => $bookRoom->id,
-            ]);
-        }
-        if (!$bookGuest) {
-            return response()->json([
-                "status" => 404,
-                "message" => "No guest found"
-            ], 404);
-        }
-        return response()->json($bookGuest);
-    }
+        $validator = Validator::make($request->all(), [
+            'email' => 'unique:room_guests',
+        ]);
 
-    
+
+        if ($validator->fails()) {
+            return response()->json([
+                "code" => "EmailHasTaken"
+            ]);
+        } else {
+
+            $bookRoom = BookRoom::find($id);
+            if (!$bookRoom) {
+                return response()->json([
+                    "status" => 404,
+                    "message" => "No room found"
+                ], 404);
+            }
+            if ($request->input('id')) {
+                $bookGuest = RoomGuest::find($request->id);
+            } else {
+                $bookGuest = RoomGuest::firstOrNew([
+                    'firstname' => $request->input("firstname"),
+                    'middlename' => $request->input("middlename"),
+                    'lastname' => $request->input("lastname"),
+                    'email' => $request->input("email")
+                ], [
+                    'address' => $request->input("address"),
+                    'country' => $request->input("country"),
+                    'contactno' => $request->input("contactno"),
+                    'noOfChild'=> $request->input('noOfChild')
+                ]);
+                if (!$bookGuest->id) {
+                    $bookGuest->save();
+                } else {
+                    return response()->json([
+                        "code" => "RoomGuestFound"
+                    ]);
+                }
+            }
+            $bookRoom->guests()->syncWithoutDetaching([$bookGuest->id]);
+            if (!$bookGuest) {
+                return response()->json([
+                    "status" => 404,
+                    "message" => "No guest found"
+                ], 404);
+            }
+            return response()->json($bookGuest);
+        }
+    }
 }

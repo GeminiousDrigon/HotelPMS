@@ -352,12 +352,7 @@ class Booking extends Component {
                             }}
                         >
                             <div>
-                                <Button
-                                    style={{ marginRight: 20 }}
-                                    disabled={activeStep === 0}
-                                    onClick={this.handleBack}
-                                    disabled={this.state.submitting}
-                                >
+                                <Button style={{ marginRight: 20 }} onClick={this.handleBack} disabled={this.state.submitting || activeStep === 0}>
                                     Back
                                 </Button>
                                 <Button

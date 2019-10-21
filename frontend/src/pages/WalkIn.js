@@ -201,7 +201,44 @@ class Walkin extends Component {
                                 {` Successfully Added Guest and Booking! `}
                             </span>
                         );
-                        this.setState({ submitting: false });
+                        this.setState({
+                            newGuest: true,
+                            userId: "",
+                            honorific: "",
+                            firstname: "",
+                            middlename: "",
+                            lastname: "",
+                            address: "",
+                            country: "",
+                            email: "",
+                            contactno: "",
+                            checkInDate: moment(),
+                            checkOutDate: moment().add({ days: 1 }),
+                            roomIndex: "",
+                            selectedRoom: {},
+                            rateId: "",
+                            rateIndex: "",
+                            selectedRate: {},
+                            roomTypeIndex: "",
+                            roomTypeId: "",
+                            selectedRoomType: {},
+
+                            numberOfNights: 1,
+                            numberOfGuest: 0,
+                            price: 0,
+                            paidAmount: 0,
+                            total: 0,
+                            balance: 0,
+                            rooms: [],
+                            rates: [],
+                            fetchingRate: false,
+                            userDialog: false,
+                            snackbar: false,
+                            snackBarMessage: "",
+                            validatedCalled: false,
+
+                            submitting: false
+                        });
                         this.props.resetForm();
                     } catch (err) {
                         this.setState({ submitting: false });

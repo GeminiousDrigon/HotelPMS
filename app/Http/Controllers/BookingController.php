@@ -58,6 +58,7 @@ class BookingController extends Controller
                 'billings'
             ])->find($id);
         }
+        return response()->json($booking);
         if (!$booking) {
             return response()->json([
                 "status" => 404,
@@ -380,7 +381,7 @@ class BookingController extends Controller
                 $query->where(function ($query) use ($from_date, $to_date) {
                     $query->whereBetween('from_date', [$from_date, $to_date])
                         ->orWhereBetween('to_date', [$from_date, $to_date]);
-                })->where('status', "!=", 'CHECKOUT');
+                })->whereIn('status', ["CHECKEDIN", "RESERVED"]);
             })
             // ->get();
             ->count();
@@ -518,8 +519,10 @@ class BookingController extends Controller
                     $query->with([
                         'bookings' => function ($query) use ($from, $to) {
                             $query->whereHas('booking', function ($query) use ($from, $to) {
-                                $query->whereBetween('from_date', [$from, $to])
-                                    ->orWhereBetween('to_date', [$from, $to])
+                                $query->where(function ($query) use ($from, $to) {
+                                    $query->whereBetween('from_date', [$from, $to])
+                                        ->orWhereBetween('to_date', [$from, $to]);
+                                })
                                     ->whereIn('status', ["CHECKEDIN", "RESERVED"]);
                             });
                         }
@@ -584,7 +587,7 @@ class BookingController extends Controller
             ]);
         }
 
-        Mail::to($user)->send(new BookingCreated($user,$booking));
+        Mail::to($user)->send(new BookingCreated($user, $booking));
 
         return response()->json($selectedRooms, 200);
 
