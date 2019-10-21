@@ -25,6 +25,10 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormLabel from "@material-ui/core/FormLabel";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import Radio from "@material-ui/core/Radio";
+import ExpansionPanel from "@material-ui/core/ExpansionPanel";
+import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
+import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 import countries from "../country.json";
 
@@ -49,22 +53,51 @@ export default class GuestInfo extends Component {
 
     onChangeNumber = e => {
         if (e.target.value.length > 9) {
-            this.props.setFieldValue("contactno", e.target.value.substring(0, 9));
+            this.props.setFieldValue(
+                "contactno",
+                e.target.value.substring(0, 9)
+            );
         } else {
             this.props.setFieldValue("contactno", e.target.value);
         }
     };
+    // handleClickOpen = () => {
+    //     setOpen(true);
+    // };
 
+    // handleClose = () => {
+    //     setOpen(false);
+    // };
     render() {
-        const { values, touched, errors, handleChange, handleBlur, handleSubmit, validateCalled } = this.props;
+        const {
+            values,
+            touched,
+            errors,
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            validateCalled
+        } = this.props;
         return (
             <Paper style={{ padding: 25 }}>
-                <Typography variant="h5" style={{ fontWeight: 300 }} gutterBottom>
+                <Typography
+                    variant="h5"
+                    style={{ fontWeight: 300 }}
+                    gutterBottom
+                >
                     Personal Information
                 </Typography>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
-                        <FormControl component="fieldset" error={(validateCalled || touched.honorific) && errors.honorific ? true : false}>
+                        <FormControl
+                            component="fieldset"
+                            error={
+                                (validateCalled || touched.honorific) &&
+                                errors.honorific
+                                    ? true
+                                    : false
+                            }
+                        >
                             <FormLabel component="legend">Honorifics</FormLabel>
                             <RadioGroup
                                 value={values.honorific}
@@ -75,10 +108,27 @@ export default class GuestInfo extends Component {
                                     flexDirection: "row"
                                 }}
                             >
-                                <FormControlLabel value="Mr" control={<Radio color="primary" id="honorific" />} label="Mr" />
-                                <FormControlLabel value="Ms" control={<Radio color="primary" id="honorific" />} label="Ms" />
+                                <FormControlLabel
+                                    value="Mr"
+                                    control={
+                                        <Radio color="primary" id="honorific" />
+                                    }
+                                    label="Mr"
+                                />
+                                <FormControlLabel
+                                    value="Ms"
+                                    control={
+                                        <Radio color="primary" id="honorific" />
+                                    }
+                                    label="Ms"
+                                />
                             </RadioGroup>
-                            <FormHelperText>{(validateCalled || touched.honorific) && errors.honorific ? errors.honorific : ""}</FormHelperText>
+                            <FormHelperText>
+                                {(validateCalled || touched.honorific) &&
+                                errors.honorific
+                                    ? errors.honorific
+                                    : ""}
+                            </FormHelperText>
                         </FormControl>
                     </Grid>
                     <Grid item xs={12} md={4}>
@@ -91,8 +141,18 @@ export default class GuestInfo extends Component {
                             value={values.firstname}
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            helperText={(validateCalled || touched.firstname) && errors.firstname ? errors.firstname : ""}
-                            error={(validateCalled || touched.firstname) && errors.firstname ? true : false}
+                            helperText={
+                                (validateCalled || touched.firstname) &&
+                                errors.firstname
+                                    ? errors.firstname
+                                    : ""
+                            }
+                            error={
+                                (validateCalled || touched.firstname) &&
+                                errors.firstname
+                                    ? true
+                                    : false
+                            }
                         />
                     </Grid>
                     <Grid item xs={12} md={4}>
@@ -105,8 +165,18 @@ export default class GuestInfo extends Component {
                             value={values.middlename}
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            helperText={(validateCalled || touched.middlename) && errors.middlename ? errors.middlename : ""}
-                            error={(validateCalled || touched.middlename) && errors.middlename ? true : false}
+                            helperText={
+                                (validateCalled || touched.middlename) &&
+                                errors.middlename
+                                    ? errors.middlename
+                                    : ""
+                            }
+                            error={
+                                (validateCalled || touched.middlename) &&
+                                errors.middlename
+                                    ? true
+                                    : false
+                            }
                         />
                     </Grid>
                     <Grid item xs={12} md={4}>
@@ -119,8 +189,18 @@ export default class GuestInfo extends Component {
                             value={values.lastname}
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            helperText={(validateCalled || touched.lastname) && errors.lastname ? errors.lastname : ""}
-                            error={(validateCalled || touched.lastname) && errors.lastname ? true : false}
+                            helperText={
+                                (validateCalled || touched.lastname) &&
+                                errors.lastname
+                                    ? errors.lastname
+                                    : ""
+                            }
+                            error={
+                                (validateCalled || touched.lastname) &&
+                                errors.lastname
+                                    ? true
+                                    : false
+                            }
                         />
                     </Grid>
                     <Grid item xs={12}>
@@ -133,13 +213,35 @@ export default class GuestInfo extends Component {
                             value={values.address}
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            helperText={(validateCalled || touched.address) && errors.address ? errors.address : ""}
-                            error={(validateCalled || touched.address) && errors.address ? true : false}
+                            helperText={
+                                (validateCalled || touched.address) &&
+                                errors.address
+                                    ? errors.address
+                                    : ""
+                            }
+                            error={
+                                (validateCalled || touched.address) &&
+                                errors.address
+                                    ? true
+                                    : false
+                            }
                         />
                     </Grid>
                     <Grid item xs={12} md={6}>
-                        <FormControl variant="outlined" error={(validateCalled || touched.country) && errors.country ? true : false} fullWidth>
-                            <InputLabel htmlFor="outlined-age-native-simple" ref={el => (this.countryInput = el)}>
+                        <FormControl
+                            variant="outlined"
+                            error={
+                                (validateCalled || touched.country) &&
+                                errors.country
+                                    ? true
+                                    : false
+                            }
+                            fullWidth
+                        >
+                            <InputLabel
+                                htmlFor="outlined-age-native-simple"
+                                ref={el => (this.countryInput = el)}
+                            >
                                 Country
                             </InputLabel>
                             <Select
@@ -151,7 +253,11 @@ export default class GuestInfo extends Component {
                                         display: "flex"
                                     }
                                 }}
-                                input={<OutlinedInput labelWidth={this.state.countryWidth} />}
+                                input={
+                                    <OutlinedInput
+                                        labelWidth={this.state.countryWidth}
+                                    />
+                                }
                                 // disabled={!newGuest}
                             >
                                 {countries.map((c, i) => {
@@ -162,7 +268,12 @@ export default class GuestInfo extends Component {
                                     );
                                 })}
                             </Select>
-                            <FormHelperText>{(validateCalled || touched.country) && errors.country ? errors.country : ""}</FormHelperText>
+                            <FormHelperText>
+                                {(validateCalled || touched.country) &&
+                                errors.country
+                                    ? errors.country
+                                    : ""}
+                            </FormHelperText>
                         </FormControl>
                     </Grid>
                     <Grid item xs={12} md={6}>
@@ -173,14 +284,28 @@ export default class GuestInfo extends Component {
                             variant="outlined"
                             label="Contact number"
                             InputProps={{
-                                startAdornment: <InputAdornment position="start">+639</InputAdornment>
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        +639
+                                    </InputAdornment>
+                                )
                             }}
                             value={values.contactno}
                             onChange={this.onChangeNumber}
                             onBlur={handleBlur}
                             type="number"
-                            helperText={(validateCalled || touched.contactno) && errors.contactno ? errors.contactno : ""}
-                            error={(validateCalled || touched.contactno) && errors.contactno ? true : false}
+                            helperText={
+                                (validateCalled || touched.contactno) &&
+                                errors.contactno
+                                    ? errors.contactno
+                                    : ""
+                            }
+                            error={
+                                (validateCalled || touched.contactno) &&
+                                errors.contactno
+                                    ? true
+                                    : false
+                            }
                         />
                     </Grid>
                     <Grid item xs={12} md={6}>
@@ -193,8 +318,18 @@ export default class GuestInfo extends Component {
                             value={values.email}
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            helperText={(validateCalled || touched.email) && errors.email ? errors.email : ""}
-                            error={(validateCalled || touched.email) && errors.email ? true : false}
+                            helperText={
+                                (validateCalled || touched.email) &&
+                                errors.email
+                                    ? errors.email
+                                    : ""
+                            }
+                            error={
+                                (validateCalled || touched.email) &&
+                                errors.email
+                                    ? true
+                                    : false
+                            }
                         />
                     </Grid>
                     <Grid item xs={12} md={6}>
@@ -207,19 +342,108 @@ export default class GuestInfo extends Component {
                             value={values.confirmEmail}
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            helperText={(validateCalled || touched.confirmEmail) && errors.confirmEmail ? errors.confirmEmail : ""}
-                            error={(validateCalled || touched.confirmEmail) && errors.confirmEmail ? true : false}
+                            helperText={
+                                (validateCalled || touched.confirmEmail) &&
+                                errors.confirmEmail
+                                    ? errors.confirmEmail
+                                    : ""
+                            }
+                            error={
+                                (validateCalled || touched.confirmEmail) &&
+                                errors.confirmEmail
+                                    ? true
+                                    : false
+                            }
                         />
                     </Grid>
+                    <Grid item xs={12} md={6} style={{ align: "center" }}>
+                        <div>
+                            <ExpansionPanel>
+                                <ExpansionPanelSummary
+                                    expandIcon={<ExpandMoreIcon />}
+                                    aria-controls="panel1a-content"
+                                    id="panel1a-header"
+                                >
+                                    <Typography>Payment Method</Typography>
+                                </ExpansionPanelSummary>
+                                <ExpansionPanelDetails
+                                    style={{
+                                        display: "flex",
+                                        flexDirection: "column"
+                                    }}
+                                >
+                                    {/* <Grid xs={12}>
+                                        <Button size="large">
+                                            <img src="img/logo1.jpg"></img>
+                                        </Button>
+                                    </Grid> */}
+                                    <Grid xs={12}>
+                                        <Typography>
+                                            {/* Add to Padala Express */}
+                                        </Typography>
+                                        <Button
+                                            size="large"
+                                            // onClick={handleClickOpen}
+                                        >
+                                            <div
+                                                style={{
+                                                    display: "flex",
+                                                    flexDirection: "row",
+                                                    justifyContent:
+                                                        "space-around"
+                                                }}
+                                            >
+                                                <img
+                                                    src="img/palawan.png"
+                                                    width="20%"
+                                                ></img>
+                                                <img
+                                                    src="img/cebuana.png"
+                                                    width="16%"
+                                                ></img>
+                                                <img
+                                                    style={{
+                                                        marginleft: "3%"
+                                                    }}
+                                                    src="img/mlhuillier.png"
+                                                    width="20%"
+                                                ></img>
+                                                <img
+                                                    src="img/bpi.png"
+                                                    width="15%"
+                                                ></img>
+                                            </div>
+                                        </Button>
+                                    </Grid>
+                                </ExpansionPanelDetails>
+                            </ExpansionPanel>
+                        </div>
+                    </Grid>
                 </Grid>
+
                 <div style={{ marginTop: 25 }}>
-                    <Typography variant="h4" style={{ fontWeight: 300 }} component="div" gutterBottom>
+                    <Typography
+                        variant="h4"
+                        style={{ fontWeight: 300 }}
+                        component="div"
+                        gutterBottom
+                    >
                         Save my information &amp; register
                     </Typography>
                     <FormControl component="fieldset">
-                        <FormGroup value={values.honorific} onChange={handleChange} onBlur={handleBlur}>
+                        <FormGroup
+                            value={values.honorific}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                        >
                             <FormControlLabel
-                                control={<Checkbox value="newAccount" color="primary" id="newAccount" />}
+                                control={
+                                    <Checkbox
+                                        value="newAccount"
+                                        color="primary"
+                                        id="newAccount"
+                                    />
+                                }
                                 label="I agree to create my guest profile to be used for future reservations."
                             />
                         </FormGroup>

@@ -254,7 +254,7 @@ export default class RoomInfo extends Component {
                                 style={{
                                     padding: 25,
                                     marginBottom: 25,
-                                    backgroundColor: "#E6E6E6"
+                                    backgroundColor: "#e9f0fa"
                                 }}
                             >
                                 {selectedType.images.length > 0 ? (
@@ -323,7 +323,14 @@ export default class RoomInfo extends Component {
                                     Number of beds:{" "}
                                     {this.state.selectedType.bed_no}
                                 </Typography>
-                                <Typography variant="subtitle2" component="div">
+                                <Typography
+                                    variant="subtitle2"
+                                    component="div"
+                                    style={{
+                                        marginTop: "4%",
+                                        marginBottom: "3%"
+                                    }}
+                                >
                                     Facilities:
                                 </Typography>
                                 <div
@@ -331,7 +338,7 @@ export default class RoomInfo extends Component {
                                         display: "flex",
                                         justifyContent: "flex-start",
                                         flexWrap: "wrap",
-                                        color: "red"
+                                        color: "#0ab21b"
                                     }}
                                 >
                                     {this.state.selectedType.amenities.map(
@@ -345,7 +352,7 @@ export default class RoomInfo extends Component {
                                                 >
                                                     <Icon
                                                         component="span"
-                                                        color="primary"
+                                                        color="#0ab21b"
                                                         fontSize="small"
                                                     >
                                                         {amenity.icon}
@@ -362,7 +369,14 @@ export default class RoomInfo extends Component {
                                     )}
                                 </div>
 
-                                <Typography variant="h5" gutterBottom>
+                                <Typography
+                                    style={{
+                                        marginTop: "5%",
+                                        marginBottom: "4%"
+                                    }}
+                                    variant="h5"
+                                    gutterBottom
+                                >
                                     Available Rates
                                 </Typography>
                                 <Grid container spacing={3}>

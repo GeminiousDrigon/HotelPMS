@@ -3,6 +3,10 @@ import Button from "@material-ui/core/Button";
 //icons
 import PersonIcon from "@material-ui/icons/Person";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
+import ExpansionPanel from "@material-ui/core/ExpansionPanel";
+import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
+import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
+import Typography from "@material-ui/core/Typography";
 
 import GuestInfoItem from "./GuestInfoItem.js";
 import { CircularProgress } from "@material-ui/core";
