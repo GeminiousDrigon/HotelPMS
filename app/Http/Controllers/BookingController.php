@@ -386,10 +386,10 @@ class BookingController extends Controller
                     $query->where('to_date', '>=', $to_date);
                 })->whereIn('status', ["CHECKEDIN", "RESERVED"]);
             })
-            ->get();
-        // ->count();
+            // ->get();
+        ->count();
 
-        return response()->json($bookings);
+        // return response()->json($bookings);
         // return response()->json($bookings);
         if ($bookings <= 0) {
             //no bookings on those dates.. proceed
