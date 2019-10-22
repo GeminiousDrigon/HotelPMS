@@ -254,9 +254,12 @@ class RoomTypeController extends Controller
                             $query->whereHas('booking', function ($query) use ($from, $to) {
                                 $query->where(function ($query) use ($from, $to) {
                                     $query->whereBetween('from_date', [$from, $to])
-                                        ->orWhereBetween('to_date', [$from, $to]);
-                                })
-                                    ->whereIn('status', ["CHECKEDIN", "RESERVED"]);
+                                        ->orWhereBetween('to_date', [$from, $to])
+                                        ->orWhere(function ($query) use ($from, $to) {
+                                            $query->where('from_date', '<=', $from);
+                                            $query->where('to_date', '>=', $to);
+                                        });
+                                })->whereIn('status', ["CHECKEDIN", "RESERVED"]);
                             });
                         }
                     ]);
@@ -270,8 +273,10 @@ class RoomTypeController extends Controller
             foreach ($roomTypes as $roomType) {
                 $newRooms = array();
                 for ($i = 0; $i < count($roomType->rooms); $i++) {
-                    if (!(count($roomType->rooms[$i]->bookings) > 0))
+                    // return response()->json(count($roomType->rooms[$i]->bookings) > 0);
+                    if (!(count($roomType->rooms[$i]->bookings) > 0)) {
                         $newRooms[] = $roomType->rooms[$i];
+                    }
                 };
                 $roomType["availableRooms"] = $roomType->rooms()->count();
                 unset($roomType["rooms"]);

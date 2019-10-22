@@ -381,12 +381,15 @@ class BookingController extends Controller
                 $query->where(function ($query) use ($from_date, $to_date) {
                     $query->whereBetween('from_date', [$from_date, $to_date])
                         ->orWhereBetween('to_date', [$from_date, $to_date]);
+                })->orWhere(function ($query) use ($from_date, $to_date) {
+                    $query->where('from_date', '<=', $from_date);
+                    $query->where('to_date', '>=', $to_date);
                 })->whereIn('status', ["CHECKEDIN", "RESERVED"]);
             })
-            // ->get();
-            ->count();
+            ->get();
+        // ->count();
 
-        // return response()->json($bookings);
+        return response()->json($bookings);
         // return response()->json($bookings);
         if ($bookings <= 0) {
             //no bookings on those dates.. proceed
@@ -522,8 +525,10 @@ class BookingController extends Controller
                                 $query->where(function ($query) use ($from, $to) {
                                     $query->whereBetween('from_date', [$from, $to])
                                         ->orWhereBetween('to_date', [$from, $to]);
-                                })
-                                    ->whereIn('status', ["CHECKEDIN", "RESERVED"]);
+                                })->orWhere(function ($query) use ($from, $to) {
+                                    $query->where('from_date', '<=', $from);
+                                    $query->where('to_date', '>=', $to);
+                                })->whereIn('status', ["CHECKEDIN", "RESERVED"]);
                             });
                         }
                     ])->orderBy('room_number');
@@ -618,14 +623,14 @@ class BookingController extends Controller
         $rooms = $booking->rooms;
         foreach ($rooms as $room) {
             $allBooking = Room::with([
-                'bookings' => function ($query) use ($from, $to) {
+                'bookings' => function ($query) use ($from, $to, $id) {
                     // $query->whereHas('bookings', function ($query) use ($from, $to) {
-                    $query->whereHas('booking', function ($query) use ($from, $to) {
+                    $query->whereHas('booking', function ($query) use ($from, $to, $id) {
                         $query->where(function ($query) use ($from, $to) {
                             $query->whereBetween('from_date', [$from, $to])
                                 ->orWhereBetween('to_date', [$from, $to]);
-                        })->where('status', "!=", 'CHECKOUT');
-                    });
+                        })->whereIn('status', ['CHECKEDIN', 'RESERVED'])->where('id', '!=', $id);
+                    })->with('booking');
                     // });
                 }
             ])->find($room->room_id);
@@ -639,6 +644,7 @@ class BookingController extends Controller
         }
 
         //update
+        // return response()->json(["checkin" => $request->input('checkin'), "checkout" => $request->input('checkout')]);
         $getBooking = Booking::find($id);
         $getBooking->from_date = $request->input('checkin');
         $getBooking->to_date = $request->input('checkout');
