@@ -54,6 +54,11 @@ import GuestInfo from "../components/ViewBooking/GuestInfo";
 import Reservation from "../components/ViewBooking/Reservation";
 import Icon from "@material-ui/core/Icon";
 import Snackbar from "@material-ui/core/Snackbar";
+import numeral from "numeral";
+
+const NumeralComponent = React.memo(function Numeral(props) {
+    return numeral(props.number).format("0,0.00");
+});
 
 export default class ViewBooking extends Component {
     constructor(props) {
@@ -87,7 +92,12 @@ export default class ViewBooking extends Component {
 
             //snackbar
             snackbar: false,
-            snackBarMessage: null
+            snackBarMessage: null,
+
+            //status prompt
+            statusPrompt: false,
+            selectedStatus: "",
+            changingStatus: false
         };
     }
 
@@ -264,21 +274,23 @@ export default class ViewBooking extends Component {
 
     onChangeStatus = async e => {
         try {
-            if (e.target.value === "NOSHOW") {
+            if (e.target.value === "NOSHOW" || e.target.value === "CHECKEDOUT") {
                 //open confirm dialog
-            } else if (e.target.value === "CHECKEDOUT") {
-                //open confirm dialog
+                this.setState({ statusPrompt: true, selectedStatus: e.target.value });
             } else {
                 console.log("here");
+                this.setState({ changingStatus: true });
                 let { billings, rooms, user, ...booking } = this.state.booking;
                 booking.status = e.target.value;
                 await axios.put("/api/booking/" + booking.id, {
                     ...booking
                 });
                 // console.log()
+                this.setState({ changingStatus: false });
                 this.getBookingDetails();
             }
         } catch (err) {
+            this.setState({ changingStatus: false });
             console.log(err);
         }
     };
@@ -362,9 +374,44 @@ export default class ViewBooking extends Component {
 
     handleCloseSnackBar = () => this.setState({ snackbar: false, snackBarMessage: null });
 
+    //=========SNACKBAR==============\\
+    handleStatusPrompt = () => {
+        this.setState({ statusPrompt: !this.state.statusPrompt, selectedStatus: "" });
+    };
+
+    handleResultStatusPrompt = async result => {
+        try {
+            console.log("hello" + result);
+            if (result) {
+                this.setState({ changingStatus: true });
+                let { billings, rooms, user, ...booking } = this.state.booking;
+                booking.status = this.state.selectedStatus;
+                await axios.put("/api/booking/" + booking.id, {
+                    ...booking
+                });
+                // console.log()
+
+                this.setState({
+                    statusPrompt: false,
+                    selectedStatus: "",
+                    changingStatus: false
+                });
+                this.getBookingDetails();
+            } else {
+                this.setState({
+                    statusPrompt: false,
+                    selectedStatus: "",
+                    changingStatus: false
+                });
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
     render() {
-        let { fetching, booking, guestAnchorEl, paymentAnchorEl, selectedPayment } = this.state;
-        let { user, rooms, billings } = booking;
+        let { fetching, booking, guestAnchorEl, paymentAnchorEl, selectedPayment, changingStatus } = this.state;
+        let { user, rooms, billings, status } = booking;
         let open = Boolean(guestAnchorEl);
         let openPayment = Boolean(paymentAnchorEl);
         return (
@@ -394,21 +441,34 @@ export default class ViewBooking extends Component {
                                         <AccountCircleIcon style={{ marginRight: 10, fontSize: 30 }} />
                                         <Typography variant="h5">Guest Information</Typography>
                                     </div>
-                                    <FormControl>
-                                        <InputLabel htmlFor="age-simple">Status</InputLabel>
-                                        <Select
-                                            value={booking.status}
-                                            onChange={this.onChangeStatus}
-                                            inputProps={{
-                                                id: "status"
-                                            }}
-                                        >
-                                            <MenuItem value="NOSHOW">Mark as no-show</MenuItem>
-                                            <MenuItem value="RESERVED">Reserved</MenuItem>
-                                            <MenuItem value="CHECKEDIN">Check-in</MenuItem>
-                                            <MenuItem value="CHECKEDOUT">Check-out</MenuItem>
-                                        </Select>
-                                    </FormControl>
+                                    {status === "NOSHOW" || status === "CHECKEDOUT" ? (
+                                        <div>
+                                            <Typography component="span">Status: </Typography>
+                                            <Typography component="span">
+                                                {status === "NOSHOW" ? "No show" : status === "CHECKEDOUT" ? "Checked-out" : null}
+                                            </Typography>
+                                        </div>
+                                    ) : (
+                                        <FormControl style={{ display: "inline-block" }}>
+                                            <InputLabel htmlFor="age-simple">
+                                                Status
+                                                {changingStatus && <CircularProgress size={12} style={{ marginLeft: 10 }} />}
+                                            </InputLabel>
+                                            <Select
+                                                value={booking.status}
+                                                onChange={this.onChangeStatus}
+                                                inputProps={{
+                                                    id: "status"
+                                                }}
+                                                disabled={changingStatus}
+                                            >
+                                                <MenuItem value="NOSHOW">Mark as no-show</MenuItem>
+                                                <MenuItem value="RESERVED">Reserved</MenuItem>
+                                                <MenuItem value="CHECKEDIN">Check-in</MenuItem>
+                                                <MenuItem value="CHECKEDOUT">Check-out</MenuItem>
+                                            </Select>
+                                        </FormControl>
+                                    )}
                                     {/* <IconButton
                                         aria-label="more"
                                         aria-controls="long-menu"
@@ -500,7 +560,7 @@ export default class ViewBooking extends Component {
                                                                 </TableCell>
                                                                 <TableCell>{moment(row.created_at).format("MMM DD, YYYY hh:mm A")}</TableCell>
                                                                 <TableCell align="right" component="th" scope="row">
-                                                                    P{row.amount.toFixed(2)}
+                                                                    &#8369;<NumeralComponent number={row.amount} />
                                                                 </TableCell>
                                                                 <TableCell align="right" component="th" scope="row">
                                                                     <IconButton
@@ -528,24 +588,20 @@ export default class ViewBooking extends Component {
                                                     )}
                                                     <TableRow>
                                                         <TableCell colSpan={3} align="right">
-                                                            Total Due: P{booking.totalPrice.toFixed(2)}
+                                                            Total Due: &#8369;<NumeralComponent number={booking.totalPrice} />
                                                         </TableCell>
                                                         <TableCell align="right"></TableCell>
                                                     </TableRow>
                                                     <TableRow>
                                                         <TableCell colSpan={3} align="right">
-                                                            Amount Paid: P{booking.total.toFixed(2)}
+                                                            Amount Paid: &#8369;<NumeralComponent number={booking.total} />
                                                         </TableCell>
                                                         <TableCell align="right"></TableCell>
                                                     </TableRow>
                                                     <TableRow>
                                                         <TableCell colSpan={3} align="right">
-                                                            Balance: P
-                                                            {`${
-                                                                booking.balance > 0
-                                                                    ? booking.balance.toFixed(2)
-                                                                    : booking.balance.toFixed(2) + " (Change)"
-                                                            }`}
+                                                            Balance: &#8369;<NumeralComponent number={booking.balance} />
+                                                            {booking.balance < 0 && " (Change)"}
                                                         </TableCell>
                                                         <TableCell align="right"></TableCell>
                                                     </TableRow>
@@ -563,7 +619,7 @@ export default class ViewBooking extends Component {
                                                 justifyContent: "flex-end"
                                             }}
                                         >
-                                            <Typography variant="h6">Total Due: P{booking.total.toFixed(2)}</Typography>
+                                            <Typography variant="h6">Total Due: &#8369;{booking.total.toFixed(2)}</Typography>
                                         </div> */}
                                     </div>
                                 </Paper>
@@ -801,7 +857,9 @@ export default class ViewBooking extends Component {
                                                             {`${room.room.room_number}. ${room.room_type.name} `}
                                                             <i>({room.guest_no} Guest)</i>
                                                         </ListItemText>
-                                                        <ListItemSecondaryAction>P{room.price.toFixed(2)}</ListItemSecondaryAction>
+                                                        <ListItemSecondaryAction>
+                                                            &#8369;<NumeralComponent number={room.price} />
+                                                        </ListItemSecondaryAction>
                                                     </ListItem>
                                                     <Divider />
                                                 </React.Fragment>
@@ -809,7 +867,10 @@ export default class ViewBooking extends Component {
                                         })}
                                     </List>
                                     <div style={{ padding: "10px 20px", display: "flex", justifyContent: "flex-end" }}>
-                                        <Typography variant="body1">P{this.state.booking.totalPrice.toFixed(2)}</Typography>
+                                        <Typography variant="body1">
+                                            &#8369;<NumeralComponent number={booking.totalPrice} />
+                                            {/* {this.state.booking.totalPrice.toFixed(2)} */}
+                                        </Typography>
                                     </div>
                                 </Paper>
                             </Grid>
@@ -900,7 +961,7 @@ export default class ViewBooking extends Component {
                         <DialogContentText id="alert-dialog-description">Are you really sure you want to delete this payment?</DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        <Button color="primary" onClick={this.onCloseDeleteBilling}>
+                        <Button color="primary" onClick={this.onCloseDeleteBilling} disabled={changingStatus}>
                             Cancel
                         </Button>
                         <Button color="primary" onClick={this.onDeleteBilling} autoFocus disabled={this.state.deletingPayment ? true : false}>
@@ -939,6 +1000,31 @@ export default class ViewBooking extends Component {
                         </IconButton>
                     ]}
                 />
+
+                <Dialog
+                    open={this.state.statusPrompt}
+                    onClose={this.handleStatusPrompt}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogTitle id="alert-dialog-title">
+                        Are you sure you want to mark {this.state.selectedStatus === "CHECKEDOUT" ? "Check-out" : "No Show"}
+                    </DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-description">
+                            This action is irreversable, Are you sure want to proceed?
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => this.handleResultStatusPrompt(false)} color="primary" disabled={changingStatus}>
+                            Disagree
+                        </Button>
+                        <Button onClick={() => this.handleResultStatusPrompt(true)} color="primary" disabled={changingStatus}>
+                            Agree
+                            {changingStatus && <CircularProgress size={12} style={{ marginLeft: 10 }} />}
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </AdminLayout>
         );
     }
