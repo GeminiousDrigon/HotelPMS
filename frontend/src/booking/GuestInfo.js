@@ -357,67 +357,53 @@ export default class GuestInfo extends Component {
                             }
                         />
                     </Grid>
-                    <Grid item xs={12} md={6} style={{ align: "center" }}>
-                        <div>
-                            <ExpansionPanel>
-                                <ExpansionPanelSummary
-                                    expandIcon={<ExpandMoreIcon />}
-                                    aria-controls="panel1a-content"
-                                    id="panel1a-header"
-                                >
-                                    <Typography>Payment Method</Typography>
-                                </ExpansionPanelSummary>
-                                <ExpansionPanelDetails
-                                    style={{
-                                        display: "flex",
-                                        flexDirection: "column"
-                                    }}
-                                >
-                                    {/* <Grid xs={12}>
-                                        <Button size="large">
-                                            <img src="img/logo1.jpg"></img>
-                                        </Button>
-                                    </Grid> */}
-                                    <Grid xs={12}>
-                                        <Typography>
-                                            {/* Add to Padala Express */}
-                                        </Typography>
-                                        <Button
-                                            size="large"
-                                            // onClick={handleClickOpen}
-                                        >
-                                            <div
-                                                style={{
-                                                    display: "flex",
-                                                    flexDirection: "row",
-                                                    justifyContent:
-                                                        "space-around"
-                                                }}
-                                            >
-                                                <img
-                                                    src="img/palawan.png"
-                                                    width="20%"
-                                                ></img>
-                                                <img
-                                                    src="img/cebuana.png"
-                                                    width="16%"
-                                                ></img>
-                                                <img
-                                                    style={{
-                                                        marginleft: "3%"
-                                                    }}
-                                                    src="img/mlhuillier.png"
-                                                    width="20%"
-                                                ></img>
-                                                <img
-                                                    src="img/bpi.png"
-                                                    width="15%"
-                                                ></img>
-                                            </div>
-                                        </Button>
-                                    </Grid>
-                                </ExpansionPanelDetails>
-                            </ExpansionPanel>
+                    <Grid
+                        item
+                        xs={12}
+                        md={12}
+                        justify="center"
+                        alignItems="center"
+                    >
+                        <div
+                            style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                textAlign: "center"
+                            }}
+                        >
+                            <Typography variant="h5">Payment Method</Typography>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    flexDirection: "row",
+                                    justifyContent: "space-around"
+                                }}
+                            >
+                                <img src="img/palawan.png" width="10%"></img>
+                                <img src="img/cebuana.png" width="10%"></img>
+                                <img src="img/mlhuillier.png" width="10%"></img>
+                                <img src="img/bpi.png" width="10%"></img>
+                            </div>
+                            <Typography variant="h5">
+                                <h3>
+                                    Please choose only one(1) of this payment
+                                    method:
+                                </h3>
+                                <h4>
+                                    Palawan Express Pera Padala / Cebuana
+                                    Lhuiller / MLhuiller
+                                </h4>
+                                <br></br>
+                                Receiver : Maria Paz Bacareza<br></br>
+                                Contact Number: 09217661951<br></br>
+                                <h4>
+                                    For your BPI payment method please deposit
+                                    in the information below:
+                                </h4>
+                                <br></br>
+                                Account Number : 1234 5678 9012 3456<br></br>
+                                Account Name : Maria Paz Bacareza
+                            </Typography>
                         </div>
                     </Grid>
                 </Grid>
