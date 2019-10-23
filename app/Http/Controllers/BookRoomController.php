@@ -102,38 +102,39 @@ class BookRoomController extends Controller
 
     public function addGuest(Request $request, $id)
     {
-        $validator = Validator::make($request->all(), [
-            'email' => 'unique:room_guests',
-        ]);
 
 
-        if ($validator->fails()) {
+
+
+        $bookRoom = BookRoom::find($id);
+        if (!$bookRoom) {
             return response()->json([
-                "code" => "EmailHasTaken"
-            ]);
+                "status" => 404,
+                "message" => "No room found"
+            ], 404);
+        }
+        if ($request->input('id')) {
+            $bookGuest = RoomGuest::find($request->id);
         } else {
-
-            $bookRoom = BookRoom::find($id);
-            if (!$bookRoom) {
+            $bookGuest = RoomGuest::firstOrNew([
+                'firstname' => $request->input("firstname"),
+                'middlename' => $request->input("middlename"),
+                'lastname' => $request->input("lastname"),
+            ], [
+                'address' => $request->input("address"),
+                'country' => $request->input("country"),
+                'contactno' => $request->input("contactno"),
+                'noOfChild' => $request->input('noOfChild')
+            ]);
+            $validator = Validator::make($request->all(), [
+                'email' => 'unique:room_guests',
+            ]);
+            
+            if ($validator->fails()) {
                 return response()->json([
-                    "status" => 404,
-                    "message" => "No room found"
-                ], 404);
-            }
-            if ($request->input('id')) {
-                $bookGuest = RoomGuest::find($request->id);
-            } else {
-                $bookGuest = RoomGuest::firstOrNew([
-                    'firstname' => $request->input("firstname"),
-                    'middlename' => $request->input("middlename"),
-                    'lastname' => $request->input("lastname"),
-                    'email' => $request->input("email")
-                ], [
-                    'address' => $request->input("address"),
-                    'country' => $request->input("country"),
-                    'contactno' => $request->input("contactno"),
-                    'noOfChild'=> $request->input('noOfChild')
+                    "code" => "EmailHasTaken"
                 ]);
+            } else {
                 if (!$bookGuest->id) {
                     $bookGuest->save();
                 } else {
@@ -142,14 +143,14 @@ class BookRoomController extends Controller
                     ]);
                 }
             }
-            $bookRoom->guests()->syncWithoutDetaching([$bookGuest->id]);
-            if (!$bookGuest) {
-                return response()->json([
-                    "status" => 404,
-                    "message" => "No guest found"
-                ], 404);
-            }
-            return response()->json($bookGuest);
         }
+        $bookRoom->guests()->syncWithoutDetaching([$bookGuest->id]);
+        if (!$bookGuest) {
+            return response()->json([
+                "status" => 404,
+                "message" => "No guest found"
+            ], 404);
+        }
+        return response()->json($bookGuest);
     }
 }

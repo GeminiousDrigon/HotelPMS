@@ -148,6 +148,7 @@ export default class AddRoom extends Component {
                         room_type_id: selectedRoomType,
                         room_id: room.id,
                         price: rate.price,
+                        rateId: rate.id,
                         with_breakfast: rate.breakfast,
                         guest_no: 1,
                         booking_id: bookingId
@@ -165,8 +166,7 @@ export default class AddRoom extends Component {
                             alignItems: "center"
                         }}
                     >
-                        <InfoIcon style={{ marginRight: "5" }} />{" "}
-                        {` Successfully Added Room! `}
+                        <InfoIcon style={{ marginRight: "5" }} /> {` Successfully Added Room! `}
                     </span>
                 );
             } else {
@@ -202,22 +202,13 @@ export default class AddRoom extends Component {
     };
 
     render() {
-        let {
-            selectedRoomType,
-            selectedRate,
-            availableRooms,
-            submitting
-        } = this.state;
+        let { selectedRoomType, selectedRate, availableRooms, submitting } = this.state;
         let selectedRooms = availableRooms.filter(room => room.selected).length;
         if (this.state.isFullyBooked) {
             return (
                 //TODO improve design
                 <div style={{ padding: "30px 0" }}>
-                    <Typography
-                        variant="h6"
-                        color="textSecondary"
-                        align="center"
-                    >
+                    <Typography variant="h6" color="textSecondary" align="center">
                         No more rooms available.
                     </Typography>
                 </div>
@@ -241,9 +232,7 @@ export default class AddRoom extends Component {
                         <Grid container spacing={3}>
                             <Grid item xs={12} md={6}>
                                 <FormControl style={{ width: "100%" }}>
-                                    <InputLabel htmlFor="age-simple">
-                                        Room type
-                                    </InputLabel>
+                                    <InputLabel htmlFor="age-simple">Room type</InputLabel>
                                     <Select
                                         value={this.state.selectedRoomType}
                                         // onChange={handleChange}
@@ -254,18 +243,13 @@ export default class AddRoom extends Component {
                                         }}
                                         disabled={submitting}
                                     >
-                                        {this.state.roomTypes.map(
-                                            (roomType, id) => {
-                                                return (
-                                                    <MenuItem
-                                                        value={roomType.id}
-                                                        key={roomType.id}
-                                                    >
-                                                        {roomType.name}
-                                                    </MenuItem>
-                                                );
-                                            }
-                                        )}
+                                        {this.state.roomTypes.map((roomType, id) => {
+                                            return (
+                                                <MenuItem value={roomType.id} key={roomType.id}>
+                                                    {roomType.name}
+                                                </MenuItem>
+                                            );
+                                        })}
                                     </Select>
                                 </FormControl>
                             </Grid>
@@ -274,12 +258,7 @@ export default class AddRoom extends Component {
                                 <FormControl style={{ width: "100%" }}>
                                     <InputLabel htmlFor="age-simple">
                                         Rate
-                                        {this.state.fetchingRates && (
-                                            <CircularProgress
-                                                style={{ marginLeft: 5 }}
-                                                size={15}
-                                            />
-                                        )}
+                                        {this.state.fetchingRates && <CircularProgress style={{ marginLeft: 5 }} size={15} />}
                                     </InputLabel>
                                     <Select
                                         value={this.state.selectedRate}
@@ -288,17 +267,11 @@ export default class AddRoom extends Component {
                                             name: "age",
                                             id: "age-simple"
                                         }}
-                                        disabled={
-                                            this.state.selectedRoomType ===
-                                                "" || submitting
-                                        }
+                                        disabled={this.state.selectedRoomType === "" || submitting}
                                     >
                                         {this.state.rates.map((rate, i) => {
                                             return (
-                                                <MenuItem
-                                                    value={rate.id}
-                                                    key={rate.id}
-                                                >
+                                                <MenuItem value={rate.id} key={rate.id}>
                                                     {rate.name}
                                                 </MenuItem>
                                             );
@@ -309,14 +282,8 @@ export default class AddRoom extends Component {
                             {this.state.selectedRoomType && (
                                 <Grid item xs={12}>
                                     <div>
-                                        <FormControl
-                                            component="fieldset"
-                                            style={{ width: "100%" }}
-                                            error={this.state.failed}
-                                        >
-                                            <FormLabel component="legend">
-                                                Select Rooms
-                                            </FormLabel>
+                                        <FormControl component="fieldset" style={{ width: "100%" }} error={this.state.failed}>
+                                            <FormLabel component="legend">Select Rooms</FormLabel>
                                             <FormGroup>
                                                 {this.state.fetchingRooms ? (
                                                     <div
@@ -326,63 +293,32 @@ export default class AddRoom extends Component {
                                                             textAlign: "center"
                                                         }}
                                                     >
-                                                        <CircularProgress
-                                                            size={30}
-                                                        />
+                                                        <CircularProgress size={30} />
                                                     </div>
                                                 ) : (
                                                     <Grid container>
-                                                        {this.state.availableRooms.map(
-                                                            (room, i) => {
-                                                                return (
-                                                                    <Grid
-                                                                        item
-                                                                        xs={12}
-                                                                        md={4}
-                                                                        key={
-                                                                            room.id
+                                                        {this.state.availableRooms.map((room, i) => {
+                                                            return (
+                                                                <Grid item xs={12} md={4} key={room.id}>
+                                                                    <FormControlLabel
+                                                                        control={
+                                                                            <Checkbox
+                                                                                checked={room.selected}
+                                                                                onChange={this.onSelectRoom}
+                                                                                disabled={submitting}
+                                                                                value={room.id}
+                                                                                color="primary"
+                                                                            />
                                                                         }
-                                                                    >
-                                                                        <FormControlLabel
-                                                                            control={
-                                                                                <Checkbox
-                                                                                    checked={
-                                                                                        room.selected
-                                                                                    }
-                                                                                    onChange={
-                                                                                        this
-                                                                                            .onSelectRoom
-                                                                                    }
-                                                                                    disabled={
-                                                                                        submitting
-                                                                                    }
-                                                                                    value={
-                                                                                        room.id
-                                                                                    }
-                                                                                    color="primary"
-                                                                                />
-                                                                            }
-                                                                            label={
-                                                                                room.room_number +
-                                                                                " " +
-                                                                                room
-                                                                                    .room_type
-                                                                                    .name
-                                                                            }
-                                                                        />
-                                                                    </Grid>
-                                                                );
-                                                            }
-                                                        )}
+                                                                        label={room.room_number + " " + room.room_type.name}
+                                                                    />
+                                                                </Grid>
+                                                            );
+                                                        })}
                                                     </Grid>
                                                 )}
                                             </FormGroup>
-                                            {this.state.failed && (
-                                                <FormHelperText>
-                                                    You must select one(1) or
-                                                    more rooms.
-                                                </FormHelperText>
-                                            )}
+                                            {this.state.failed && <FormHelperText>You must select one(1) or more rooms.</FormHelperText>}
                                         </FormControl>
                                     </div>
                                 </Grid>
@@ -415,21 +351,10 @@ export default class AddRoom extends Component {
                                         }}
                                         onClick={this.onAddRooms}
                                         size="small"
-                                        disabled={
-                                            !(
-                                                selectedRooms > 0 &&
-                                                selectedRoomType &&
-                                                selectedRate
-                                            ) || submitting
-                                        }
+                                        disabled={!(selectedRooms > 0 && selectedRoomType && selectedRate) || submitting}
                                     >
                                         Submit
-                                        {submitting && (
-                                            <CircularProgress
-                                                style={{ marginLeft: 5 }}
-                                                size={15}
-                                            />
-                                        )}
+                                        {submitting && <CircularProgress style={{ marginLeft: 5 }} size={15} />}
                                     </Button>
                                 </div>
                             </Grid>

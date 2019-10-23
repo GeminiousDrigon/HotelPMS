@@ -180,7 +180,7 @@ class BookingController extends Controller
                 'with_breakfast' => $room['with_breakfast'],
                 'guest_no' => $room['guest_no'],
                 'booking_id' => $room['booking_id'],
-                // 'color' => $room['id']
+                'rate_id' => $room['rateId']
             ]);
         }
 
@@ -387,7 +387,7 @@ class BookingController extends Controller
                 })->whereIn('status', ["CHECKEDIN", "RESERVED"]);
             })
             // ->get();
-        ->count();
+            ->count();
 
         // return response()->json($bookings);
         // return response()->json($bookings);
@@ -437,6 +437,7 @@ class BookingController extends Controller
                 'room_type_id' => $room->room_type_id,
                 'room_id' => $room->id,
                 'price' => $rate->price * $nights,
+                'rate_id' => $rate->id,
                 'with_breakfast' => $rate->breakfast,
                 'guest_no' => $request->input('guest_no'),
             ]);
@@ -479,7 +480,6 @@ class BookingController extends Controller
         $to = Carbon::parse($to_date);
         // return response()->json([$from,$to], 200);
         $nights = $from->diffInDays($to);
-
 
         $selectedRooms = array_reduce($request->input('selectedRooms'), function ($output, $item) {
             // $output[$item['id']] = $item['id'];
@@ -589,6 +589,7 @@ class BookingController extends Controller
                 'price' => $selectedRoom["price"] * $nights,
                 'with_breakfast' => $selectedRoom["breakfast"],
                 'guest_no' => $selectedRoom["guest_no"],
+                'rate_id' => $selectedRoom["rateId"]
             ]);
         }
 
@@ -608,6 +609,7 @@ class BookingController extends Controller
         $to_date = $request->input('checkout');
         $from = Carbon::parse($from_date);
         $to = Carbon::parse($to_date);
+        $nights = $from->diffInDays($to);
         $booking = Booking::with([
             'user',
             'rooms' => function ($query) {
@@ -646,6 +648,13 @@ class BookingController extends Controller
         //update
         // return response()->json(["checkin" => $request->input('checkin'), "checkout" => $request->input('checkout')]);
         $getBooking = Booking::find($id);
+        $bookRooms = BookRoom::where('booking_id', $id)->get();
+        foreach ($bookRooms as $bookRoom) {
+            $rate = Rate::find($bookRoom->rate_id);
+            $price = $rate->price * $nights;
+            $bookRoom->price = $price;
+            $bookRoom->save();
+        }
         $getBooking->from_date = $request->input('checkin');
         $getBooking->to_date = $request->input('checkout');
         $getBooking->save();

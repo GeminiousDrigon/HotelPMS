@@ -18,6 +18,7 @@ import { withFormik } from "formik";
 import countries from "../../country.json";
 import axios from "axios";
 import { LinearProgress } from "@material-ui/core";
+import WarningIcon from "@material-ui/icons/Warning";
 
 class GuestInfoItem extends Component {
     constructor(props) {
@@ -109,6 +110,16 @@ class GuestInfoItem extends Component {
                         );
                     } else if (data.code === "EmailHasTaken") {
                         this.props.setFieldError("email", "Email has already taken!");
+                        this.props.openSnackBar(
+                            <span
+                                style={{
+                                    display: "flex",
+                                    alignItems: "center"
+                                }}
+                            >
+                                <WarningIcon style={{ marginRight: "5px" }} /> {`Email already exist, enter other email! `}
+                            </span>
+                        );
                     } else {
                         this.getGuest(data.id);
 

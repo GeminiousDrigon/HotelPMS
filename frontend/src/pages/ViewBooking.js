@@ -342,9 +342,13 @@ export default class ViewBooking extends Component {
             this.setState({ fetchingRooms: true });
             let { id } = this.props.match.params;
             let rooms = await axios.get(`/api/booking/${id}/room`);
+            let totalPrice = rooms.data.reduce((totalPrice, room) => {
+                return totalPrice + room.price;
+            }, 0);
             let { booking } = this.state;
-            booking.rooms = rooms.data;
-            this.setState({ booking });
+            let newBooking = {...booking, rooms: rooms.data, totalPrice}
+            
+            this.setState({ booking: newBooking });
             this.setState({ fetchingRooms: false });
         } catch (err) {
             this.setState({ fetchingRooms: false });
@@ -560,7 +564,8 @@ export default class ViewBooking extends Component {
                                                                 </TableCell>
                                                                 <TableCell>{moment(row.created_at).format("MMM DD, YYYY hh:mm A")}</TableCell>
                                                                 <TableCell align="right" component="th" scope="row">
-                                                                    &#8369;<NumeralComponent number={row.amount} />
+                                                                    &#8369;
+                                                                    <NumeralComponent number={row.amount} />
                                                                 </TableCell>
                                                                 <TableCell align="right" component="th" scope="row">
                                                                     <IconButton
@@ -588,19 +593,22 @@ export default class ViewBooking extends Component {
                                                     )}
                                                     <TableRow>
                                                         <TableCell colSpan={3} align="right">
-                                                            Total Due: &#8369;<NumeralComponent number={booking.totalPrice} />
+                                                            Total Due: &#8369;
+                                                            <NumeralComponent number={booking.totalPrice} />
                                                         </TableCell>
                                                         <TableCell align="right"></TableCell>
                                                     </TableRow>
                                                     <TableRow>
                                                         <TableCell colSpan={3} align="right">
-                                                            Amount Paid: &#8369;<NumeralComponent number={booking.total} />
+                                                            Amount Paid: &#8369;
+                                                            <NumeralComponent number={booking.total} />
                                                         </TableCell>
                                                         <TableCell align="right"></TableCell>
                                                     </TableRow>
                                                     <TableRow>
                                                         <TableCell colSpan={3} align="right">
-                                                            Balance: &#8369;<NumeralComponent number={booking.balance} />
+                                                            Balance: &#8369;
+                                                            <NumeralComponent number={booking.balance} />
                                                             {booking.balance < 0 && " (Change)"}
                                                         </TableCell>
                                                         <TableCell align="right"></TableCell>
@@ -689,6 +697,7 @@ export default class ViewBooking extends Component {
                                         getBookingDetails={this.getBookingDetails}
                                         bookingId={this.props.match.params.id}
                                         openSnackBar={this.openSnackBar}
+                                        getRooms={this.getRooms}
                                     />
                                 )}
                                 <div style={{ marginTop: 20 }}>
@@ -858,7 +867,8 @@ export default class ViewBooking extends Component {
                                                             <i>({room.guest_no} Guest)</i>
                                                         </ListItemText>
                                                         <ListItemSecondaryAction>
-                                                            &#8369;<NumeralComponent number={room.price} />
+                                                            &#8369;
+                                                            <NumeralComponent number={room.price} />
                                                         </ListItemSecondaryAction>
                                                     </ListItem>
                                                     <Divider />
@@ -868,7 +878,8 @@ export default class ViewBooking extends Component {
                                     </List>
                                     <div style={{ padding: "10px 20px", display: "flex", justifyContent: "flex-end" }}>
                                         <Typography variant="body1">
-                                            &#8369;<NumeralComponent number={booking.totalPrice} />
+                                            &#8369;
+                                            <NumeralComponent number={booking.totalPrice} />
                                             {/* {this.state.booking.totalPrice.toFixed(2)} */}
                                         </Typography>
                                     </div>

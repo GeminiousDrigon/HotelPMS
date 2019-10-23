@@ -22,10 +22,12 @@ class CreateBookRoomsTable extends Migration
             $table->boolean('with_breakfast');
             $table->integer('guest_no');
             $table->uuid('booking_id');
+            $table->uuid('rate_id');
 
             $table->foreign('room_type_id')->references('id')->on('room_types');
             $table->foreign('booking_id')->references('id')->on('bookings');
             $table->foreign('room_id')->references('id')->on('rooms');
+            $table->foreign('rate_id')->references('id')->on('rates');
             $table->timestamps();
         });
     }

@@ -3,11 +3,7 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import moment from "moment";
-import {
-    MuiPickersUtilsProvider,
-    KeyboardTimePicker,
-    KeyboardDatePicker
-} from "@material-ui/pickers";
+import { MuiPickersUtilsProvider, KeyboardTimePicker, KeyboardDatePicker } from "@material-ui/pickers";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Snackbar from "@material-ui/core/Snackbar";
@@ -70,11 +66,7 @@ export default class Reservation extends Component {
                 snackBarMessage: (
                     <span>
                         {`You can't select dates that are the `}
-                        <strong style={{ color: "#f50057" }}>
-                            same
-                        </strong> or{" "}
-                        <strong style={{ color: "#f50057" }}>before</strong> the
-                        checkin date!
+                        <strong style={{ color: "#f50057" }}>same</strong> or <strong style={{ color: "#f50057" }}>before</strong> the checkin date!
                     </span>
                 ),
                 snackBar: true
@@ -104,6 +96,7 @@ export default class Reservation extends Component {
             });
             this.props.getBookingDetails();
             this.props.onCloseEditReservationDates();
+            this.props.getRooms();
             this.props.openSnackBar(
                 <span
                     style={{
@@ -127,27 +120,15 @@ export default class Reservation extends Component {
     handleCloseSnackBar = () => this.setState({ snackBar: false });
 
     render() {
-        let {
-            checkInDate,
-            checkOutDate,
-            submitting,
-            initialCheckInDate
-        } = this.state;
+        let { checkInDate, checkOutDate, submitting, initialCheckInDate } = this.state;
 
         return (
             <Paper style={{ padding: "15px", position: "relative" }}>
                 {this.state.roomException && (
-                    <Typography
-                        align="center"
-                        style={{ margin: "20px 0", color: "#e74c3c" }}
-                    >
+                    <Typography align="center" style={{ margin: "20px 0", color: "#e74c3c" }}>
                         Can't change the dates to{" "}
-                        {`${moment(this.state.checkInDate).format(
-                            "MM/DD/YYYY"
-                        )}-${moment(this.state.checkOutDate).format(
-                            "MM/DD/YYYY"
-                        )}`}
-                        . One of the rooms might be unavailable.
+                        {`${moment(this.state.checkInDate).format("MM/DD/YYYY")}-${moment(this.state.checkOutDate).format("MM/DD/YYYY")}`}. One of the
+                        rooms might be unavailable.
                     </Typography>
                 )}
                 <Grid container justify="space-around">
@@ -214,12 +195,7 @@ export default class Reservation extends Component {
                         onClick={this.handleSubmit}
                     >
                         Submit
-                        {submitting && (
-                            <CircularProgress
-                                size={10}
-                                style={{ marginLeft: 5 }}
-                            />
-                        )}
+                        {submitting && <CircularProgress size={10} style={{ marginLeft: 5 }} />}
                     </Button>
                 </div>
                 <Snackbar
@@ -251,12 +227,7 @@ export default class Reservation extends Component {
                     ClickAwayListenerProps={{ onClickAway: () => null }}
                     TransitionComponent={Slide}
                     action={[
-                        <IconButton
-                            key="close"
-                            aria-label="close"
-                            color="inherit"
-                            onClick={this.handleCloseSnackBar}
-                        >
+                        <IconButton key="close" aria-label="close" color="inherit" onClick={this.handleCloseSnackBar}>
                             <Icon>close</Icon>
                         </IconButton>
                     ]}

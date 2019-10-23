@@ -22,8 +22,8 @@ class ReportController extends Controller
 
 
 
-        $dailyReservation = Booking::whereDay('from_date', $today)->where('status', 'RESERVED')->count();
-        $monthlyReservation = Booking::whereMonth('from_date', $thisMonth)->where('status', 'RESERVED')->count();
+        $dailyReservation = Booking::whereDay('from_date', $today)->count();
+        $monthlyReservation = Booking::whereMonth('from_date', $thisMonth)->count();
         $monthlyIncome = BookRoom::whereHas('booking', function ($query) use ($thisMonth) {
             $query->whereMonth('from_date', $thisMonth)->where('status', 'CHECKEDOUT');
         })->sum('price');
@@ -39,7 +39,7 @@ class ReportController extends Controller
         for ($i = 1; $i <= $daysThisMonth; $i++) {
             $date = Carbon::now();
             $date->day = $i;
-            $bookingMonth[] = Booking::whereDay('from_date', $date)->where('status', 'RESERVED')->count();
+            $bookingMonth[] = Booking::whereDay('from_date', $date)->count();
         }
 
         $roomTypesArray = RoomType::select(['name', 'id'])->orderBy('name')->get();
@@ -53,7 +53,7 @@ class ReportController extends Controller
             //     $query->whereDay('from_date', $date)->where('status', 'RESERVED');
             // })->where('room_type_id', $roomTypes[0]->id)->get();
             $booking = Booking::whereHas('rooms', function ($query) use ($date, $roomTypes) {
-                $query->whereDay('from_date', $date)->where('status', 'RESERVED')
+                $query->whereDay('from_date', $date)
                     ->where('room_type_id', $roomTypes[0]->id);
             })->count();
             $monthlyRoomtype[] = $booking;
