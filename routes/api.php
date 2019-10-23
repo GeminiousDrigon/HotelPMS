@@ -27,6 +27,7 @@ Route::post("/register", "AuthController@createGuestUser");
 //users
 Route::get("/user/guests", "UserController@getGuestUsers");
 Route::get("/user/admin", "UserController@getAdminAccounts");
+Route::post('/user/checkemail', "UserController@checkEmail");
 //amenity-ok
 Route::post("/amenity", "AmenityController@create");
 Route::get("/amenity", "AmenityController@getAll");

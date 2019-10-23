@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -56,14 +57,14 @@ class UserController extends Controller
             ], 404);
         } else {
             $user->fill([
-                'email' => $request->email, 
-                'password' => $request->password, 
-                'role' => $request->role, 
-                'honorific' => $request->honorific, 
-                'firstname' => $request->firstname, 
-                'lastname' => $request->lastname, 
-                'middlename' => $request->middlename, 
-                'contactno' => $request->contactno, 
+                'email' => $request->email,
+                'password' => $request->password,
+                'role' => $request->role,
+                'honorific' => $request->honorific,
+                'firstname' => $request->firstname,
+                'lastname' => $request->lastname,
+                'middlename' => $request->middlename,
+                'contactno' => $request->contactno,
                 'address' => $request->address
             ]);
             $user->save();
@@ -87,14 +88,31 @@ class UserController extends Controller
             ], 200);
         }
     }
-    public function getGuestUsers(){
+    public function getGuestUsers()
+    {
         $users = User::where('role', 'USER')->get();
-        return response()->json($users,200);
+        return response()->json($users, 200);
     }
 
     public function getAdminAccounts()
     {
         $users = User::where('role', 'ADMIN')->get();
         return response()->json($users, 200);
+    }
+
+
+    public function checkEmail(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'unique:users',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                "code" => "EmailHasTaken"
+            ], 500);
+        } else {
+            return response()->json("OK", 200);
+        }
     }
 }

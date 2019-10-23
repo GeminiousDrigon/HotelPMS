@@ -480,125 +480,134 @@ class BookingController extends Controller
         $to = Carbon::parse($to_date);
         // return response()->json([$from,$to], 200);
         $nights = $from->diffInDays($to);
+        $validator = Validator::make($request->all(), [
+            'email' => 'unique:room_guests',
+        ]);
 
-        $selectedRooms = array_reduce($request->input('selectedRooms'), function ($output, $item) {
-            // $output[$item['id']] = $item['id'];
-            if (array_key_exists($item['id'], $output)) {
-                $output[$item['id']]['selectedRooms'][] = [
-                    "roomTypeId" => $item['id'],
-                    "rateId" => $item['rate']['id'],
-                    "guest_no" => $item['rate']['adult'],
-                    "price" => $item['rate']['price'],
-                    "breakfast" => $item['rate']['breakfast'],
-                    "roomId" => ""
-                ];
-            } else {
-                $output[$item['id']] = [
-                    "id" => $item['id'],
-                    "selectedRooms" => [[
+        if ($validator->fails()) {
+            return response()->json([
+                "code" => "EmailHasTaken"
+            ]);
+        } else {
+
+            $selectedRooms = array_reduce($request->input('selectedRooms'), function ($output, $item) {
+                // $output[$item['id']] = $item['id'];
+                if (array_key_exists($item['id'], $output)) {
+                    $output[$item['id']]['selectedRooms'][] = [
                         "roomTypeId" => $item['id'],
                         "rateId" => $item['rate']['id'],
                         "guest_no" => $item['rate']['adult'],
                         "price" => $item['rate']['price'],
                         "breakfast" => $item['rate']['breakfast'],
                         "roomId" => ""
-                    ]]
-                ];
+                    ];
+                } else {
+                    $output[$item['id']] = [
+                        "id" => $item['id'],
+                        "selectedRooms" => [[
+                            "roomTypeId" => $item['id'],
+                            "rateId" => $item['rate']['id'],
+                            "guest_no" => $item['rate']['adult'],
+                            "price" => $item['rate']['price'],
+                            "breakfast" => $item['rate']['breakfast'],
+                            "roomId" => ""
+                        ]]
+                    ];
+                }
+                return $output;
+                // if (!$roomType) {
+                //     return $output[$item['id']] = [
+                //         "id" => [$item['id']]
+                //     ];
+                // } else {
+                //     return $output;
+                // }
+            }, array());
+
+            $finalRooms = array();
+            foreach ($selectedRooms as $room) {
+                $roomType = RoomType::with([
+                    'rooms' => function ($query) use ($from, $to) {
+                        $query->with([
+                            'bookings' => function ($query) use ($from, $to) {
+                                $query->whereHas('booking', function ($query) use ($from, $to) {
+                                    $query->where(function ($query) use ($from, $to) {
+                                        $query->whereBetween('from_date', [$from, $to])
+                                            ->orWhereBetween('to_date', [$from, $to]);
+                                    })->orWhere(function ($query) use ($from, $to) {
+                                        $query->where('from_date', '<=', $from);
+                                        $query->where('to_date', '>=', $to);
+                                    })->whereIn('status', ["CHECKEDIN", "RESERVED"]);
+                                });
+                            }
+                        ])->orderBy('room_number');
+                    },
+                    'rates'
+                ])->find($room['id']);
+                $newRooms = array(); // bakante nga rooms
+                for ($i = 0; $i < count($roomType->rooms); $i++) {
+                    if (!(count($roomType->rooms[$i]->bookings) > 0))
+                        $newRooms[] = $roomType->rooms[$i];
+                };
+
+                if (count($newRooms) >= count($room['selectedRooms'])) {
+                    $selectedRooms[$room['id']]['bookable'] = true;
+                } else {
+                    $selectedRooms[$room['id']]['bookable'] = false;
+                }
+                $selectedRooms[$room['id']]['availableRooms'] = $newRooms;
+                for ($i = 0; $i < count($selectedRooms[$room['id']]['selectedRooms']); $i++) {
+                    $selectedRooms[$room['id']]['selectedRooms'][$i]['roomId'] = $newRooms[$i]['id'];
+                    $finalRooms[] = $selectedRooms[$room['id']]['selectedRooms'][$i];
+                }
             }
-            return $output;
-            // if (!$roomType) {
-            //     return $output[$item['id']] = [
-            //         "id" => [$item['id']]
-            //     ];
-            // } else {
-            //     return $output;
-            // }
-        }, array());
-
-        $finalRooms = array();
-        foreach ($selectedRooms as $room) {
-            $roomType = RoomType::with([
-                'rooms' => function ($query) use ($from, $to) {
-                    $query->with([
-                        'bookings' => function ($query) use ($from, $to) {
-                            $query->whereHas('booking', function ($query) use ($from, $to) {
-                                $query->where(function ($query) use ($from, $to) {
-                                    $query->whereBetween('from_date', [$from, $to])
-                                        ->orWhereBetween('to_date', [$from, $to]);
-                                })->orWhere(function ($query) use ($from, $to) {
-                                    $query->where('from_date', '<=', $from);
-                                    $query->where('to_date', '>=', $to);
-                                })->whereIn('status', ["CHECKEDIN", "RESERVED"]);
-                            });
-                        }
-                    ])->orderBy('room_number');
-                },
-                'rates'
-            ])->find($room['id']);
-            $newRooms = array(); // bakante nga rooms
-            for ($i = 0; $i < count($roomType->rooms); $i++) {
-                if (!(count($roomType->rooms[$i]->bookings) > 0))
-                    $newRooms[] = $roomType->rooms[$i];
-            };
-
-            if (count($newRooms) >= count($room['selectedRooms'])) {
-                $selectedRooms[$room['id']]['bookable'] = true;
-            } else {
-                $selectedRooms[$room['id']]['bookable'] = false;
-            }
-            $selectedRooms[$room['id']]['availableRooms'] = $newRooms;
-            for ($i = 0; $i < count($selectedRooms[$room['id']]['selectedRooms']); $i++) {
-                $selectedRooms[$room['id']]['selectedRooms'][$i]['roomId'] = $newRooms[$i]['id'];
-                $finalRooms[] = $selectedRooms[$room['id']]['selectedRooms'][$i];
-            }
-        }
 
 
-        $userDetails = [
-            'email' => $request->email,
-            'role' => $request->newAccount ? "USER" : "GUEST",
-            'honorific' => $request->honorific,
-            'firstname' => $request->firstname,
-            'lastname' => $request->lastname,
-            'middlename' => $request->middlename,
-            'contactno' => $request->contactno,
-            'address' => $request->address,
-            'country' => $request->country
-        ];
-        $userDetails['password'] = Hash::make(Str::random(12));
-        $user = User::firstOrCreate([
-            'email' => $request->email,
-        ], $userDetails);
-        //create the bookings;
-        //from_date, to_date, status, user_id, room_type_id, room_id, price, with_breakfast
+            $userDetails = [
+                'email' => $request->email,
+                'role' => $request->newAccount ? "USER" : "GUEST",
+                'honorific' => $request->honorific,
+                'firstname' => $request->firstname,
+                'lastname' => $request->lastname,
+                'middlename' => $request->middlename,
+                'contactno' => $request->contactno,
+                'address' => $request->address,
+                'country' => $request->country
+            ];
+            $userDetails['password'] = Hash::make(Str::random(12));
+            $user = User::firstOrCreate([
+                'email' => $request->email,
+            ], $userDetails);
+            //create the bookings;
+            //from_date, to_date, status, user_id, room_type_id, room_id, price, with_breakfast
 
-        $booking = Booking::create([
-            'from_date' => $from,
-            'to_date' => $to,
-            'user_id' => $user->id,
-            'checkin_date' => null,
-            'checkout_date' => null,
-            'status' => "RESERVED"
-        ]);
-        foreach ($finalRooms as $selectedRoom) {
-            //create one booking
-            BookRoom::create([
-                'booking_id' => $booking->id,
-                'room_type_id' => $selectedRoom["roomTypeId"],
-                'room_id' => $selectedRoom["roomId"],
-                'price' => $selectedRoom["price"] * $nights,
-                'with_breakfast' => $selectedRoom["breakfast"],
-                'guest_no' => $selectedRoom["guest_no"],
-                'rate_id' => $selectedRoom["rateId"]
+            $booking = Booking::create([
+                'from_date' => $from,
+                'to_date' => $to,
+                'user_id' => $user->id,
+                'checkin_date' => null,
+                'checkout_date' => null,
+                'status' => "RESERVED"
             ]);
+            foreach ($finalRooms as $selectedRoom) {
+                //create one booking
+                BookRoom::create([
+                    'booking_id' => $booking->id,
+                    'room_type_id' => $selectedRoom["roomTypeId"],
+                    'room_id' => $selectedRoom["roomId"],
+                    'price' => $selectedRoom["price"] * $nights,
+                    'with_breakfast' => $selectedRoom["breakfast"],
+                    'guest_no' => $selectedRoom["guest_no"],
+                    'rate_id' => $selectedRoom["rateId"]
+                ]);
+            }
+
+            Mail::to($user)->send(new BookingCreated($user, $booking));
+
+            return response()->json($selectedRooms, 200);
+
+            // return response()->json($finalRooms);
         }
-
-        Mail::to($user)->send(new BookingCreated($user, $booking));
-
-        return response()->json($selectedRooms, 200);
-
-        // return response()->json($finalRooms);
-
     }
 
     public function changeDate($id, Request $request)
