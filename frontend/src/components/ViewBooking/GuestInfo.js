@@ -143,7 +143,7 @@ export default class GuestInfo extends Component {
             this.setState({ submittingAddBed: true });
             let bookroom = {
                 ...bookRoom,
-                additional_beds: values.beds
+                additional_beds: values.beds || 0
             };
             console.log(bookroom);
             await axios.put("/api/bookroom/" + bookroom.id, bookroom);
