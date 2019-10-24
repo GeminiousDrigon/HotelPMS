@@ -31,6 +31,31 @@ class ReportController extends Controller
             $query->whereYear('from_date', $thisYear)->where('status', 'CHECKEDOUT');
         })->sum('price');
 
+        $yearlyAdditionals = 0;
+        $yearRooms = BookRoom::whereHas('booking', function ($query) use ($thisYear) {
+            $query->whereYear('from_date', $thisYear)->where('status', 'CHECKEDOUT');
+        })->get();
+
+        foreach ($yearRooms as $yearRoom) {
+            if ($yearRoom->additional_beds > 0) {
+                $yearlyAdditionals += ($yearRoom->additional_beds * 100);
+            }
+        }
+
+        $monthlyAdditionals = 0;
+        $monthRooms =  BookRoom::whereHas('booking', function ($query) use ($thisMonth) {
+            $query->whereMonth('from_date', $thisMonth)->where('status', 'CHECKEDOUT');
+        })->get();
+
+        foreach ($monthRooms as $monthRoom) {
+            if ($monthRoom->additional_beds > 0) {
+                $monthlyAdditionals += ($monthRoom->additional_beds * 100);
+            }
+        }
+
+        $yearlyIncome = $yearlyIncome + $yearlyAdditionals;
+        $monthlyIncome = $monthlyIncome + $monthlyAdditionals;
+
         $daysInMonth = array();
         for ($i = 1; $i <= $daysThisMonth; $i++) {
             $daysInMonth[] = $i;

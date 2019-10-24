@@ -18,7 +18,8 @@ class BookRoom extends Model
         'guest_no',
         'booking_id',
         'color',
-        'rate_id'
+        'rate_id',
+        'additional_beds'
     ];
 
     protected static function boot()

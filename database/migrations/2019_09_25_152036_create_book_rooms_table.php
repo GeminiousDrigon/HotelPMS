@@ -21,6 +21,7 @@ class CreateBookRoomsTable extends Migration
             $table->integer('price');
             $table->boolean('with_breakfast');
             $table->integer('guest_no');
+            $table->integer('additional_beds');
             $table->uuid('booking_id');
             $table->uuid('rate_id');
 

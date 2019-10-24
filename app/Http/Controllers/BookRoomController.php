@@ -57,6 +57,7 @@ class BookRoomController extends Controller
                 'guest_no' => $request->guest_no,
                 'booking_id' => $request->booking_id,
                 'color' => $request->color,
+                'additional_beds' => $request->additional_beds
             ]);
             $bookRoom->save();
             return response()->json($bookRoom, 200);
@@ -129,7 +130,7 @@ class BookRoomController extends Controller
             $validator = Validator::make($request->all(), [
                 'email' => 'unique:room_guests',
             ]);
-            
+
             if ($validator->fails()) {
                 return response()->json([
                     "code" => "EmailHasTaken"

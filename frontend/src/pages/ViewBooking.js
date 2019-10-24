@@ -114,7 +114,12 @@ export default class ViewBooking extends Component {
                 return total + billing.amount;
             }, 0);
             data.totalPrice = data.rooms.reduce((totalPrice, room) => {
-                return totalPrice + room.price;
+                if (room.additional_beds > 0) {
+                    totalPrice = totalPrice + room.additional_beds * 100 + room.price;
+                    return totalPrice;
+                } else {
+                    return totalPrice + room.price;
+                }
             }, 0);
             data.balance = data.totalPrice - data.total;
             this.setState({
@@ -274,10 +279,13 @@ export default class ViewBooking extends Component {
 
     onChangeStatus = async e => {
         try {
-            if (e.target.value === "NOSHOW" || e.target.value === "CHECKEDOUT") {
+            if (e.target.value === "NOSHOW" ) {
                 //open confirm dialog
                 this.setState({ statusPrompt: true, selectedStatus: e.target.value });
-            } else {
+            } else if(e.target.value === "CHECKEDOUT"){
+
+            }
+            else {
                 console.log("here");
                 this.setState({ changingStatus: true });
                 let { billings, rooms, user, ...booking } = this.state.booking;
@@ -343,11 +351,19 @@ export default class ViewBooking extends Component {
             let { id } = this.props.match.params;
             let rooms = await axios.get(`/api/booking/${id}/room`);
             let totalPrice = rooms.data.reduce((totalPrice, room) => {
-                return totalPrice + room.price;
+                if (room.additional_beds > 0) {
+                    totalPrice = totalPrice + room.additional_beds * 100 + room.price;
+                    return totalPrice;
+                } else {
+                    return totalPrice + room.price;
+                }
             }, 0);
+
             let { booking } = this.state;
-            let newBooking = {...booking, rooms: rooms.data, totalPrice}
-            
+            console.log(totalPrice, booking.total)
+            booking.balance = totalPrice - booking.total;
+            let newBooking = { ...booking, rooms: rooms.data, totalPrice };
+
             this.setState({ booking: newBooking });
             this.setState({ fetchingRooms: false });
         } catch (err) {
@@ -802,10 +818,12 @@ export default class ViewBooking extends Component {
                                                         </ExpansionPanelSummary>
                                                         <ExpansionPanelDetails style={{ backgroundColor: "#dbd2d2" }}>
                                                             <GuestInfo
+                                                                room={room}
                                                                 guests={room.guests}
                                                                 selectedRoom={this.state.selectedRoom}
                                                                 id={room.id}
                                                                 openSnackBar={this.openSnackBar}
+                                                                getRooms={this.getRooms}
                                                             />
                                                         </ExpansionPanelDetails>
                                                     </ExpansionPanel>
@@ -872,6 +890,21 @@ export default class ViewBooking extends Component {
                                                         </ListItemSecondaryAction>
                                                     </ListItem>
                                                     <Divider />
+                                                    {room.additional_beds > 0 && (
+                                                        <>
+                                                            <ListItem>
+                                                                <ListItemText>
+                                                                    {`${room.room.room_number}. ${room.room_type.name} `}({room.additional_beds}{" "}
+                                                                    Additional bed(s))
+                                                                </ListItemText>
+                                                                <ListItemSecondaryAction>
+                                                                    &#8369;
+                                                                    <NumeralComponent number={room.additional_beds * 100} />
+                                                                </ListItemSecondaryAction>
+                                                            </ListItem>
+                                                            <Divider />
+                                                        </>
+                                                    )}
                                                 </React.Fragment>
                                             );
                                         })}

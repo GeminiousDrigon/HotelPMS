@@ -63,7 +63,12 @@ export default class Checkins extends Component {
                     return total + billing.amount;
                 }, 0);
                 reservation.totalPrice = reservation.rooms.reduce((totalPrice, room) => {
-                    return totalPrice + room.price;
+                    if (room.additional_beds > 0) {
+                        totalPrice = totalPrice + room.additional_beds * 100 + room.price;
+                        return totalPrice;
+                    } else {
+                        return totalPrice + room.price;
+                    }
                 }, 0);
                 return reservation;
             });

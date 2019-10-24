@@ -663,13 +663,17 @@ class Walkin extends Component {
                                     variant="standard"
                                     label="Contact Number"
                                     margin="normal"
+                                    type="number"
                                     helperText={(validatedCalled || touched.contactno) && errors.contactno ? errors.contactno : ""}
                                     error={(validatedCalled || touched.contactno) && errors.contactno ? true : false}
                                     onBlur={handleBlur}
                                     value={values.contactno}
-                                    onChange={handleChange}
+                                    onChange={this.onChangeNumber}
                                     inputProps={{ readOnly: !newGuest }}
                                     disabled={!newGuest || this.state.submitting}
+                                    InputProps={{
+                                        startAdornment: <InputAdornment position="start">+639</InputAdornment>
+                                    }}
                                     fullWidth
                                 />
                             </Grid>
