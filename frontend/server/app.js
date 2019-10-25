@@ -6,6 +6,7 @@ var app = express();
 app.use(express.static('./build'));  // create a static link for build folder created by react-create-app
 
 app.use("/api", proxy({ target: "http://localhost:8000", changeOrigin: true }));
+app.use("/storage", proxy({ target: "http://localhost:8000", changeOrigin: true }));
 
 app.get("*", function(req, res) {
     res.sendFile(__dirname+"/build/index.html");

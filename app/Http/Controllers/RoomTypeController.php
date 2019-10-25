@@ -304,7 +304,7 @@ class RoomTypeController extends Controller
                     $files = Storage::files("/public/roomtype/" . $roomType['id']);
                     $files = array_map(function ($file) {
                         return  [
-                            "src" => asset(Storage::url($file)),
+                            "src" => Storage::url($file),
                             "filename" => basename($file)
                         ];
                     }, $files);
@@ -322,7 +322,7 @@ class RoomTypeController extends Controller
         $files = Storage::files("/public/roomtype/" . $id);
         $files = array_map(function ($file) {
             return  [
-                "src" => asset(Storage::url($file)),
+                "src" => Storage::url($file),
                 "filename" => basename($file)
             ];
         }, $files);
