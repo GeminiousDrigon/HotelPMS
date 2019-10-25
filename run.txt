@@ -1,0 +1,55 @@
+RUNNING BOOKING APP
+
+Assuming naa ka sa root folder or naa ka sa HotelPMS folder
+1.cd booking
+2.npm install (buhata ra ni kung first/initial run pa ka sa booking);
+3.npm run build
+4. copy /booking/build and paste to /booking/server
+folder should look like this:
+-HotelPMS
+  -booking
+    -build   <--after npm run build mo generate ni.. then copyaha and...
+    -public
+    -server  <-- ani i paste nga folder
+      -build 
+    -src
+5. make sure nga naa ka sa booking nga folder sa cmd
+-HotelPMS
+  -booking <-- dapat naa ka ani nga folder sa cmd
+    -build   
+    -public
+    -server 
+      -build 
+    -src
+6. npm run prod
+7. create new cmd
+8. ngrok http 3000
+
+
+RUNNING FRONTEND APP
+
+Assuming naa ka sa root folder or naa ka sa HotelPMS folder
+1.cd frontend
+2.npm install (buhata ra ni kung first/initial run pa ka sa frontend);
+3.npm run build
+4. copy /frontend/build and paste to /frontend/server
+folder should look like this:
+-HotelPMS
+  -frontend
+    -build   <--after npm run build mo generate ni.. then copyaha and...
+    -public
+    -server  <-- ani i paste nga folder
+      -build 
+    -src
+5. make sure nga naa ka sa frontend nga folder sa cmd
+-HotelPMS
+  -frontend <-- dapat naa ka ani nga folder sa cmd
+    -build   
+    -public
+    -server 
+      -build 
+    -src
+6. npm run prod
+7. create new cmd
+8. ngrok http 3000
+
