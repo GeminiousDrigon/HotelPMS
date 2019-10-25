@@ -66,7 +66,7 @@ function App() {
                 <Switch>
                     {/* Admin */}
 
-                    <Route path="/booking" component={Booking} exact />
+                    {/* <Route path="/booking" component={Booking} exact /> */}
                     <Route path="/calendar" component={requireAuthentication(Component, "ADMIN")} exact />
                     <Route path="/Test" component={requireAuthentication(Test, "ADMIN")} exact />
                     <Route path="/reports" component={requireAuthentication(Report, "ADMIN")} exact />
