@@ -51,5 +51,5 @@ folder should look like this:
     -src
 6. npm run prod
 7. create new cmd
-8. ngrok http 3000
+8. ngrok http 4000
 
