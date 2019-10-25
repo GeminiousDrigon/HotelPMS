@@ -581,7 +581,13 @@ export default class RoomInfo extends Component {
                                         {selectedType.images.map(image => {
                                             return (
                                                 <Carousel.Item>
-                                                    <img className="d-block w-100" src={image.src} alt="First slide" key={image.filename} />
+                                                    <img
+                                                        className="d-block w-100"
+                                                        src={image.src}
+                                                        alt="First slide"
+                                                        key={image.filename}
+                                                        style={{ width: "100%", height: "auto" }}
+                                                    />
                                                 </Carousel.Item>
                                             );
                                         })}
