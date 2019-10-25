@@ -23,12 +23,14 @@ export default class Confirmation extends Component {
         let { values } = this.props;
         return (
             <>
-                <Paper style={{ padding: 25, marginBottom: 25 }}>
-                    <Typography
-                        variant="h4"
-                        style={{ fontWeight: 100 }}
-                        gutterBottom
-                    >
+                <Paper
+                    style={{
+                        padding: 25,
+                        marginBottom: 25,
+                        backgroundColor: "#E6E6E6"
+                    }}
+                >
+                    <Typography variant="h4" gutterBottom>
                         Guest Information
                     </Typography>
                     <Grid container spacing={2}>
@@ -146,12 +148,8 @@ export default class Confirmation extends Component {
                         </Grid>
                     </Grid>
                 </Paper>
-                <Paper style={{ padding: 25 }}>
-                    <Typography
-                        variant="h4"
-                        style={{ fontWeight: 100 }}
-                        gutterBottom
-                    >
+                <Paper style={{ padding: 25, backgroundColor: "#E6E6E6" }}>
+                    <Typography variant="h4" gutterBottom>
                         Booking Information
                     </Typography>
                     <Grid
@@ -178,6 +176,7 @@ export default class Confirmation extends Component {
                                 >
                                     Check-in Date
                                 </Typography>
+
                                 <Typography
                                     variant="subtitle1"
                                     style={{ fontWeight: 300 }}
@@ -186,6 +185,13 @@ export default class Confirmation extends Component {
                                     {moment(values.checkInDate).format(
                                         "MMMM D, YYYY"
                                     )}
+                                </Typography>
+                                <Typography
+                                    variant="h5"
+                                    style={{ fontWeight: 300 }}
+                                    component="span"
+                                >
+                                    Arrival Time : 8:00
                                 </Typography>
                             </Grid>
                             <Grid
@@ -214,6 +220,13 @@ export default class Confirmation extends Component {
                                     {moment(values.checkOutDate).format(
                                         "MMMM D, YYYY"
                                     )}
+                                </Typography>
+                                <Typography
+                                    variant="h5"
+                                    style={{ fontWeight: 300 }}
+                                    component="span"
+                                >
+                                    Check-out Time : 12:00 NN
                                 </Typography>
                             </Grid>
                             {/* <Grid
@@ -247,11 +260,7 @@ export default class Confirmation extends Component {
                         </Grid>
                     </Grid>
                     <div style={{ marginTop: 25 }}>
-                        <Typography
-                            variant="h4"
-                            style={{ fontWeight: 100 }}
-                            gutterBottom
-                        >
+                        <Typography variant="h4" gutterBottom>
                             Selected Room(s)
                         </Typography>
                     </div>
