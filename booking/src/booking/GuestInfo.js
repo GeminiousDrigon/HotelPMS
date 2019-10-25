@@ -32,6 +32,11 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 import countries from "../country.json";
 
+import cebuana from '../images/cebuana.png'
+import bpi from '../images/bpi.png'
+import mlhuillier from '../images/mlhuillier.png'
+import palawan from '../images/palawan.png'
+
 export default class GuestInfo extends Component {
     constructor(props) {
         super(props);
@@ -379,10 +384,10 @@ export default class GuestInfo extends Component {
                                     justifyContent: "space-around"
                                 }}
                             >
-                                <img src="img/palawan.png" width="10%"></img>
-                                <img src="img/cebuana.png" width="10%"></img>
-                                <img src="img/mlhuillier.png" width="10%"></img>
-                                <img src="img/bpi.png" width="10%"></img>
+                                <img src={palawan} width="10%"></img>
+                                <img src={cebuana} width="10%"></img>
+                                <img src={mlhuillier} width="10%"></img>
+                                <img src={bpi} width="10%"></img>
                             </div>
                             <Typography variant="h5">
                                 <h3>
