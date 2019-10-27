@@ -97,7 +97,10 @@ export default class ViewBooking extends Component {
             //status prompt
             statusPrompt: false,
             selectedStatus: "",
-            changingStatus: false
+            changingStatus: false,
+
+            //balance prompt
+            balancePrompt: false
         };
     }
 
@@ -136,7 +139,7 @@ export default class ViewBooking extends Component {
                     fetched: false,
                     fetching: false,
                     failed: true,
-                    notFound: false
+                    notFound: true
                 });
         }
     };
@@ -279,13 +282,16 @@ export default class ViewBooking extends Component {
 
     onChangeStatus = async e => {
         try {
-            if (e.target.value === "NOSHOW" ) {
+            if (e.target.value === "NOSHOW") {
                 //open confirm dialog
                 this.setState({ statusPrompt: true, selectedStatus: e.target.value });
-            } else if(e.target.value === "CHECKEDOUT"){
-
-            }
-            else {
+            } else if (e.target.value === "CHECKEDOUT") {
+                //
+                let { balance } = this.state.booking;
+                if (balance > 0) {
+                    this.setState({ balancePrompt: true });
+                } else this.setState({ statusPrompt: true, selectedStatus: e.target.value });
+            } else {
                 console.log("here");
                 this.setState({ changingStatus: true });
                 let { billings, rooms, user, ...booking } = this.state.booking;
@@ -360,7 +366,7 @@ export default class ViewBooking extends Component {
             }, 0);
 
             let { booking } = this.state;
-            console.log(totalPrice, booking.total)
+            console.log(totalPrice, booking.total);
             booking.balance = totalPrice - booking.total;
             let newBooking = { ...booking, rooms: rooms.data, totalPrice };
 
@@ -429,16 +435,34 @@ export default class ViewBooking extends Component {
         }
     };
 
+    //handle balance prompt
+    handleBalancePrompt = () => {
+        this.setState({ balancePrompt: !this.state.balancePrompt });
+    };
+
     render() {
         let { fetching, booking, guestAnchorEl, paymentAnchorEl, selectedPayment, changingStatus } = this.state;
         let { user, rooms, billings, status } = booking;
         let open = Boolean(guestAnchorEl);
         let openPayment = Boolean(paymentAnchorEl);
+        let viewMode = booking.status === "CHECKEDOUT" || booking.status === "NOSHOW" ? true : false;
         return (
             <AdminLayout {...this.props} style={{ padding: "60px 0 0" }}>
                 {fetching ? (
                     <div style={{ textAlign: "center", padding: "50px 0" }}>
                         <CircularProgress />
+                    </div>
+                ) : this.state.notFound ? (
+                    <div style={{ width: "100%", textAlign: "center", paddingTop: 30 }}>
+                        <Typography variant="h3" gutterBottom>
+                            Booking not found
+                        </Typography>
+                        <Typography variant="h5" gutterBottom>
+                            Please try to scan the QR again or find the booking in the reservation page.
+                        </Typography>
+                        <Button variant="contained" color="primary" onClick={() => this.props.history.replace("/bookings/reservations")}>
+                            Go To Reservation
+                        </Button>
                     </div>
                 ) : (
                     <div style={{ margin: "10px", padding: "25px" }}>
@@ -556,9 +580,11 @@ export default class ViewBooking extends Component {
                                             }}
                                         >
                                             <Typography variant="h6">Paid</Typography>
-                                            <Button variant="text" color="primary" onClick={this.onOpenAddBilling} size="small">
-                                                Add
-                                            </Button>
+                                            {!viewMode && (
+                                                <Button variant="text" color="primary" onClick={this.onOpenAddBilling} size="small">
+                                                    Add
+                                                </Button>
+                                            )}
                                         </div>
                                         <Divider />
                                         <div>
@@ -568,7 +594,8 @@ export default class ViewBooking extends Component {
                                                         <TableCell>#</TableCell>
                                                         <TableCell>Date added</TableCell>
                                                         <TableCell align="right">Amount</TableCell>
-                                                        <TableCell align="right">Action</TableCell>
+                                                        {/* remove */}
+                                                        {!viewMode && <TableCell align="right">Action</TableCell>}
                                                     </TableRow>
                                                 </TableHead>
                                                 <TableBody>
@@ -583,17 +610,19 @@ export default class ViewBooking extends Component {
                                                                     &#8369;
                                                                     <NumeralComponent number={row.amount} />
                                                                 </TableCell>
-                                                                <TableCell align="right" component="th" scope="row">
-                                                                    <IconButton
-                                                                        aria-label="more"
-                                                                        aria-controls="long-menu"
-                                                                        aria-haspopup="true"
-                                                                        onClick={e => this.onMorePayment(e, row)}
-                                                                        size="small"
-                                                                    >
-                                                                        <MoreVertIcon style={{ fontSize: "1.25em" }} />
-                                                                    </IconButton>
-                                                                </TableCell>
+                                                                {!viewMode && (
+                                                                    <TableCell align="right" component="th" scope="row">
+                                                                        <IconButton
+                                                                            aria-label="more"
+                                                                            aria-controls="long-menu"
+                                                                            aria-haspopup="true"
+                                                                            onClick={e => this.onMorePayment(e, row)}
+                                                                            size="small"
+                                                                        >
+                                                                            <MoreVertIcon style={{ fontSize: "1.25em" }} />
+                                                                        </IconButton>
+                                                                    </TableCell>
+                                                                )}
                                                             </TableRow>
                                                         ))
                                                     ) : (
@@ -612,14 +641,14 @@ export default class ViewBooking extends Component {
                                                             Total Due: &#8369;
                                                             <NumeralComponent number={booking.totalPrice} />
                                                         </TableCell>
-                                                        <TableCell align="right"></TableCell>
+                                                        {!viewMode && <TableCell align="right"></TableCell>}
                                                     </TableRow>
                                                     <TableRow>
                                                         <TableCell colSpan={3} align="right">
                                                             Amount Paid: &#8369;
                                                             <NumeralComponent number={booking.total} />
                                                         </TableCell>
-                                                        <TableCell align="right"></TableCell>
+                                                        {!viewMode && <TableCell align="right"></TableCell>}
                                                     </TableRow>
                                                     <TableRow>
                                                         <TableCell colSpan={3} align="right">
@@ -627,7 +656,7 @@ export default class ViewBooking extends Component {
                                                             <NumeralComponent number={booking.balance} />
                                                             {booking.balance < 0 && " (Change)"}
                                                         </TableCell>
-                                                        <TableCell align="right"></TableCell>
+                                                        {!viewMode && <TableCell align="right"></TableCell>}
                                                     </TableRow>
                                                 </TableBody>
                                                 <Menu id="long-menu" anchorEl={paymentAnchorEl} open={openPayment} onClose={this.onClosePayment}>
@@ -660,13 +689,16 @@ export default class ViewBooking extends Component {
                                             <EventAvailableIcon style={{ marginRight: 10, fontSize: 30 }} />
                                             <Typography variant="h5">Reservation</Typography>
                                         </div>
-                                        <IconButton onClick={this.openEditReservationDates}>
-                                            <Icon size="small">edit</Icon>
-                                        </IconButton>
+                                        {/* remove */}
+                                        {!viewMode && (
+                                            <IconButton onClick={this.openEditReservationDates}>
+                                                <Icon size="small">edit</Icon>
+                                            </IconButton>
+                                        )}
                                     </div>
                                 </div>
 
-                                {!this.state.editReservationDates ? (
+                                {!this.state.editReservationDates || viewMode ? (
                                     <Paper style={{ padding: "15px" }}>
                                         <div style={{ marginBottom: 20 }}>
                                             <br />
@@ -719,12 +751,15 @@ export default class ViewBooking extends Component {
                                 <div style={{ marginTop: 20 }}>
                                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
                                         <Typography variant="h5">Rooms</Typography>
-                                        <Button variant="outlined" size="small" color="primary" onClick={this.onClickAddRoom}>
-                                            <AddCircleIcon style={{ marginRight: 5 }} />
-                                            Add room
-                                        </Button>
+                                        {/* remove */}
+                                        {!viewMode && (
+                                            <Button variant="outlined" size="small" color="primary" onClick={this.onClickAddRoom}>
+                                                <AddCircleIcon style={{ marginRight: 5 }} />
+                                                Add room
+                                            </Button>
+                                        )}
                                     </div>
-
+                                    {/* remove */}
                                     <Collapse in={this.state.addingRooms}>
                                         <Paper>
                                             <AddRoom
@@ -824,6 +859,7 @@ export default class ViewBooking extends Component {
                                                                 id={room.id}
                                                                 openSnackBar={this.openSnackBar}
                                                                 getRooms={this.getRooms}
+                                                                view={this.state.booking.status === "CHECKEDOUT" ? true : false}
                                                             />
                                                         </ExpansionPanelDetails>
                                                     </ExpansionPanel>
@@ -921,6 +957,8 @@ export default class ViewBooking extends Component {
                         </Grid>
                     </div>
                 )}
+
+                {/* Add Billing Form */}
                 <Formik
                     initialValues={{ amount: this.state.initialPayment }}
                     onSubmit={async (values, actions) => {
@@ -992,6 +1030,8 @@ export default class ViewBooking extends Component {
                         );
                     }}
                 />
+
+                {/* Confirm delete billing dialog  */}
                 <Dialog
                     fullWidth
                     maxWidth="sm"
@@ -1045,11 +1085,14 @@ export default class ViewBooking extends Component {
                     ]}
                 />
 
+                {/* no show / checkout dialog  */}
                 <Dialog
                     open={this.state.statusPrompt}
                     onClose={this.handleStatusPrompt}
                     aria-labelledby="alert-dialog-title"
                     aria-describedby="alert-dialog-description"
+                    fullWidth
+                    maxWidth="sm"
                 >
                     <DialogTitle id="alert-dialog-title">
                         Are you sure you want to mark {this.state.selectedStatus === "CHECKEDOUT" ? "Check-out" : "No Show"}
@@ -1061,11 +1104,36 @@ export default class ViewBooking extends Component {
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={() => this.handleResultStatusPrompt(false)} color="primary" disabled={changingStatus}>
-                            Disagree
+                            Cancel
                         </Button>
                         <Button onClick={() => this.handleResultStatusPrompt(true)} color="primary" disabled={changingStatus}>
-                            Agree
+                            Proceed
                             {changingStatus && <CircularProgress size={12} style={{ marginLeft: 10 }} />}
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+
+                {/* balance prompt */}
+                <Dialog
+                    open={this.state.balancePrompt}
+                    onClose={this.handleBalancePrompt}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                    fullWidth
+                    maxWidth="sm"
+                >
+                    <DialogTitle id="alert-dialog-title">You still have a balance.</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-description">
+                            You are not allowed to check-out if you still have a balance.
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={this.handleBalancePrompt} color="primary">
+                            Cancel
+                        </Button>
+                        <Button onClick={this.handleBalancePrompt} color="primary">
+                            Okay
                         </Button>
                     </DialogActions>
                 </Dialog>

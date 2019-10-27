@@ -25,7 +25,7 @@ export default class GuestInfo extends Component {
     constructor(props) {
         super(props);
         let guests;
-        if (props.guests.length > 0) {
+        if (props.guests.length > 0 || this.props.view) {
             guests = props.guests;
         } else {
             guests = [
@@ -170,6 +170,7 @@ export default class GuestInfo extends Component {
                     show={el === this.state.selectedGuest && this.props.id === this.props.selectedRoom}
                     roomId={this.props.id}
                     openSnackBar={this.props.openSnackBar}
+                    view={this.props.view}
                 />
             );
         });
@@ -178,27 +179,37 @@ export default class GuestInfo extends Component {
                 <div style={{ width: "100%" }}>
                     <div style={{ margin: "20px 0", display: "flex", justifyContent: "space-between" }}>
                         <Typography>Additional Beds: {room.additional_beds}</Typography>
-                        <Button variant="outlined" size="small" color="primary" onClick={this.handleAddBedDialog}>
-                            Add Bed
-                        </Button>
+                        {!this.props.view && (
+                            <Button variant="outlined" size="small" color="primary" onClick={this.handleAddBedDialog}>
+                                Add Bed
+                            </Button>
+                        )}
                     </div>
                     <div style={{ display: "flex", flexWrap: "wrap" }}>
-                        {guests.map((guest, i) => {
-                            return (
-                                <Button
-                                    variant="text"
-                                    color={i === this.state.selectedGuest ? "primary" : "default"}
-                                    onClick={() => this.onSelectGuest(i)}
-                                    key={guest.id ? guest.id : i}
-                                >
-                                    <PersonIcon />
-                                    {i + 1}
-                                </Button>
-                            );
-                        })}
-                        <Button variant="text" color="primary" onClick={this.onAddGuest}>
-                            <PersonAddIcon />
-                        </Button>
+                        {guests.length === 0 ? (
+                            <div style={{ width: "100%", textAlign: "center", padding: "10px 0" }}>
+                                <Typography>No guest added to this room</Typography>
+                            </div>
+                        ) : (
+                            guests.map((guest, i) => {
+                                return (
+                                    <Button
+                                        variant="text"
+                                        color={i === this.state.selectedGuest ? "primary" : "default"}
+                                        onClick={() => this.onSelectGuest(i)}
+                                        key={guest.id ? guest.id : i}
+                                    >
+                                        <PersonIcon />
+                                        {i + 1}
+                                    </Button>
+                                );
+                            })
+                        )}
+                        {!this.props.view && (
+                            <Button variant="text" color="primary" onClick={this.onAddGuest}>
+                                <PersonAddIcon />
+                            </Button>
+                        )}
                     </div>
                     {content}
                 </div>

@@ -103,10 +103,6 @@ class BookRoomController extends Controller
 
     public function addGuest(Request $request, $id)
     {
-
-
-
-
         $bookRoom = BookRoom::find($id);
         if (!$bookRoom) {
             return response()->json([
@@ -127,21 +123,23 @@ class BookRoomController extends Controller
                 'contactno' => $request->input("contactno"),
                 'noOfChild' => $request->input('noOfChild')
             ]);
-            $validator = Validator::make($request->all(), [
-                'email' => 'unique:room_guests',
-            ]);
-
-            if ($validator->fails()) {
-                return response()->json([
-                    "code" => "EmailHasTaken"
+            if ($bookGuest->email !== $request->input('email')) {
+                $validator = Validator::make($request->all(), [
+                    'email' => 'unique:room_guests',
                 ]);
-            } else {
-                if (!$bookGuest->id) {
-                    $bookGuest->save();
-                } else {
+
+                if ($validator->fails()) {
                     return response()->json([
-                        "code" => "RoomGuestFound"
+                        "code" => "EmailHasTaken"
                     ]);
+                } else {
+                    if (!$bookGuest->id) {
+                        $bookGuest->save();
+                    } else {
+                        return response()->json([
+                            "code" => "RoomGuestFound"
+                        ]);
+                    }
                 }
             }
         }

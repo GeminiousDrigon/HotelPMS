@@ -59,7 +59,6 @@ class BookingController extends Controller
                 'billings'
             ])->find($id);
         }
-        return response()->json($booking);
         if (!$booking) {
             return response()->json([
                 "status" => 404,
