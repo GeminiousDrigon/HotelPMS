@@ -28,6 +28,7 @@ import Typography from "@material-ui/core/Typography";
 import Tooltip from "@material-ui/core/Tooltip";
 
 import axios from "axios";
+import { GET, DELETE } from "../utils/restUtils";
 
 const useStyles = makeStyles(theme => ({
     fab: {
@@ -55,7 +56,7 @@ export default class RoomFacilities extends Component {
 
     getAllFacilities = async () => {
         try {
-            let { data } = await axios.get("/api/amenity");
+            let { data } = await GET("/api/amenity");
             console.log(data);
             this.setState({ facilities: data });
         } catch (err) {
@@ -67,7 +68,7 @@ export default class RoomFacilities extends Component {
         try {
             this.setState({anchorEl: null})
             let id = this.state.facilityId;
-            await axios.delete(`/api/amenity/${id}`);
+            await DELETE(`/api/amenity/${id}`);
 
             this.setState({ facilityId: null });
             this.getAllFacilities();

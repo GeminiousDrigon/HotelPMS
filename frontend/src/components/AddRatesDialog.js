@@ -20,6 +20,7 @@ import PersonIcon from "@material-ui/icons/Person";
 
 import axios from "axios";
 import makeStyles from "@material-ui/styles/makeStyles";
+import { GET, POST, PUT, DELETE } from "../utils/restUtils";
 
 export default class AddRatesDialog extends Component {
                    constructor(props) {
@@ -61,7 +62,7 @@ export default class AddRatesDialog extends Component {
                        let { edit } = this.props;
                        if (edit) {
                            console.log("entered!");
-                           let { data } = await axios.get(
+                           let { data } = await GET(
                                "/api/rate/" + this.props.rateId
                            );
                            this.setState({
@@ -86,12 +87,12 @@ export default class AddRatesDialog extends Component {
                            };
                            if (this.props.edit) {
                                rate = { ...rate, id: this.props.rateId };
-                               await axios.put(
+                               await PUT(
                                    "/api/rate/" + this.props.rateId,
                                    rate
                                );
                            } else {
-                               await axios.post(`/api/rate`, rate);
+                               await POST(`/api/rate`, rate);
                            }
                            this.onClose(true);
                        } catch (err) {

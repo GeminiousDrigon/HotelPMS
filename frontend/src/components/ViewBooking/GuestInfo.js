@@ -20,6 +20,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import axios from "axios";
 import { Formik } from "formik";
 import * as yup from "yup";
+import { GET,POST,PUT,DELETE} from '../../utils/restUtils'
 
 export default class GuestInfo extends Component {
     constructor(props) {
@@ -126,7 +127,7 @@ export default class GuestInfo extends Component {
             this.setState({ fetchingAddBed: true });
             let { id } = this.props.room;
             this.setState({ fetchingAddBed: true });
-            let { data } = await axios.get("/api/bookroom/" + id);
+            let { data } = await GET("/api/bookroom/" + id);
             this.setState({ addBedValue: data.additional_beds, fetchingAddBed: false });
         } catch (err) {
             this.setState({
@@ -146,7 +147,7 @@ export default class GuestInfo extends Component {
                 additional_beds: values.beds || 0
             };
             console.log(bookroom);
-            await axios.put("/api/bookroom/" + bookroom.id, bookroom);
+            await PUT("/api/bookroom/" + bookroom.id, bookroom);
             this.props.getRooms();
             this.setState({ submittingAddBed: false });
             this.handleCloseAddBedDialog();

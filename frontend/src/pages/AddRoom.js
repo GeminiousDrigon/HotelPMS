@@ -14,6 +14,7 @@ import Grid from "@material-ui/core/Grid";
 import MenuItem from "@material-ui/core/MenuItem";
 
 import axios from "axios";
+import { GET, PUT, POST, DELETE } from '../utils/restUtils'
 
 export default class AddRoom extends Component {
     constructor(props) {
@@ -75,7 +76,7 @@ export default class AddRoom extends Component {
                     freeParking,
                     nonRefundable
                 } = this.state;
-                await axios.put(`/api/room/${id}`, {
+                await PUT(`/api/room/${id}`, {
                     private_bath: privateBath,
                     free_parking: freeParking,
                     room_size: roomSize,
@@ -103,7 +104,7 @@ export default class AddRoom extends Component {
                     freeParking,
                     nonRefundable
                 } = this.state;
-                let room = await axios.post("/api/room", {
+                let room = await POST("/api/room", {
                     private_bath: privateBath,
                     free_parking: freeParking,
                     room_size: roomSize,
@@ -126,7 +127,7 @@ export default class AddRoom extends Component {
     getRoom = async () => {
         try {
             let { id } = this.props.match.params;
-            let { data } = await axios.get(`/api/room/${id}`);
+            let { data } = await GET(`/api/room/${id}`);
             let {
                 private_bath,
                 free_parking,

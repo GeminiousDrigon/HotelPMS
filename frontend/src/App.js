@@ -46,6 +46,7 @@ import axios from "axios";
 import requireAuthentication from "./components/auth/requireAuthentication";
 import Bookings from "./pages/Bookings";
 import ViewBooking from "./pages/ViewBooking";
+import YearReport from "./pages/YearReport";
 
 export const history = createBrowserHistory({
     forceRefresh: false
@@ -69,7 +70,9 @@ function App() {
                     {/* <Route path="/booking" component={Booking} exact /> */}
                     <Route path="/calendar" component={requireAuthentication(Component, "ADMIN")} exact />
                     <Route path="/Test" component={requireAuthentication(Test, "ADMIN")} exact />
-                    <Route path="/reports" component={requireAuthentication(Report, "ADMIN")} exact />
+                    <Route path="/reports" render={() => <Redirect to="/reports/summary" />} exact />
+                    <Route path="/reports/summary" component={requireAuthentication(Report, "ADMIN")} exact />
+                    <Route path="/reports/yearly" component={requireAuthentication(YearReport, "ADMIN")} exact />
                     <Route path="/walkin" component={requireAuthentication(Walkin, "ADMIN")} exact />
                     <Route path="/bookings/view/:id" component={requireAuthentication(ViewBooking, "ADMIN")} exact />
                     <Route path="/bookings" component={requireAuthentication(Bookings, "ADMIN")} />

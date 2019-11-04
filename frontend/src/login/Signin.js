@@ -13,6 +13,7 @@ import Fab from "@material-ui/core/Fab";
 import * as yup from "yup";
 import axios from "axios";
 import { withFormik } from "formik";
+import { GET, PUT, POST, DELETE } from '../utils/restUtils'
 
 class Signin extends Component {
     constructor(props) {
@@ -35,7 +36,7 @@ class Signin extends Component {
             this.setState({ validateCalled: true, logging: true });
             await this.props.validateForm();
             if (this.props.isValid) {
-                let { data } = await axios.post("/api/login", {
+                let { data } = await POST("/api/login", {
                     ...this.props.values
                 });
                 localStorage.setItem("login", data.access_token);
@@ -52,7 +53,7 @@ class Signin extends Component {
     checkAccount = async () => {
         try {
             let token = localStorage.getItem("login");
-            let { data } = await axios.get("/api/user", {
+            let { data } = await GET("/api/user", {
                 headers: {
                     Authorization: "Bearer " + token
                 }

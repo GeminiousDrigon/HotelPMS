@@ -24,6 +24,7 @@ import axios from "axios";
 import { withFormik } from "formik";
 import { Typography } from "@material-ui/core";
 import { FormHelperText } from "@material-ui/core";
+import { PUT, POST, GET } from "../utils/restUtils";
 
 class AddRoomType extends Component {
     constructor(props) {
@@ -98,7 +99,7 @@ class AddRoomType extends Component {
                         };
                         if (this.props.match.params.id) {
                             let { id } = this.props.match.params;
-                            await axios.put(`/api/roomtype/${id}`, {
+                            await PUT(`/api/roomtype/${id}`, {
                                 ...roomType
                             });
                             this.props.history.push("/property/roomtype");
@@ -114,7 +115,7 @@ class AddRoomType extends Component {
                                 </span>
                             );
                         } else {
-                            await axios.post("/api/roomtype", {
+                            await POST("/api/roomtype", {
                                 ...roomType
                             });
                             this.props.history.push("/property/roomtype");
@@ -144,7 +145,7 @@ class AddRoomType extends Component {
     getRoomType = async () => {
         try {
             let { id } = this.props.match.params;
-            let { data } = await axios.get(`/api/roomtype/${id}`);
+            let { data } = await GET(`/api/roomtype/${id}`);
             let {
                 name,
                 description,

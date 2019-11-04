@@ -33,6 +33,7 @@ import { FormHelperText } from "@material-ui/core";
 
 import icons from "../icons.json";
 import IconsItem from "../components/IconsItem";
+import { GET, PUT, POST, DELETE } from '../utils/restUtils'
 
 class AddFacilities extends Component {
     constructor(props) {
@@ -80,7 +81,7 @@ class AddFacilities extends Component {
                         if (this.props.match.params.id) {
                             console.log("here");
                             let { id } = this.props.match.params;
-                            let facility = await axios.put(
+                            let facility = await PUT(
                                 `/api/amenity/${id}`,
                                 {
                                     name: values.name,
@@ -100,7 +101,7 @@ class AddFacilities extends Component {
                                 </span>
                             );
                         } else {
-                            let facility = await axios.post("/api/amenity", {
+                            let facility = await POST("/api/amenity", {
                                 name: values.name,
                                 icon: values.icon
                             });
@@ -121,7 +122,7 @@ class AddFacilities extends Component {
 
     getFacilities = async id => {
         try {
-            let { data } = await axios.get(`/api/amenity/${id}`);
+            let { data } = await GET(`/api/amenity/${id}`);
             this.props.setFieldValue("name", data.name);
             this.props.setFieldValue("icon", data.icon);
         } catch (err) {

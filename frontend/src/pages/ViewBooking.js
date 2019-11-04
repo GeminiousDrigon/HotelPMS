@@ -55,6 +55,7 @@ import Reservation from "../components/ViewBooking/Reservation";
 import Icon from "@material-ui/core/Icon";
 import Snackbar from "@material-ui/core/Snackbar";
 import numeral from "numeral";
+import { GET, PUT, POST, DELETE } from "../utils/restUtils";
 
 const NumeralComponent = React.memo(function Numeral(props) {
     return numeral(props.number).format("0,0.00");
@@ -112,7 +113,7 @@ export default class ViewBooking extends Component {
         try {
             this.setState({ fetching: true });
             let { id } = this.props.match.params;
-            let { data } = await axios.get(`/api/booking/${id}`);
+            let { data } = await GET(`/api/booking/${id}`);
             data.total = data.billings.reduce((total, billing) => {
                 return total + billing.amount;
             }, 0);
@@ -147,7 +148,7 @@ export default class ViewBooking extends Component {
     getBookingDetails = async params => {
         try {
             let { id } = this.props.match.params;
-            let { data } = await axios.get(`/api/booking/${id}?type=detail`);
+            let { data } = await GET(`/api/booking/${id}?type=detail`);
             let booking = { ...this.state.booking, ...data };
             console.log(booking);
             this.setState({ booking });
@@ -160,7 +161,7 @@ export default class ViewBooking extends Component {
         try {
             this.setState({ fetchingPayment: true });
             let { id } = this.props.match.params;
-            let { data } = await axios.get(`/api/booking/${id}/billing`);
+            let { data } = await GET(`/api/booking/${id}/billing`);
             let booking = { ...this.state.booking };
             booking.billings = data.billings;
 
@@ -181,7 +182,7 @@ export default class ViewBooking extends Component {
             let { editBilling } = this.state;
             if (editBilling) {
                 let { id, booking_id } = this.state.selectedPayment;
-                await axios.put(`/api/billing/${id}`, {
+                await PUT(`/api/billing/${id}`, {
                     amount,
                     booking_id
                 });
@@ -196,7 +197,7 @@ export default class ViewBooking extends Component {
                 this.getBillings();
             } else {
                 let { id } = this.props.match.params;
-                await axios.post(`/api/booking/${id}/billing`, {
+                await POST(`/api/booking/${id}/billing`, {
                     amount
                 });
                 this.setState({ initialPayment: 0 });
@@ -212,7 +213,7 @@ export default class ViewBooking extends Component {
         try {
             this.setState({ deletingPayment: true });
             let { id } = this.state.selectedPayment;
-            await axios.delete(`/api/billing/${id}`);
+            await DELETE(`/api/billing/${id}`);
             this.onCloseDeleteBilling();
             this.getBillings();
 
@@ -248,7 +249,7 @@ export default class ViewBooking extends Component {
     onOpenEditPayment = async () => {
         this.setState({ addBilling: true, editBilling: true, fetchingViewPayment: true, paymentAnchorEl: null });
         let { id } = this.state.selectedPayment;
-        let { data } = await axios.get(`/api/billing/${id}`);
+        let { data } = await GET(`/api/billing/${id}`);
         console.log(data);
         this.setState({ fetchingViewPayment: false, initialPayment: data.amount });
     };
@@ -295,8 +296,13 @@ export default class ViewBooking extends Component {
                 console.log("here");
                 this.setState({ changingStatus: true });
                 let { billings, rooms, user, ...booking } = this.state.booking;
+                if (e.target.value === "CHECKEDIN") {
+                    booking.checkin_date = moment().format("YYYY-MM-DD HH:mm:ss");
+                } else if (e.target.value === "RESERVED") {
+                    booking.checkin_date = null;
+                }
                 booking.status = e.target.value;
-                await axios.put("/api/booking/" + booking.id, {
+                await PUT("/api/booking/" + booking.id, {
                     ...booking
                 });
                 // console.log()
@@ -316,7 +322,7 @@ export default class ViewBooking extends Component {
             } else {
                 this.setState({ addingRooms: true });
                 let { from_date, to_date } = this.state.booking;
-                let { data } = await axios.get("/api/room/available", {
+                let { data } = await GET("/api/room/available", {
                     params: {
                         checkin: from_date,
                         checkout: to_date
@@ -355,7 +361,7 @@ export default class ViewBooking extends Component {
         try {
             this.setState({ fetchingRooms: true });
             let { id } = this.props.match.params;
-            let rooms = await axios.get(`/api/booking/${id}/room`);
+            let rooms = await GET(`/api/booking/${id}/room`);
             let totalPrice = rooms.data.reduce((totalPrice, room) => {
                 if (room.additional_beds > 0) {
                     totalPrice = totalPrice + room.additional_beds * 100 + room.price;
@@ -412,7 +418,8 @@ export default class ViewBooking extends Component {
                 this.setState({ changingStatus: true });
                 let { billings, rooms, user, ...booking } = this.state.booking;
                 booking.status = this.state.selectedStatus;
-                await axios.put("/api/booking/" + booking.id, {
+                if (booking.status === "CHECKEDOUT") booking.checkout_date = moment().format("YYYY-MM-DD HH:mm:ss");
+                await PUT("/api/booking/" + booking.id, {
                     ...booking
                 });
                 // console.log()
@@ -703,38 +710,71 @@ export default class ViewBooking extends Component {
                                         <div style={{ marginBottom: 20 }}>
                                             <br />
                                             <Grid container>
-                                                <Grid item xs={12} md={6}>
+                                                <Grid item xs={12} md={4}>
                                                     <div>
                                                         <Typography align="center" variant="h5" gutterBottom>
-                                                            Checked in
+                                                            Check-in Date
                                                         </Typography>
                                                         <Typography align="center" gutterBottom>
                                                             {moment(booking.from_date).format("MMM DD, YYYY")}
                                                         </Typography>
                                                     </div>
                                                 </Grid>
-                                                <Grid item xs={12} md={6}>
+                                                <Grid item xs={12} md={4}>
                                                     <div>
                                                         <Typography align="center" variant="h5" gutterBottom>
-                                                            Checked Out
+                                                            Check-out Date
                                                         </Typography>
                                                         <Typography align="center" gutterBottom>
                                                             {moment(booking.to_date).format("MMM DD, YYYY")}
                                                         </Typography>
                                                     </div>
                                                 </Grid>
-                                                {/* <Grid item xs={12} md={4}>
+                                                <Grid item xs={12} md={4}>
                                                     <div>
                                                         <Typography align="center" variant="h5" gutterBottom>
                                                             Arrival
                                                         </Typography>
                                                         <Typography align="center" gutterBottom>
-                                                            Sept 19,2019
+                                                            {booking.status === "NOSHOW" ? "No show" : moment(booking.arrival).format("HH:mm A")}
                                                         </Typography>
                                                     </div>
-                                                </Grid> */}
+                                                </Grid>
                                             </Grid>
                                         </div>
+                                        {(booking.checkin_date || booking.checkout_date) && (
+                                            <>
+                                                <Divider />
+                                                <div style={{ marginTop: 20 }}>
+                                                    <Grid container>
+                                                        {booking.checkin_date && (
+                                                            <Grid item xs={12} md={6}>
+                                                                <div>
+                                                                    <Typography align="center" variant="h5" gutterBottom>
+                                                                        Checked in
+                                                                    </Typography>
+                                                                    <Typography align="center" gutterBottom>
+                                                                        {moment(booking.checkin_date).format("MMM DD, YYYY hh:mm A")}
+                                                                    </Typography>
+                                                                </div>
+                                                            </Grid>
+                                                        )}
+                                                        {booking.checkout_date && (
+                                                            <Grid item xs={12} md={6}>
+                                                                <div>
+                                                                    <Typography align="center" variant="h5" gutterBottom>
+                                                                        Checked Out
+                                                                    </Typography>
+                                                                    <Typography align="center" gutterBottom>
+                                                                        {moment(booking.checkout_date).format("MMM DD, YYYY HH:mm A")}
+                                                                    </Typography>
+                                                                </div>
+                                                            </Grid>
+                                                        )}
+                                                    </Grid>
+                                                </div>
+                                            </>
+                                        )}
                                     </Paper>
                                 ) : (
                                     <Reservation

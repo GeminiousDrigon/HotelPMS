@@ -30,6 +30,7 @@ import ConfirmDialog from "../Dialog/ConfirmDialog";
 import moment from "moment";
 import RoomTypeItem from "./RoomTypeItem";
 import PhotoLibraryIcon from "@material-ui/icons/PhotoLibrary";
+import { GET, POST, PUT ,DELETE } from '../utils/restUtils'
 
 export default class RoomInfo extends Component {
     constructor(props) {
@@ -56,7 +57,7 @@ export default class RoomInfo extends Component {
             let { values } = this.props;
             let checkin = moment(values.checkInDate).format("YYYY-MM-DD");
             let checkout = moment(values.checkOutDate).format("YYYY-MM-DD");
-            let { data } = await axios.get(`/api/roomtype/available?checkin=${checkin}&checkout=${checkout}`);
+            let { data } = await GET(`/api/roomtype/available?checkin=${checkin}&checkout=${checkout}`);
             let selectedType = {};
             for (let i = 0; i < data.length; i++) {
                 const element = data[i];

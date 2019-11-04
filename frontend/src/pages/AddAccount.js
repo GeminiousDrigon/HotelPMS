@@ -10,6 +10,7 @@ import { withFormik } from "formik";
 import * as yup from "yup";
 
 import axios from "axios";
+import { GET, PUT, POST, DELETE } from '../utils/restUtils'
 
 class AddAccount extends Component {
     constructor(props) {
@@ -26,7 +27,7 @@ class AddAccount extends Component {
             await this.props.validateForm();
             if (this.props.isValid) {
                 let { values } = this.props;
-                await axios.post("/api/createAdmin", {
+                await POST("/api/createAdmin", {
                     firstname: values.firstname,
                     middlename: values.middlename,
                     lastname: values.lastname,

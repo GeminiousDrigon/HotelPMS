@@ -18,6 +18,7 @@ import Select from "@material-ui/core/Select";
 
 import Chart from "chart.js";
 import axios from "axios";
+import { GET } from "../utils/restUtils";
 
 export default class Report extends Component {
     constructor(props) {
@@ -109,7 +110,7 @@ export default class Report extends Component {
     }
 
     fetchingReports = () => {
-        return axios.get("/api/reports");
+        return GET("/api/reports");
     };
 
     handleChange = e => {
@@ -123,7 +124,7 @@ export default class Report extends Component {
     getRoomTypeReport = async (id, name) => {
         try {
             this.setState({ fetchingMonthlyRoomType: true });
-            let { data } = await axios.get(`/api/reports/roomtype/${id}`);
+            let { data } = await GET(`/api/reports/roomtype/${id}`);
             this.setState({
                 fetchingMonthlyRoomType: false,
                 monthlyRoomtype: data
@@ -172,7 +173,7 @@ export default class Report extends Component {
                             }}
                         >
                             <Typography variant="h5" component="div">
-                                Reserved Rooms
+                                Daily Rooms
                             </Typography>
                             <Typography
                                 variant="h4"

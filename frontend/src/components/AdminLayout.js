@@ -23,6 +23,8 @@ import FastfoodTwoToneIcon from "@material-ui/icons/FastfoodTwoTone";
 import DescriptionTwoToneIcon from "@material-ui/icons/DescriptionTwoTone";
 import Button from "@material-ui/core/Button";
 import Icon from "@material-ui/core/Icon";
+import PieChartIcon from "@material-ui/icons/PieChart";
+import CalendarViewDayIcon from "@material-ui/icons/CalendarViewDay";
 
 const drawerWidth = 240;
 
@@ -139,7 +141,18 @@ export default function AdminLayout(props) {
         {
             name: "Reports",
             icon: <DescriptionTwoToneIcon />,
-            path: "/reports"
+            items: [
+                {
+                    name: "Summary",
+                    icon: <PieChartIcon />,
+                    path: "/reports/summary"
+                },
+                {
+                    name: "Yearly Report",
+                    icon: <CalendarViewDayIcon />,
+                    path: "/reports/yearly"
+                }
+            ]
         }
     ];
 
@@ -152,44 +165,42 @@ export default function AdminLayout(props) {
     return (
         <div className={classes.root}>
             <CssBaseline />
-            <AppBar
-                position="fixed"
-                className={clsx(classes.appBar, {
-                    [classes.appBarShift]: open
-                })}
-                elevation={1}
-            >
-                <Toolbar>
-                    <IconButton
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={handleDrawerOpen}
-                        edge="start"
-                        className={clsx(classes.menuButton)}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography
-                        variant="h6"
-                        className={classes.title}
-                        onClick={() => props.history.push("/")}
-                        style={{ cursor: "pointer" }}
-                    >
-                        Bluepool Garden
-                    </Typography>
-                    <div>
-                        <Button color="inherit" onClick={onLogout}>
-                            Logout
-                        </Button>
-                    </div>
-                </Toolbar>
-            </AppBar>
+            <div className="d-print-none">
+                <AppBar
+                    position="fixed"
+                    className={clsx(classes.appBar, {
+                        [classes.appBarShift]: open
+                    })}
+                    elevation={1}
+                >
+                    <Toolbar>
+                        <IconButton
+                            color="inherit"
+                            aria-label="open drawer"
+                            onClick={handleDrawerOpen}
+                            edge="start"
+                            className={clsx(classes.menuButton)}
+                        >
+                            <MenuIcon />
+                        </IconButton>
+                        <Typography variant="h6" className={classes.title} onClick={() => props.history.push("/")} style={{ cursor: "pointer" }}>
+                            Bluepool Garden
+                        </Typography>
+                        <div>
+                            <Button color="inherit" onClick={onLogout}>
+                                Logout
+                            </Button>
+                        </div>
+                    </Toolbar>
+                </AppBar>
+            </div>
             <Drawer
                 id="drawer"
                 variant="permanent"
                 className={clsx(classes.drawer, {
                     [classes.drawerOpen]: open,
-                    [classes.drawerClose]: !open
+                    [classes.drawerClose]: !open,
+                    ["exclude-print"]: true
                 })}
                 classes={{
                     paper: clsx({
@@ -201,16 +212,38 @@ export default function AdminLayout(props) {
             >
                 <Divider />
                 <List style={{ marginTop: 70 }}>
-                    {menus.map((text, index) => (
-                        <ListItem
-                            button
-                            key={text.name}
-                            onClick={() => goToPage(text.path)}
-                        >
-                            <ListItemIcon>{text.icon}</ListItemIcon>
-                            <ListItemText primary={text.name} />
-                        </ListItem>
-                    ))}
+                    {menus.map((text, index) => {
+                        if (text.items) {
+                            return text.items.map((item, i) => {
+                                if (i === 0) {
+                                    return (
+                                        <React.Fragment key={text.name}>
+                                            <ListItem key={text.name}>
+                                                <ListItemIcon>{text.icon}</ListItemIcon>
+                                                <ListItemText primary={text.name} />
+                                            </ListItem>
+                                            <ListItem button key={item.name} onClick={() => goToPage(item.path)} style={{ marginLeft: 5 }}>
+                                                <ListItemIcon>{item.icon}</ListItemIcon>
+                                                <ListItemText primary={item.name} />
+                                            </ListItem>
+                                        </React.Fragment>
+                                    );
+                                } else
+                                    return (
+                                        <ListItem button key={item.name} onClick={() => goToPage(item.path)} style={{ marginLeft: 5 }}>
+                                            <ListItemIcon>{item.icon}</ListItemIcon>
+                                            <ListItemText primary={item.name} />
+                                        </ListItem>
+                                    );
+                            });
+                        } else
+                            return (
+                                <ListItem button key={text.name} onClick={() => goToPage(text.path)}>
+                                    <ListItemIcon>{text.icon}</ListItemIcon>
+                                    <ListItemText primary={text.name} />
+                                </ListItem>
+                            );
+                    })}
                 </List>
                 <Divider />
             </Drawer>

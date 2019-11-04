@@ -108,9 +108,12 @@ class UserController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                "code" => "EmailHasTaken"
-            ], 500);
+            $user = User::where('email', $request->email)->first();
+            if ($user->role === "ADMIN")
+                return response()->json([
+                    "code" => "EmailHasTaken"
+                ], 500);
+            else return response()->json("OK", 200);
         } else {
             return response()->json("OK", 200);
         }

@@ -38,6 +38,7 @@ import moment from "moment";
 
 import { MuiPickersUtilsProvider, KeyboardTimePicker, KeyboardDatePicker } from "@material-ui/pickers";
 import AddUserDialog from "../components/AddUserDialog";
+import { GET, PUT, POST, DELETE } from '../utils/restUtils'
 
 class Walkin extends Component {
     constructor(props) {
@@ -85,7 +86,7 @@ class Walkin extends Component {
     }
 
     async componentDidMount() {
-        let { data } = await axios.get("/api/roomtype");
+        let { data } = await GET("/api/roomtype");
         console.log(data);
         this.setState({ roomtypes: data });
     }
@@ -120,8 +121,8 @@ class Walkin extends Component {
                 async () => {
                     try {
                         let [rooms, rates] = await Promise.all([
-                            axios.get("/api/room/hotelroom?room_type_id=" + roomTypeId),
-                            axios.get(`api/roomtype/${this.props.values.roomTypeId}/rate`)
+                            GET("/api/room/hotelroom?room_type_id=" + roomTypeId),
+                            GET(`api/roomtype/${this.props.values.roomTypeId}/rate`)
                         ]);
                         this.setState({
                             rates: rates.data,
@@ -172,7 +173,7 @@ class Walkin extends Component {
             if (this.props.isValid) {
                 this.setState({ submitting: true }, async () => {
                     try {
-                        await axios.post("/api/booking/walkin", {
+                        await POST("/api/booking/walkin", {
                             userId: this.props.values.userId,
                             email: this.props.values.email,
                             honorific: this.props.values.honorific,
@@ -253,6 +254,18 @@ class Walkin extends Component {
                                 >
                                     <InfoIcon style={{ marginRight: "5" }} />
                                     {`Room type are no longer available, Please choose another room type`}
+                                </span>
+                            );
+                        } else if ((err.response.data.message = "UserIsAdmin")) {
+                            this.openSnackBar(
+                                <span
+                                    style={{
+                                        display: "flex",
+                                        alignItems: "center"
+                                    }}
+                                >
+                                    <InfoIcon style={{ marginRight: "5" }} />
+                                    {`Email provided was an ADMIN email. Please provide another one.`}
                                 </span>
                             );
                         }

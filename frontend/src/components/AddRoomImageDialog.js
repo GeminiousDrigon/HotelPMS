@@ -8,6 +8,7 @@ import Button from "@material-ui/core/Button";
 
 import axios from "axios";
 import { LinearProgress, CircularProgress } from "@material-ui/core";
+import { GET, POST, PUT, DELETE} from '../utils/restUtils'
 
 export default class AddRoomImageDialog extends Component {
     constructor(props) {
@@ -125,7 +126,7 @@ class Image extends Component {
             let file = this.props.el;
             let form = new FormData();
             form.append("image", file, file.name);
-            await axios.post(`/api/roomtype/${this.props.roomId}/file`, form, {
+            await POST(`/api/roomtype/${this.props.roomId}/file`, form, {
                 headers: {
                     "X-Requested-With": "XMLHttpRequest"
                 },

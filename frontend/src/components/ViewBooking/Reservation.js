@@ -13,6 +13,7 @@ import IconButton from "@material-ui/core/IconButton";
 import InfoIcon from "@material-ui/icons/Info";
 
 import axios from "axios";
+import {GET,PUT,POST,DELETE} from '../../utils/restUtils'
 
 export default class Reservation extends Component {
     constructor(props) {
@@ -86,9 +87,11 @@ export default class Reservation extends Component {
             let id = this.props.bookingId;
             let checkin = moment(this.state.checkInDate).format("YYYY-MM-DD");
             let checkout = moment(this.state.checkOutDate).format("YYYY-MM-DD");
-            await axios.put(`/api/booking/${id}/date`, {
+            let arrival = moment(this.state.arrival).format("YYYY-MM-DD HH:mm:ss");
+            await PUT(`/api/booking/${id}/date`, {
                 checkin,
-                checkout
+                checkout,
+                arrival
             });
             this.setState({
                 submitting: false,
@@ -119,8 +122,13 @@ export default class Reservation extends Component {
 
     handleCloseSnackBar = () => this.setState({ snackBar: false });
 
+    handleTimeArrivalChange = date => {
+        console.log(date);
+        this.setState({ arrival: moment(date) });
+    };
+
     render() {
-        let { checkInDate, checkOutDate, submitting, initialCheckInDate } = this.state;
+        let { checkInDate, checkOutDate, arrival, submitting, initialCheckInDate } = this.state;
 
         return (
             <Paper style={{ padding: "15px", position: "relative" }}>
@@ -158,16 +166,16 @@ export default class Reservation extends Component {
                         minDate={new Date()}
                         showDisabledMonthNavigation
                     />
-                    {/* <KeyboardTimePicker
-                          margin="normal"
-                          id="time-picker"
-                          label="Time Arrival"
-                          value={values.arrival}
-                          // onChange={this.handleTimeArrivalChange}
-                          KeyboardButtonProps={{
-                              "aria-label": "change time"
-                          }}
-                      /> */}
+                    <KeyboardTimePicker
+                        margin="normal"
+                        id="time-picker"
+                        label="Time Arrival"
+                        value={arrival}
+                        onChange={this.handleTimeArrivalChange}
+                        KeyboardButtonProps={{
+                            "aria-label": "change time"
+                        }}
+                    />
                 </Grid>
                 <div
                     style={{

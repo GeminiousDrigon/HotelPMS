@@ -37,6 +37,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { LinearProgress } from "@material-ui/core";
+import { GET, DELETE } from "../utils/restUtils";
 
 export default class ViewRoomType extends Component {
     constructor(props) {
@@ -74,7 +75,7 @@ export default class ViewRoomType extends Component {
     getRoom = async () => {
         try {
             let { id } = this.props.match.params;
-            let { data } = await axios.get(`/api/roomtype/${id}`);
+            let { data } = await GET(`/api/roomtype/${id}`);
             let { name, description, room_size, room_size_unit, bed_no, bed_type, amenities, max_guest, rates, rooms, images } = data;
             this.setState({
                 name,
@@ -105,7 +106,7 @@ export default class ViewRoomType extends Component {
     getFacilities = async () => {
         try {
             let { id } = this.props.match.params;
-            let { data } = await axios.get(`/api/roomtype/${id}/amenity`);
+            let { data } = await GET(`/api/roomtype/${id}/amenity`);
             this.setState({ facilities: data });
         } catch (err) {
             console.log(err);
@@ -115,7 +116,7 @@ export default class ViewRoomType extends Component {
     getRates = async () => {
         try {
             let { id } = this.props.match.params;
-            let { data } = await axios.get(`/api/roomtype/${id}/rate`);
+            let { data } = await GET(`/api/roomtype/${id}/rate`);
             this.setState({ rates: data });
         } catch (err) {
             console.log(err);
@@ -132,7 +133,7 @@ export default class ViewRoomType extends Component {
 
     getAllRates = async () => {
         try {
-            let { data } = await axios.get(`/api/roomtype/${this.props.match.params.id}/rate`);
+            let { data } = await GET(`/api/roomtype/${this.props.match.params.id}/rate`);
             console.log(data);
             this.setState({ rates: data });
         } catch (err) {
@@ -143,7 +144,7 @@ export default class ViewRoomType extends Component {
     deleteRate = async () => {
         try {
             let id = this.state.rateId;
-            await axios.delete(`/api/rate/${id}`);
+            await DELETE(`/api/rate/${id}`);
             this.handleCloseRate();
             this.getAllRates();
         } catch (err) {
@@ -176,7 +177,7 @@ export default class ViewRoomType extends Component {
     onDeleteImage = async () => {
         try {
             let { id } = this.props.match.params;
-            await axios.delete(`/api/roomtype/${id}/file?filename=${this.state.selectedImage}`);
+            await DELETE(`/api/roomtype/${id}/file?filename=${this.state.selectedImage}`);
             this.closeDeleteImage();
             this.getImages();
         } catch (err) {
@@ -188,7 +189,7 @@ export default class ViewRoomType extends Component {
         try {
             this.setState({ fetchingImages: true });
             let { id } = this.props.match.params;
-            let { data } = await axios.get(`/api/roomtype/${id}/file`);
+            let { data } = await GET(`/api/roomtype/${id}/file`);
             this.setState({ images: data });
 
             this.setState({ fetchingImages: false });

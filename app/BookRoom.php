@@ -42,6 +42,11 @@ class BookRoom extends Model
         return $this->belongsTo('App\RoomType');
     }
 
+    public function rate()
+    {
+        return $this->belongsTo('App\Rate');
+    }
+
     public function room()
     {
         return $this->belongsTo('App\Room');

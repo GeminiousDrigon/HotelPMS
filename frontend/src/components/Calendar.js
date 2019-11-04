@@ -10,6 +10,7 @@ import Button from "@material-ui/core/Button";
 import { Popover } from "@material-ui/core";
 import axios from "axios";
 import moment from "moment";
+import { GET, PUT, POST, DELETE} from '../utils/restUtils'
 
 class TestCalendar extends Component {
     constructor(props) {
@@ -91,7 +92,7 @@ class TestCalendar extends Component {
     };
 
     async componentDidMount() {
-        let [rooms, bookings] = await Promise.all([axios.get("/api/room"), axios.get("/api/bookroom?type=CHECKEDIN,RESERVED")]);
+        let [rooms, bookings] = await Promise.all([GET("/api/room"), GET("/api/bookroom?type=CHECKEDIN,RESERVED")]);
         rooms = rooms.data.map((el, i) => {
             el.resourceId = el.id;
             el.name = el.room_number + " " + `(${el.room_type.name})`;

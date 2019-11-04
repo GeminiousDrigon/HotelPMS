@@ -121,4 +121,82 @@ class ReportController extends Controller
         }
         return response()->json($monthlyRoomtype);
     }
+
+    public function yearlyReservation(Request $request)
+    {
+        if ($request->query('month')) {
+            $month = $request->query('month');
+            $monthName = Carbon::now()->month($month)->format('F');
+            $year = Carbon::now()->year;
+            $rooms =  BookRoom::whereHas('booking', function ($query) use ($year, $month) {
+                $query->whereYear('from_date', $year)->whereMonth('from_date', $month);
+            })->with(['booking.user', 'room', 'roomType'])->get();
+            if (count($rooms) === 0) {
+                return response()->json([
+                    'message' => 'NotFound'
+                ], 404);
+            } else {
+                return response()->json(array([
+                    'name' => $monthName,
+                    'data' => $rooms
+                ]));
+            }
+        } else {
+            $year = Carbon::now()->year;
+            $months = array(
+                [
+                    'name' => "January",
+                ],
+                [
+                    'name' => "February",
+                ],
+                [
+                    'name' => "March",
+                ],
+                [
+                    'name' => "April",
+                ],
+                [
+                    'name' => "May",
+                ],
+                [
+                    'name' => "June",
+                ],
+                [
+                    'name' => "July",
+                ],
+                [
+                    'name' => "August",
+                ],
+                [
+                    'name' => "September",
+                ],
+                [
+                    'name' => "October",
+                ],
+                [
+                    'name' => "November",
+                ],
+                [
+                    'name' => "December",
+                ],
+            );
+
+            $empty = true;
+            for ($i = 0; $i < count($months); $i++) {
+                $rooms =  BookRoom::whereHas('booking', function ($query) use ($year, $i) {
+                    $query->whereYear('from_date', $year)->whereMonth('from_date', $i + 1);
+                })->with(['booking.user', 'room', 'roomType'])->get();
+                $months[$i]['data'] = $rooms;
+                if (count($rooms) > 0) {
+                    $empty = false;
+                }
+            }
+
+            if ($empty) {
+                return response()->json([], 404);
+            } else
+                return response()->json($months);
+        }
+    }
 }

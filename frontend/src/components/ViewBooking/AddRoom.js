@@ -18,6 +18,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import { Typography } from "@material-ui/core";
 import moment from "moment";
 import InfoIcon from "@material-ui/icons/Info";
+import { GET,PUT,POST,DELETE} from '../../utils/restUtils'
 
 export default class AddRoom extends Component {
     constructor(props) {
@@ -53,7 +54,7 @@ export default class AddRoom extends Component {
         try {
             let checkin = moment(this.props.checkInDate).format("YYYY-MM-DD");
             let checkout = moment(this.props.checkOutDate).format("YYYY-MM-DD");
-            let { data } = await axios.get("/api/roomtype/available", {
+            let { data } = await GET("/api/roomtype/available", {
                 params: {
                     checkin,
                     checkout
@@ -82,7 +83,7 @@ export default class AddRoom extends Component {
             let selectedRoomType = e.target.value;
             let checkin = "2019-10-08";
             let checkout = "2019-10-09";
-            let { data } = await axios.get("/api/room/available", {
+            let { data } = await GET("/api/room/available", {
                 params: {
                     checkin,
                     checkout,
@@ -93,7 +94,7 @@ export default class AddRoom extends Component {
                 room.selected = false;
                 return room;
             });
-            let roomType = await axios.get("/api/roomtype/" + e.target.value);
+            let roomType = await GET("/api/roomtype/" + e.target.value);
 
             this.setState({
                 selectedRoomType: e.target.value,
@@ -141,7 +142,7 @@ export default class AddRoom extends Component {
                 //add one rooms to the booking
                 let { bookingId } = this.props;
                 let { selectedRoomType, selectedRate } = this.state;
-                let rate = await axios.get(`/api/rate/${selectedRate}`);
+                let rate = await GET(`/api/rate/${selectedRate}`);
                 rate = rate.data;
                 let rooms = selectedRooms.map((room, i) => {
                     return {
@@ -154,7 +155,7 @@ export default class AddRoom extends Component {
                         booking_id: bookingId
                     };
                 });
-                await axios.post(`/api/booking/${bookingId}/room`, {
+                await POST(`/api/booking/${bookingId}/room`, {
                     rooms
                 });
                 this.setState({ submitting: false });

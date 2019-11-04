@@ -19,6 +19,7 @@ import countries from "../../country.json";
 import axios from "axios";
 import { LinearProgress, Typography } from "@material-ui/core";
 import WarningIcon from "@material-ui/icons/Warning";
+import { GET, PUT,POST,DELETE} from '../../utils/restUtils'
 
 class GuestInfoItem extends Component {
     constructor(props) {
@@ -52,7 +53,7 @@ class GuestInfoItem extends Component {
         try {
             let { fetching } = this.state;
             if (!fetching) this.setState({ fetching: true });
-            let { data } = await axios.get("/api/guest/" + id);
+            let { data } = await GET("/api/guest/" + id);
             this.setState({ fetching: false, fetched: true });
             this.props.setFieldValue("address", data.address);
             this.props.setFieldValue("book_room_id", data.book_room_id);
@@ -85,7 +86,7 @@ class GuestInfoItem extends Component {
                     //update info
                     let data = { ...values };
                     data.contactno = "+639" + values.contactno;
-                    await axios.put(`/api/guest/${values.id}`, {
+                    await PUT(`/api/guest/${values.id}`, {
                         ...data
                     });
                     this.getGuest(data.id);
@@ -94,7 +95,7 @@ class GuestInfoItem extends Component {
                     let guest = { ...values };
                     guest.contactno = "+639" + values.contactno;
                     guest.book_room_id = this.props.roomId;
-                    let { data } = await axios.post(`/api/bookroom/${guest.book_room_id}/guest`, {
+                    let { data } = await POST(`/api/bookroom/${guest.book_room_id}/guest`, {
                         ...guest
                     });
                     if (data.code === "RoomGuestFound") {

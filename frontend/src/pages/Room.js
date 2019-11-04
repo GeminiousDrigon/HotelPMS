@@ -22,6 +22,7 @@ import MoreVertIcon from "@material-ui/icons/MoreVert";
 import axios from "axios";
 import { Typography } from "@material-ui/core";
 import AddRoomDialog from "../components/AddRoomDialog";
+import { GET, DELETE } from "../utils/restUtils";
 
 export default class Room extends Component {
     constructor(props) {
@@ -51,7 +52,7 @@ export default class Room extends Component {
 
     getAllRooms = async () => {
         try {
-            let { data } = await axios.get("/api/room");
+            let { data } = await GET("/api/room");
             this.setState({
                 rooms: data
             });
@@ -64,7 +65,7 @@ export default class Room extends Component {
     deleteRoom = async () => {
         try {
             let id = this.state.selectedRoom;
-            await axios.delete(`/api/room/${id}`);
+            await DELETE(`/api/room/${id}`);
             this.handleClose();
             this.getAllRooms();
         } catch (err) {

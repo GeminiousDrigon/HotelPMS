@@ -21,6 +21,7 @@ import PersonIcon from "@material-ui/icons/Person";
 import axios from "axios";
 import makeStyles from "@material-ui/styles/makeStyles";
 import { DialogContent } from "@material-ui/core";
+import { GET, POST, PUT, DELETE } from "../utils/restUtils";
 
 export default class AddFacilitiesDialog extends Component {
     constructor(props) {
@@ -40,7 +41,7 @@ export default class AddFacilitiesDialog extends Component {
     };
 
     onEntered = async () => {
-        let [facilities, roomFacilities] = await Promise.all([axios.get("/api/amenity"), axios.get(`/api/roomtype/${this.props.id}/amenity`)]);
+        let [facilities, roomFacilities] = await Promise.all([GET("/api/amenity"), GET(`/api/roomtype/${this.props.id}/amenity`)]);
         //get all facilities of that room
         //use the map function to get the array of the ids
         let selectedIds = roomFacilities.data.map(el => el.id);
@@ -68,7 +69,7 @@ export default class AddFacilitiesDialog extends Component {
     submitFacilities = async () => {
         try {
             let facilities = this.state.facilities.filter(el => el.selected).map(el => el.id);
-            await axios.post(`/api/roomtype/${this.props.id}/amenity`, { id: facilities });
+            await POST(`/api/roomtype/${this.props.id}/amenity`, { id: facilities });
             this.onClose(true);
         } catch (err) {
             console.log(err);

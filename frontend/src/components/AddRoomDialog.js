@@ -22,6 +22,7 @@ import * as yup from "yup";
 import axios from "axios";
 import { withFormik } from "formik";
 import { FormHelperText } from "@material-ui/core";
+import { GET, PUT, POST, DELETE } from '../utils/restUtils'
 
 class AddRoomDialog extends Component {
     constructor(props) {
@@ -41,11 +42,11 @@ class AddRoomDialog extends Component {
         this.setState({
             roomTypeLabelWidth: this.roomTypeInput.offsetWidth
         });
-        let { data } = await axios.get(`/api/roomtype`);
+        let { data } = await GET(`/api/roomtype`);
         console.log(data);
         this.setState({ roomTypes: data });
         if (this.props.edit) {
-            let { data } = await axios.get(`/api/room/${this.props.id}`);
+            let { data } = await GET(`/api/room/${this.props.id}`);
             this.props.setFieldValue("room_type", data.room_type_id);
             this.props.setFieldValue(
                 "room_number",
@@ -79,12 +80,12 @@ class AddRoomDialog extends Component {
                     try {
                         let { values } = this.props;
                         if (this.props.edit) {
-                            await axios.put(`/api/room/${this.props.id}`, {
+                            await PUT(`/api/room/${this.props.id}`, {
                                 room_number: values.room_number,
                                 room_type_id: values.room_type
                             });
                         } else {
-                            await axios.post("/api/room", {
+                            await POST("/api/room", {
                                 room_type_id: values.room_type,
                                 quantity: values.quantity
                             });

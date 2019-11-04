@@ -36,6 +36,8 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import WarningIcon from "@material-ui/icons/Warning";
 
+import { GET, POST, PUT, DELETE } from '../utils/restUtils'
+
 class Booking extends Component {
     constructor(props) {
         super(props);
@@ -116,7 +118,7 @@ class Booking extends Component {
                 case 2:
                     if (this.props.isValid)
                         try {
-                            await axios.post("/api/user/checkemail", {
+                            await POST("/api/user/checkemail", {
                                 email: this.props.values.email
                             });
                             this.setState({
@@ -154,7 +156,7 @@ class Booking extends Component {
         try {
             this.setState({ submitting: true });
             let { values } = this.props;
-            let { data } = await axios.post("/api/booking", {
+            let { data } = await POST("/api/booking", {
                 honorific: values.honorific,
                 firstname: values.firstname,
                 middlename: values.middlename,

@@ -16,6 +16,7 @@ import Typography from "@material-ui/core/Typography";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 
 import axios from "axios";
+import { GET, DELETE } from "../utils/restUtils";
 
 export default class RoomType extends Component {
     constructor(props) {
@@ -41,7 +42,7 @@ export default class RoomType extends Component {
 
     getAllRoomType = async () => {
         try {
-            let { data } = await axios.get("/api/roomtype");
+            let { data } = await GET("/api/roomtype");
             this.setState({
                 rooms: data
             });
@@ -53,7 +54,7 @@ export default class RoomType extends Component {
     deleteRoom = async () => {
         try {
             let id = this.state.selectedRoom;
-            await axios.delete(`/api/roomtype/${id}`);
+            await DELETE(`/api/roomtype/${id}`);
             this.handleClose();
             this.getAllRooms();
         } catch (err) {

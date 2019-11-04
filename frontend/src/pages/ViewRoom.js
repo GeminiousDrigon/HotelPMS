@@ -18,6 +18,7 @@ import Icon from "@material-ui/core/Icon";
 
 import axios from "axios";
 import AddFacilitiesDialog from "../components/AddFacilitiesDialog";
+import { GET } from "../utils/restUtils";
 
 export default class ViewRoom extends Component {
     constructor(props) {
@@ -47,7 +48,7 @@ export default class ViewRoom extends Component {
     getRoom = async () => {
         try {
             let { id } = this.props.match.params;
-            let { data } = await axios.get(`/api/room/${id}`);
+            let { data } = await GET(`/api/room/${id}`);
             let {
                 private_bath,
                 free_parking,
@@ -88,7 +89,7 @@ export default class ViewRoom extends Component {
     getFacilities = async () => {
         try {
             let { id } = this.props.match.params;
-            let { data } = await axios.get(`/api/room/${id}/amenity`);
+            let { data } = await GET(`/api/room/${id}/amenity`);
             this.setState({ facilities: data });
         } catch (err) {
             console.log(err);

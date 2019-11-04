@@ -160,16 +160,10 @@ export default function AdminLayout(props) {
                 elevation={1}
             >
                 <Toolbar>
-                    <IconButton
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={handleDrawerOpen}
-                        edge="start"
-                        className={clsx(classes.menuButton)}
-                    >
+                    <IconButton color="inherit" aria-label="open drawer" onClick={handleDrawerOpen} edge="start" className={clsx(classes.menuButton)}>
                         <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" className={classes.title} onClick={()=>props.history.push('/')} style={{ cursor: 'pointer'}}>
+                    <Typography variant="h6" className={classes.title} onClick={() => props.history.push("/")} style={{ cursor: "pointer" }}>
                         Bluepool Garden
                     </Typography>
                     <div>
@@ -197,11 +191,7 @@ export default function AdminLayout(props) {
                 <Divider />
                 <List style={{ marginTop: 70 }}>
                     {menus.map((text, index) => (
-                        <ListItem
-                            button
-                            key={text.name}
-                            onClick={() => goToPage(text.path)}
-                        >
+                        <ListItem button key={text.name} onClick={() => goToPage(text.path)}>
                             <ListItemIcon>{text.icon}</ListItemIcon>
                             <ListItemText primary={text.name} />
                         </ListItem>

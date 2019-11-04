@@ -25,6 +25,7 @@ import axios from "axios";
 import moment from "moment";
 import { Menu, MenuItem } from "@material-ui/core";
 import ConfirmDialog from "../Dialog/ConfirmDialog";
+import {GET, POST, PUT, DELETE} from '../utils/restUtils';
 
 const useStyles = makeStyles(theme => ({
     fab: {
@@ -57,7 +58,7 @@ export default class Reservation extends Component {
     getReservedBookings = async () => {
         try {
             if (!this.state.fetching) this.setState({ fetching: true });
-            let { data } = await axios.get("/api/booking?status=RESERVED");
+            let { data } = await GET("/api/booking?status=RESERVED");
             data = data.map(reservation => {
                 reservation.total = reservation.billings.reduce((total, billing) => {
                     return total + billing.amount;

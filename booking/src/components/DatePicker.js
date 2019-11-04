@@ -120,7 +120,7 @@ export default class DatePicker extends React.Component {
                         style={{ marginRight: "10px" }}
                     />
 
-                    {/* <KeyboardTimePicker
+                    <KeyboardTimePicker
                         margin="normal"
                         id="time-picker"
                         label="Time Arrival"
@@ -129,7 +129,7 @@ export default class DatePicker extends React.Component {
                         KeyboardButtonProps={{
                             "aria-label": "change time"
                         }}
-                    /> */}
+                    />
                 </Grid>
                 <Snackbar
                     anchorOrigin={{

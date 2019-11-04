@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 import axios from "axios";
+import { GET, POST, PUT, DELETE } from "../../utils/restUtils";
 
 export default function requireAuthentication(Component, role) {
     return class AuthenticatedComponent extends React.Component {
@@ -19,15 +20,10 @@ export default function requireAuthentication(Component, role) {
 
         checkAuth = async () => {
             try {
-              let token = localStorage.getItem('login')
-                let { data } = await axios.get("/api/user", {
-                    headers: {
-                        Authorization: "Bearer " + token
-                    }
-                });
+                let { data } = await GET("/api/user");
                 if (role === data.role) {
-                  this.setState({fetching: false})
-                } 
+                    this.setState({ fetching: false });
+                }
             } catch (err) {
                 this.props.history.push("/sign-in");
             }

@@ -54,21 +54,6 @@ class TestCalendar extends Component {
             ]
         });
         this.schedulerData.localeMoment.locale("en");
-        // this.schedulerData.setResources([
-        //     {
-        //         id: "r0",
-        //         name: "Resource0",
-        //     },
-        //     {
-        //         id: "r1",
-        //         name: "Resource1",
-        //     },
-        //     {
-        //         id: "r2",
-        //         name: "Resource2",
-        //     }
-        // ]);
-        // this.schedulerData.setEvents(this.DemoData.events);
         this.state = {
             viewModel: this.schedulerData,
             resources: [],

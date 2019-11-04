@@ -16,6 +16,7 @@ import Paper from "@material-ui/core/Paper";
 
 import axios from "axios";
 import { Typography } from "@material-ui/core";
+import { GET, PUT, POST, DELETE } from '../utils/restUtils'
 
 const useStyles = makeStyles(theme => ({
     fab: {
@@ -42,7 +43,7 @@ export default class Account extends Component {
 
     getGuestAccounts = async () => {
         try {
-            let { data } = await axios.get("/api/user/admin");
+            let { data } = await GET("/api/user/admin");
             this.setState({ data, fetching: false });
         } catch (err) {
             this.setState({ fetching: false });

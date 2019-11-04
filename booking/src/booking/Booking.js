@@ -93,7 +93,6 @@ class Booking extends Component {
         if (this.state.activeStep !== 3) {
             switch (this.state.activeStep) {
                 case 1:
-                    console.log("hello step");
                     if (!this.state.datesFullyBooked) {
                         if (this.props.errors.selectedRooms) {
                             console.log("hey! wrong!");
@@ -166,7 +165,8 @@ class Booking extends Component {
                 selectedRooms: values.selectedRooms,
                 newAccount: true,
                 checkInDate: moment(values.checkInDate).format("YYYY-MM-DD"),
-                checkOutDate: moment(values.checkOutDate).format("YYYY-MM-DD")
+                checkOutDate: moment(values.checkOutDate).format("YYYY-MM-DD"),
+                arrival: moment(values.timeArrival).format("YYYY-MM-DD HH:mm:ss")
             });
             // this.props.history.push("/booking");
 
