@@ -183,7 +183,8 @@ export default class Report extends Component {
                                     justifyContent: "flex-end"
                                 }}
                             >
-                                {dailyBookings}
+                                {/* {dailyBookings} */}
+                                {monthlyBookings}
                             </Typography>
                         </Paper>
                     </Grid>
