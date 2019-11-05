@@ -12,24 +12,24 @@ export const GET = (path, config) => {
     return axios.get(path, config);
 };
 
-export const POST = (path,data, config) => {
+export const POST = (path, data, config) => {
     let token = getToken();
     config = Object.assign({}, config, {
         headers: {
             Authorization: "Bearer " + token
         }
     });
-    return axios.post(path, config);
+    return axios.post(path, data, config);
 };
 
-export const PUT = (path,data, config) => {
+export const PUT = (path, data, config) => {
     let token = getToken();
     config = Object.assign({}, config, {
         headers: {
             Authorization: "Bearer " + token
         }
     });
-    axios.put(path, config);
+    axios.put(path, data, config);
 };
 
 export const DELETE = (path, config) => {

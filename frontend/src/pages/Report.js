@@ -2,13 +2,7 @@ import React, { Component } from "react";
 import AdminLayout from "../components/AdminLayout";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
-import {
-    Typography,
-    Divider,
-    CircularProgress,
-    Button,
-    LinearProgress
-} from "@material-ui/core";
+import { Typography, Divider, CircularProgress, Button, LinearProgress } from "@material-ui/core";
 
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -19,6 +13,7 @@ import Select from "@material-ui/core/Select";
 import Chart from "chart.js";
 import axios from "axios";
 import { GET } from "../utils/restUtils";
+import moment from "moment";
 
 export default class Report extends Component {
     constructor(props) {
@@ -89,20 +84,13 @@ export default class Report extends Component {
         this.fetchingReports()
             .then(({ data }) => {
                 // let { dailyBookings, monthlyBookings, monthlyIncome, yearlyIncome, daysInMonth, monthlyRoomtype}
-                this.setState(
-                    { ...data, fetching: false, selectedRoomType: 0 },
-                    () => {
-                        this.monthlyBooking.data.datasets[0].data =
-                            data.bookingMonth;
-                        this.monthlyBooking.update();
-                        this.monthlyRoomType.data.datasets[0].data =
-                            data.monthlyRoomtype;
-                        this.monthlyRoomType.data.datasets[0].label = this.state.roomTypes[
-                            this.state.selectedRoomType
-                        ].name;
-                        this.monthlyRoomType.update();
-                    }
-                );
+                this.setState({ ...data, fetching: false, selectedRoomType: 0 }, () => {
+                    this.monthlyBooking.data.datasets[0].data = data.bookingMonth;
+                    this.monthlyBooking.update();
+                    this.monthlyRoomType.data.datasets[0].data = data.monthlyRoomtype;
+                    this.monthlyRoomType.data.datasets[0].label = this.state.roomTypes[this.state.selectedRoomType].name;
+                    this.monthlyRoomType.update();
+                });
             })
             .catch(err => {
                 console.log(err);
@@ -115,10 +103,7 @@ export default class Report extends Component {
 
     handleChange = e => {
         this.setState({ selectedRoomType: e.target.value });
-        this.getRoomTypeReport(
-            this.state.roomTypes[e.target.value].id,
-            this.state.roomTypes[e.target.value].name
-        );
+        this.getRoomTypeReport(this.state.roomTypes[e.target.value].id, this.state.roomTypes[e.target.value].name);
     };
 
     getRoomTypeReport = async (id, name) => {
@@ -139,13 +124,7 @@ export default class Report extends Component {
     };
 
     render() {
-        let {
-            fetching,
-            dailyBookings,
-            monthlyBookings,
-            monthlyIncome,
-            yearlyIncome
-        } = this.state;
+        let { fetching, dailyBookings, monthlyBookings, monthlyIncome, yearlyIncome } = this.state;
 
         // if (fetching) {
         //     return (
@@ -173,7 +152,7 @@ export default class Report extends Component {
                             }}
                         >
                             <Typography variant="h5" component="div">
-                                Daily Rooms
+                                Daily Reservation
                             </Typography>
                             <Typography
                                 variant="h4"
@@ -183,8 +162,8 @@ export default class Report extends Component {
                                     justifyContent: "flex-end"
                                 }}
                             >
-                                {/* {dailyBookings} */}
-                                {monthlyBookings}
+                                {dailyBookings}
+                                {/* {monthlyBookings} */}
                             </Typography>
                         </Paper>
                     </Grid>
@@ -260,12 +239,8 @@ export default class Report extends Component {
                                 padding: 10
                             }}
                         >
-                            <Typography
-                                variant="h5"
-                                component="div"
-                                gutterBottom
-                            >
-                                Bookings for the month
+                            <Typography variant="h5" component="div" gutterBottom>
+                                Room Bookings({moment().format("MMM")})
                             </Typography>
                             <Divider />
                             <div
@@ -275,10 +250,7 @@ export default class Report extends Component {
                                     position: "relative"
                                 }}
                             >
-                                <canvas
-                                    id="testChart"
-                                    ref={el => (this.monthlyBookingRef = el)}
-                                />
+                                <canvas id="testChart" ref={el => (this.monthlyBookingRef = el)} />
                             </div>
                         </Paper>
                     </Grid>
@@ -298,12 +270,9 @@ export default class Report extends Component {
                                 }}
                             >
                                 <Typography variant="h5" component="div">
-                                    Room type Monthly Bookings
+                                    Room type Bookings ({moment().format("MMM")})
                                 </Typography>
-                                <FormControl
-                                    style={{ minWidth: 150 }}
-                                    margin="dense"
-                                >
+                                <FormControl style={{ minWidth: 150 }} margin="dense">
                                     <Select
                                         value={this.state.selectedRoomType}
                                         onChange={this.handleChange}
@@ -323,9 +292,7 @@ export default class Report extends Component {
                                     </Select>
                                 </FormControl>
                             </div>
-                            {this.state.fetchingMonthlyRoomType && (
-                                <LinearProgress style={{ height: 2 }} />
-                            )}
+                            {this.state.fetchingMonthlyRoomType && <LinearProgress style={{ height: 2 }} />}
                             <Divider />
                             <div
                                 style={{
@@ -334,10 +301,7 @@ export default class Report extends Component {
                                     position: "relative"
                                 }}
                             >
-                                <canvas
-                                    id="testChart"
-                                    ref={el => (this.monthlyRoomTypeRef = el)}
-                                />
+                                <canvas id="testChart" ref={el => (this.monthlyRoomTypeRef = el)} />
                             </div>
                         </Paper>
                     </Grid>

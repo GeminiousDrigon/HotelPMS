@@ -185,7 +185,7 @@ class Signin extends Component {
                                     />
                                 </div>
                                 <br></br>
-                                <div
+                                {/* <div
                                     style={{
                                         float: "right",
                                         marginRight: "10%"
@@ -194,7 +194,7 @@ class Signin extends Component {
                                     <a href="">
                                         <i>Forgot Password?</i>
                                     </a>
-                                </div>
+                                </div> */}
                                 <br></br>
 
                                 <div style={{ margin: "5% 5% 5% 10%" }}>

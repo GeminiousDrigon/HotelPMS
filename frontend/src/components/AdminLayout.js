@@ -222,6 +222,7 @@ export default function AdminLayout(props) {
                                                 <ListItemIcon>{text.icon}</ListItemIcon>
                                                 <ListItemText primary={text.name} />
                                             </ListItem>
+                                            <Divider />
                                             <ListItem button key={item.name} onClick={() => goToPage(item.path)} style={{ marginLeft: 5 }}>
                                                 <ListItemIcon>{item.icon}</ListItemIcon>
                                                 <ListItemText primary={item.name} />
