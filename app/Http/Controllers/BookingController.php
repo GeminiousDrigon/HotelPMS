@@ -422,6 +422,7 @@ class BookingController extends Controller
 
             //create user
             // return response()->json($room->room_type_id);
+            // return response()->json($user);
             if ($user->role === "ADMIN") {
                 return response()->json([
                     'message' => "UserIsAdmin"
@@ -435,7 +436,7 @@ class BookingController extends Controller
                 'status' => "RESERVED",
                 'checkin_date' => null,
                 'checkout_date' => null,
-                'arrival' => $request->arrival
+                'arrival' => Carbon::parse($request->arrival)
             ]);
 
             BookRoom::create([

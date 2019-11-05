@@ -38,7 +38,7 @@ import moment from "moment";
 
 import { MuiPickersUtilsProvider, KeyboardTimePicker, KeyboardDatePicker } from "@material-ui/pickers";
 import AddUserDialog from "../components/AddUserDialog";
-import { GET, PUT, POST, DELETE } from '../utils/restUtils'
+import { GET, PUT, POST, DELETE } from "../utils/restUtils";
 
 class Walkin extends Component {
     constructor(props) {
@@ -188,7 +188,8 @@ class Walkin extends Component {
                             to_date: moment(this.props.values.checkOutDate).format("YYYY-MM-DD"),
                             room_id: this.props.values.roomId,
                             rate_id: this.props.values.rateId,
-                            paidAmount: this.props.values.paidAmount
+                            paidAmount: this.props.values.paidAmount,
+                            arrival: this.props.values.timeArrival
                         });
                         // this.props.history.push("/calendar");
                         this.openSnackBar(
@@ -364,6 +365,12 @@ class Walkin extends Component {
         } else {
             this.props.setFieldValue("contactno", e.target.value);
         }
+    };
+
+    handleTimeArrivalChange = date => {
+        console.log(date);
+
+        this.props.setFieldValue("timeArrival", moment(date));
     };
 
     render() {
@@ -735,6 +742,17 @@ class Walkin extends Component {
                                     style={{ width: "100%" }}
                                     disabled={this.state.submitting}
                                 />
+                                <KeyboardTimePicker
+                                    margin="normal"
+                                    id="time-picker"
+                                    label="Time Arrival"
+                                    value={values.timeArrival}
+                                    onChange={this.handleTimeArrivalChange}
+                                    KeyboardButtonProps={{
+                                        "aria-label": "change time"
+                                    }}
+                                    disabled={this.state.submitting}
+                                />
                                 <FormControl
                                     variant="standard"
                                     margin="normal"
@@ -1054,7 +1072,8 @@ const WithFormik = withFormik({
             paidAmount: 0,
             price: 0,
             checkInDate: moment(),
-            checkOutDate: moment().add({ day: 1 })
+            checkOutDate: moment().add({ day: 1 }),
+            timeArrival: moment()
         };
     },
 
