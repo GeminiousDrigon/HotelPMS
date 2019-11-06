@@ -18,7 +18,7 @@ class CreateBookingsTable extends Migration
             $table->string('status');
             $table->date('from_date');
             $table->date('to_date');
-            $table->time('arrival');
+            $table->dateTime('arrival');
             $table->dateTime('checkin_date')->nullable();
             $table->dateTime('checkout_date')->nullable();
             $table->uuid('user_id');
