@@ -32,10 +32,10 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 import countries from "../country.json";
 
-import cebuana from '../images/cebuana.png'
-import bpi from '../images/bpi.png'
-import mlhuillier from '../images/mlhuillier.png'
-import palawan from '../images/palawan.png'
+import cebuana from "../images/cebuana.png";
+import bpi from "../images/bpi.png";
+import mlhuillier from "../images/mlhuillier.png";
+import palawan from "../images/palawan.png";
 
 export default class GuestInfo extends Component {
     constructor(props) {
@@ -376,35 +376,41 @@ export default class GuestInfo extends Component {
                                 textAlign: "center"
                             }}
                         >
-                            <Typography variant="h5">Payment Method</Typography>
-                            <div
-                                style={{
-                                    display: "flex",
-                                    flexDirection: "row",
-                                    justifyContent: "space-around"
-                                }}
-                            >
-                                <img src={palawan} width="10%"></img>
-                                <img src={cebuana} width="10%"></img>
-                                <img src={mlhuillier} width="10%"></img>
-                                <img src={bpi} width="10%"></img>
+                            <Typography variant="h6">Payment Method</Typography>
+                            <div>
+                                <img
+                                    src={palawan}
+                                    style={{ marginRight: "10px" }}
+                                    width="15%"
+                                ></img>
+                                <img
+                                    src={cebuana}
+                                    style={{ marginRight: "10px" }}
+                                    width="15%"
+                                ></img>
+                                <img
+                                    src={mlhuillier}
+                                    style={{ marginRight: "10px" }}
+                                    width="15%"
+                                ></img>
+                                <img src={bpi} width="15%"></img>
                             </div>
-                            <Typography variant="h5">
-                                <h3>
+                            <Typography variant="h6">
+                                <h6>
                                     Please choose only one(1) of this payment
                                     method:
-                                </h3>
-                                <h4>
+                                </h6>
+                                <h6>
                                     Palawan Express Pera Padala / Cebuana
                                     Lhuiller / MLhuiller
-                                </h4>
+                                </h6>
                                 <br></br>
                                 Receiver : Maria Paz Bacareza<br></br>
                                 Contact Number: 09217661951<br></br>
-                                <h4>
+                                <h6>
                                     For your BPI payment method please deposit
                                     in the information below:
-                                </h4>
+                                </h6>
                                 <br></br>
                                 Account Number : 1234 5678 9012 3456<br></br>
                                 Account Name : Maria Paz Bacareza

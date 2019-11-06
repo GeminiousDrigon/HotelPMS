@@ -17,7 +17,12 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import Snackbar from "@material-ui/core/Snackbar";
 import Slide from "@material-ui/core/Slide";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
-import { MuiPickersUtilsProvider, KeyboardTimePicker, KeyboardDatePicker, validate } from "@material-ui/pickers";
+import {
+    MuiPickersUtilsProvider,
+    KeyboardTimePicker,
+    KeyboardDatePicker,
+    validate
+} from "@material-ui/pickers";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -56,7 +61,9 @@ export default class RoomInfo extends Component {
             let { values } = this.props;
             let checkin = moment(values.checkInDate).format("YYYY-MM-DD");
             let checkout = moment(values.checkOutDate).format("YYYY-MM-DD");
-            let { data } = await axios.get(`/api/roomtype/available?checkin=${checkin}&checkout=${checkout}`);
+            let { data } = await axios.get(
+                `/api/roomtype/available?checkin=${checkin}&checkout=${checkout}`
+            );
             let selectedType = {};
             for (let i = 0; i < data.length; i++) {
                 const element = data[i];
@@ -90,7 +97,9 @@ export default class RoomInfo extends Component {
         let { selectedRooms } = this.props.values;
         let { amenities, rates, ...roomType } = selectedType;
         roomType.rate = room;
-        let numberOfRooms = selectedRooms.filter(selectedRoom => selectedRoom.id === roomType.id);
+        let numberOfRooms = selectedRooms.filter(
+            selectedRoom => selectedRoom.id === roomType.id
+        );
         console.log(numberOfRooms);
         let { checkInDate, checkOutDate } = this.props.values;
         let numberOfDays = checkOutDate.diff(checkInDate, "days");
@@ -110,7 +119,8 @@ export default class RoomInfo extends Component {
                 snackBarMessage: (
                     <span>
                         {`You have selected the maximum available rooms for `}
-                        <strong>{`${roomType.name}`}</strong>.{`Available rooms:` + roomType.availableRooms}
+                        <strong>{`${roomType.name}`}</strong>.
+                        {`Available rooms:` + roomType.availableRooms}
                     </span>
                 ),
                 snackBar: true
@@ -158,7 +168,11 @@ export default class RoomInfo extends Component {
                 snackBarMessage: (
                     <span>
                         {`You can't select dates that are the `}
-                        <strong style={{ color: "#f50057" }}>same</strong> or <strong style={{ color: "#f50057" }}>before</strong> the checkin date!
+                        <strong style={{ color: "#f50057" }}>
+                            same
+                        </strong> or{" "}
+                        <strong style={{ color: "#f50057" }}>before</strong> the
+                        checkin date!
                     </span>
                 ),
                 snackBar: true
@@ -179,20 +193,33 @@ export default class RoomInfo extends Component {
     render() {
         let { selectedType, validateCalled } = this.state;
 
-        const { values, touched, errors, handleChange, handleBlur, handleSubmit } = this.props;
+        const {
+            values,
+            touched,
+            errors,
+            handleChange,
+            handleBlur,
+            handleSubmit
+        } = this.props;
 
         if (this.props.datesFullyBooked) {
             return (
                 <div style={{ textAlign: "center", padding: "20px 0" }}>
-                    <Typography style={{ fontSize: "4em" }}>Opppss, Sorry</Typography>
-                    <Typography style={{ fontSize: "2em" }}>We are fully booked on dates</Typography>
+                    <Typography style={{ fontSize: "4em" }}>
+                        Opppss, Sorry
+                    </Typography>
+                    <Typography style={{ fontSize: "2em" }}>
+                        We are fully booked on dates
+                    </Typography>
                     <Typography style={{ fontSize: "2em" }}>
                         {moment(values.checkInDate).format("MMMM D, YYYY")}
                         &nbsp;-&nbsp;
                         {moment(values.checkOutDate).format("MMMM D, YYYY")}
                     </Typography>
                     <br />
-                    <Typography style={{ fontSize: "2em" }}>Please go back &amp; change the dates.</Typography>
+                    <Typography style={{ fontSize: "2em" }}>
+                        Please go back &amp; change the dates.
+                    </Typography>
                 </div>
             );
         } else if (this.state.fetching) {
@@ -211,7 +238,13 @@ export default class RoomInfo extends Component {
                                     Select Room(s)
                                 </Typography>
                                 {this.state.roomTypes.map((roomType, i) => {
-                                    return <RoomTypeItem roomType={roomType} onChangeType={this.onChangeType} selectedType={selectedType} />;
+                                    return (
+                                        <RoomTypeItem
+                                            roomType={roomType}
+                                            onChangeType={this.onChangeType}
+                                            selectedType={selectedType}
+                                        />
+                                    );
                                 })}
                             </div>
                         </Grid>
@@ -251,7 +284,9 @@ export default class RoomInfo extends Component {
                                             }}
                                             color="primary"
                                         />
-                                        <Typography component="span">No images</Typography>
+                                        <Typography component="span">
+                                            No images
+                                        </Typography>
                                     </div>
                                 )}
 
@@ -268,18 +303,25 @@ export default class RoomInfo extends Component {
                                 <Typography variant="subtitle2" component="div">
                                     Description:
                                 </Typography>
-                                <Typography variant="subtitle2" component="div" gutterBottom>
+                                <Typography
+                                    variant="subtitle2"
+                                    component="div"
+                                    gutterBottom
+                                >
                                     {selectedType.description}
                                 </Typography>
                                 <Typography variant="subtitle2" component="div">
-                                    Room size: {this.state.selectedType.room_size + this.state.selectedType.room_size_unit}
+                                    Room size:{" "}
+                                    {this.state.selectedType.room_size +
+                                        this.state.selectedType.room_size_unit}
                                     <sup>2</sup>
                                 </Typography>
                                 <Typography variant="subtitle2" component="div">
                                     Bed type: {this.state.selectedType.bed_type}
                                 </Typography>
                                 <Typography variant="subtitle2" component="div">
-                                    Number of beds: {this.state.selectedType.bed_no}
+                                    Number of beds:{" "}
+                                    {this.state.selectedType.bed_no}
                                 </Typography>
                                 <Typography
                                     variant="subtitle2"
@@ -299,33 +341,45 @@ export default class RoomInfo extends Component {
                                         color: "#0ab21b"
                                     }}
                                 >
-                                    {this.state.selectedType.amenities.map((amenity, o) => {
-                                        return (
-                                            <span
-                                                style={{
-                                                    display: "flex",
-                                                    marginRight: 15
-                                                }}
-                                            >
-                                                <Icon component="span" color="#0ab21b" fontSize="small">
-                                                    {amenity.icon}
-                                                </Icon>
-                                                <Typography component="span" variant="caption">
-                                                    {amenity.name}
-                                                </Typography>
-                                            </span>
-                                        );
-                                    })}
+                                    {this.state.selectedType.amenities.map(
+                                        (amenity, o) => {
+                                            return (
+                                                <span
+                                                    style={{
+                                                        display: "flex",
+                                                        marginRight: 15
+                                                    }}
+                                                >
+                                                    <Icon
+                                                        component="span"
+                                                        color="#0ab21b"
+                                                        fontSize="small"
+                                                    >
+                                                        {amenity.icon}
+                                                    </Icon>
+                                                    <Typography
+                                                        component="span"
+                                                        variant="caption"
+                                                    >
+                                                        {amenity.name}
+                                                    </Typography>
+                                                </span>
+                                            );
+                                        }
+                                    )}
                                 </div>
                                 <Typography
                                     variant="subtitle2"
                                     component="div"
+                                    variant="h5"
+                                    color="primary"
                                     style={{
                                         marginTop: "4%",
                                         marginBottom: "3%"
                                     }}
                                 >
-                                    Available Rooms: {selectedType.availableRooms}
+                                    Available This Room(s):{" "}
+                                    {selectedType.availableRooms}
                                 </Typography>
 
                                 <Typography
@@ -336,23 +390,34 @@ export default class RoomInfo extends Component {
                                     variant="h5"
                                     gutterBottom
                                 >
-                                    Available Rates
+                                    Available This Room Rates
                                 </Typography>
                                 <Grid container spacing={3}>
                                     <Grid xs={12} sm={7}>
                                         <div>
                                             {this.state.selectedType &&
-                                                this.state.selectedType.rates.map((rate, i) => {
-                                                    return (
-                                                        <RateItem
-                                                            key={rate.id}
-                                                            rate={rate}
-                                                            validateCalled={validateCalled}
-                                                            onAddRoom={this.onAddRoom}
-                                                            roomTypeId={this.state.selectedType.id}
-                                                        />
-                                                    );
-                                                })}
+                                                this.state.selectedType.rates.map(
+                                                    (rate, i) => {
+                                                        return (
+                                                            <RateItem
+                                                                key={rate.id}
+                                                                rate={rate}
+                                                                validateCalled={
+                                                                    validateCalled
+                                                                }
+                                                                onAddRoom={
+                                                                    this
+                                                                        .onAddRoom
+                                                                }
+                                                                roomTypeId={
+                                                                    this.state
+                                                                        .selectedType
+                                                                        .id
+                                                                }
+                                                            />
+                                                        );
+                                                    }
+                                                )}
                                         </div>
                                     </Grid>
                                 </Grid>
@@ -375,7 +440,11 @@ export default class RoomInfo extends Component {
                                     }}
                                 >
                                     <div style={{ marginBottom: 25 }}>
-                                        <Typography variant="h6" style={{ fontWeight: 300 }} gutterBottom>
+                                        <Typography
+                                            variant="h6"
+                                            style={{ fontWeight: 300 }}
+                                            gutterBottom
+                                        >
                                             Booking Dates
                                         </Typography>
                                         <Typography
@@ -387,8 +456,14 @@ export default class RoomInfo extends Component {
                                         >
                                             Check-in Date:
                                         </Typography>
-                                        <Typography variant="h6" style={{ fontWeight: 300 }} align="center">
-                                            {moment(values.checkInDate).format("MMMM DD,  YYYY")}
+                                        <Typography
+                                            variant="h6"
+                                            style={{ fontWeight: 300 }}
+                                            align="center"
+                                        >
+                                            {moment(values.checkInDate).format(
+                                                "MMMM DD,  YYYY"
+                                            )}
                                         </Typography>
                                         <Typography
                                             variant="h6"
@@ -399,8 +474,14 @@ export default class RoomInfo extends Component {
                                         >
                                             Check-out Date:
                                         </Typography>
-                                        <Typography variant="h6" style={{ fontWeight: 300 }} align="center">
-                                            {moment(values.checkOutDate).format("MMMM DD,  YYYY")}
+                                        <Typography
+                                            variant="h6"
+                                            style={{ fontWeight: 300 }}
+                                            align="center"
+                                        >
+                                            {moment(values.checkOutDate).format(
+                                                "MMMM DD,  YYYY"
+                                            )}
                                         </Typography>
                                     </div>
                                     <div style={{ marginBottom: 25 }}>
@@ -412,72 +493,100 @@ export default class RoomInfo extends Component {
                                                 maxWidth: 400
                                             }}
                                         >
-                                            <Typography variant="h6" style={{ fontWeight: 300 }}>
+                                            <Typography
+                                                variant="h6"
+                                                style={{ fontWeight: 300 }}
+                                            >
                                                 Rooms Selected
                                             </Typography>
-                                            <Tooltip title="Reset">
-                                                <IconButton aria-label="delete" onClick={this.handleReset}>
-                                                    <Icon fontSize="small">refresh</Icon>
+                                            {/* <Tooltip title="Reset">
+                                                <IconButton
+                                                    aria-label="delete"
+                                                    onClick={this.handleReset}
+                                                >
+                                                    <Icon fontSize="small">
+                                                        refresh
+                                                    </Icon>
                                                 </IconButton>
-                                            </Tooltip>
+                                            </Tooltip> */}
                                         </div>
                                         {values.selectedRooms.length > 0 ? (
                                             <>
-                                                {values.selectedRooms.map((room, i) => (
-                                                    <Paper
-                                                        style={{
-                                                            padding: 15,
-                                                            display: "flex",
-                                                            flexDirection: "column"
-                                                        }}
-                                                    >
-                                                        <div>
-                                                            <Typography
-                                                                variant="h5"
-                                                                style={{
-                                                                    fontWeight: 300
-                                                                }}
-                                                            >
-                                                                {room.name}
-                                                            </Typography>
-                                                            <Typography
-                                                                variant="subtitle2"
-                                                                style={{
-                                                                    fontWeight: 300
-                                                                }}
-                                                            >
-                                                                {room.rate.adult} Adult(s)
-                                                            </Typography>
-                                                            <Typography
-                                                                variant="subtitle2"
-                                                                style={{
-                                                                    fontWeight: 300
-                                                                }}
-                                                            >
-                                                                {room.rate.name}
-                                                            </Typography>
-                                                            <Typography
-                                                                variant="subtitle2"
-                                                                style={{
-                                                                    fontWeight: 300
-                                                                }}
-                                                            >
-                                                                Price: PHP
-                                                                {room.rate.price}
-                                                            </Typography>
-                                                            <Button
-                                                                variant="outlined"
-                                                                fullWidth
-                                                                style={{
-                                                                    marginTop: 10
-                                                                }}
-                                                                onClick={() => this.removeRoom(i)}
-                                                            >
-                                                                remove
-                                                            </Button>
-                                                        </div>
-                                                    </Paper>
-                                                ))}
+                                                {values.selectedRooms.map(
+                                                    (room, i) => (
+                                                        <Paper
+                                                            style={{
+                                                                padding: 15,
+                                                                display: "flex",
+                                                                flexDirection:
+                                                                    "column"
+                                                            }}
+                                                        >
+                                                            <div>
+                                                                <Typography
+                                                                    variant="h5"
+                                                                    style={{
+                                                                        fontWeight: 300
+                                                                    }}
+                                                                >
+                                                                    {room.name}
+                                                                </Typography>
+                                                                <Typography
+                                                                    variant="subtitle2"
+                                                                    style={{
+                                                                        fontWeight: 300
+                                                                    }}
+                                                                >
+                                                                    {
+                                                                        room
+                                                                            .rate
+                                                                            .adult
+                                                                    }{" "}
+                                                                    Adult(s)
+                                                                </Typography>
+                                                                <Typography
+                                                                    variant="subtitle2"
+                                                                    style={{
+                                                                        fontWeight: 300
+                                                                    }}
+                                                                >
+                                                                    {
+                                                                        room
+                                                                            .rate
+                                                                            .name
+                                                                    }
+                                                                </Typography>
+                                                                <Typography
+                                                                    variant="subtitle2"
+                                                                    style={{
+                                                                        fontWeight: 300
+                                                                    }}
+                                                                >
+                                                                    Price: PHP
+                                                                    {
+                                                                        room
+                                                                            .rate
+                                                                            .price
+                                                                    }
+                                                                </Typography>
+                                                                <Button
+                                                                    variant="outlined"
+                                                                    fullWidth
+                                                                    style={{
+                                                                        marginTop: 10
+                                                                    }}
+                                                                    onClick={() =>
+                                                                        this.removeRoom(
+                                                                            i
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    remove
+                                                                </Button>
+                                                            </div>
+                                                        </Paper>
+                                                    )
+                                                )}
                                             </>
                                         ) : (
                                             <div style={{ margin: "25px 0" }}>
@@ -496,7 +605,10 @@ export default class RoomInfo extends Component {
                                                         fontWeight: 300
                                                     }}
                                                 >
-                                                    P{this.state.totalCharge.toFixed(2)}
+                                                    P
+                                                    {this.state.totalCharge.toFixed(
+                                                        2
+                                                    )}
                                                 </Typography>
                                             </div>
                                         )}
@@ -516,7 +628,10 @@ export default class RoomInfo extends Component {
                                         >
                                             Total Charge
                                         </Typography>
-                                        <Typography variant="h6" style={{ fontWeight: 300 }}>
+                                        <Typography
+                                            variant="h6"
+                                            style={{ fontWeight: 300 }}
+                                        >
                                             P{this.state.totalCharge.toFixed(2)}
                                         </Typography>
                                     </div>
@@ -553,7 +668,10 @@ export default class RoomInfo extends Component {
                                         justifyItems: "center"
                                     }}
                                 >
-                                    <Icon color="secondary" style={{ marginRight: 10 }}>
+                                    <Icon
+                                        color="secondary"
+                                        style={{ marginRight: 10 }}
+                                    >
                                         warning
                                     </Icon>
                                     {this.state.snackBarMessage}
@@ -562,7 +680,12 @@ export default class RoomInfo extends Component {
                             ClickAwayListenerProps={{ onClickAway: () => null }}
                             TransitionComponent={Slide}
                             action={[
-                                <IconButton key="close" aria-label="close" color="inherit" onClick={this.handleCloseSnackBar}>
+                                <IconButton
+                                    key="close"
+                                    aria-label="close"
+                                    color="inherit"
+                                    onClick={this.handleCloseSnackBar}
+                                >
                                     <Icon>close</Icon>
                                 </IconButton>
                             ]}
@@ -586,7 +709,10 @@ export default class RoomInfo extends Component {
                                                         src={image.src}
                                                         alt="First slide"
                                                         key={image.filename}
-                                                        style={{ width: "100%", height: "auto" }}
+                                                        style={{
+                                                            width: "100%",
+                                                            height: "auto"
+                                                        }}
                                                     />
                                                 </Carousel.Item>
                                             );
@@ -595,7 +721,11 @@ export default class RoomInfo extends Component {
                                 </div>
                             </DialogContent>
                             <DialogActions>
-                                <Button onClick={this.handleCloseImages} color="primary" autoFocus>
+                                <Button
+                                    onClick={this.handleCloseImages}
+                                    color="primary"
+                                    autoFocus
+                                >
                                     close
                                 </Button>
                             </DialogActions>
