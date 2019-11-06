@@ -30,6 +30,21 @@ const NumeralComponent = React.memo(function Numeral(props) {
     return numeral(number).format("0,0.00");
 });
 
+const StatusComponent = React.memo(function Status({ status }) {
+    switch (status) {
+        case "NOSHOW":
+            return "No Show";
+        case "RESERVED":
+            return "Reserved";
+        case "CHECKEDIN":
+            return "Checked-in";
+        case "CHECKEDOUT":
+            return "Checked-out";
+        default:
+            return "";
+    }
+});
+
 export default class YearReport extends Component {
     constructor(props) {
         super(props);
@@ -173,6 +188,7 @@ export default class YearReport extends Component {
                                                         <TableCell>Room no.</TableCell>
                                                         <TableCell>Room type</TableCell>
                                                         <TableCell>Additional Bed</TableCell>
+                                                        <TableCell>Status</TableCell>
                                                         <TableCell align="right">Price</TableCell>
                                                     </TableRow>
                                                 </TableHead>
@@ -189,6 +205,9 @@ export default class YearReport extends Component {
                                                                 <TableCell>{room.room_number}</TableCell>
                                                                 <TableCell>{room_type.name}</TableCell>
                                                                 <TableCell>{data.additional_beds}</TableCell>
+                                                                <TableCell>
+                                                                    <StatusComponent status={booking.status} />
+                                                                </TableCell>
                                                                 <TableCell align="right">
                                                                     &#8369;
                                                                     <NumeralComponent additional_beds={data.additional_beds} price={data.price} />
