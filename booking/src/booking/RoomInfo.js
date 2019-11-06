@@ -378,8 +378,9 @@ export default class RoomInfo extends Component {
                                         marginBottom: "3%"
                                     }}
                                 >
-                                    Available This Room(s):{" "}
-                                    {selectedType.availableRooms}
+                                    Available Room(s):{" "}
+                                    {selectedType.availableRooms}{" "}
+                                    {this.state.selectedType.name}
                                 </Typography>
 
                                 <Typography
@@ -516,6 +517,8 @@ export default class RoomInfo extends Component {
                                                     (room, i) => (
                                                         <Paper
                                                             style={{
+                                                                marginBottom:
+                                                                    "5px",
                                                                 padding: 15,
                                                                 display: "flex",
                                                                 flexDirection:
