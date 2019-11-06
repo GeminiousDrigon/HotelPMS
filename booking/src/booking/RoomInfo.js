@@ -114,6 +114,31 @@ export default class RoomInfo extends Component {
             }, 0);
             this.setState({ totalCharge });
             this.props.setFieldValue("selectedRooms", rooms);
+            if (this.state.snackBar) {
+                this.setState({ snackBar: false }, () => {
+                    setTimeout(() => {
+                        this.setState({
+                            snackBarMessage: (
+                                <span>
+                                    {`You have have added 1 rate in `}
+                                    <strong>{`${roomType.name}`}</strong>
+                                </span>
+                            ),
+                            snackBar: true
+                        });
+                    }, 500);
+                });
+            } else {
+                this.setState({
+                    snackBarMessage: (
+                        <span>
+                            {`You have have added 1 rate in `}
+                            <strong>{`${roomType.name}`}</strong>
+                        </span>
+                    ),
+                    snackBar: true
+                });
+            }
         } else {
             this.setState({
                 snackBarMessage: (
