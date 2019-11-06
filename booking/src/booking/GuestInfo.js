@@ -395,7 +395,7 @@ export default class GuestInfo extends Component {
                                 ></img>
                                 <img src={bpi} width="15%"></img>
                             </div>
-                            <Typography variant="h6">
+                            <Typography>
                                 <h6>
                                     Please choose only one(1) of this payment
                                     method:
@@ -403,11 +403,9 @@ export default class GuestInfo extends Component {
                                 <h6>
                                     Palawan Express Pera Padala / Cebuana
                                     Lhuiller / MLhuiller
-                                </h6>
-                                <br></br>
-                                Receiver : Maria Paz Bacareza<br></br>
-                                Contact Number: 09217661951<br></br>
-                                <h6>
+                                    <br></br>
+                                    Receiver : Maria Paz Bacareza<br></br>
+                                    Contact Number: 09217661951<br></br>
                                     For your BPI payment method please deposit
                                     in the information below:
                                 </h6>

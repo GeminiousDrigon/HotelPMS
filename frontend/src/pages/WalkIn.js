@@ -192,17 +192,7 @@ class Walkin extends Component {
                             arrival: this.props.values.timeArrival
                         });
                         // this.props.history.push("/calendar");
-                        this.openSnackBar(
-                            <span
-                                style={{
-                                    display: "flex",
-                                    alignItems: "center"
-                                }}
-                            >
-                                <InfoIcon style={{ marginRight: "5" }} />
-                                {` Successfully Added Guest and Booking! `}
-                            </span>
-                        );
+                        
                         this.setState({
                             newGuest: true,
                             userId: "",
@@ -242,8 +232,20 @@ class Walkin extends Component {
                             submitting: false
                         });
                         this.props.resetForm();
+                        this.openSnackBar(
+                          <span
+                              style={{
+                                  display: "flex",
+                                  alignItems: "center"
+                              }}
+                          >
+                              <InfoIcon style={{ marginRight: "5" }} />
+                              {` Successfully Added Guest and Booking! `}
+                          </span>
+                      );
                     } catch (err) {
                         this.setState({ submitting: false });
+                        
                         console.log(err);
                         if (err.response.data.error === "RoomNotAvailable") {
                             this.openSnackBar(
