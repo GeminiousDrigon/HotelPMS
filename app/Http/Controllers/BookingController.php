@@ -549,10 +549,10 @@ class BookingController extends Controller
                 if (!(count($roomType->rooms[$i]->bookings) > 0))
                     $newRooms[] = $roomType->rooms[$i];
             };
-            return response()->json([
-                "newrooms" => $newRooms,
-                "selectedRoom" => $roomType->rooms
-            ]);
+            // return response()->json([
+            //     "newrooms" => $newRooms,
+            //     "selectedRoom" => $roomType->rooms
+            // ]);
 
             if (count($newRooms) >= count($room['selectedRooms'])) {
                 $selectedRooms[$room['id']]['bookable'] = true;
