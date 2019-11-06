@@ -43,7 +43,7 @@ export default class Confirmation extends Component {
                                 variant="subtitle1"
                                 style={{ fontWeight: 300, paddingLeft: 25 }}
                             >
-                                {values.honorifics}
+                                {values.honorific}
                             </Typography>
                         </Grid>
                         <Grid item xs={12} md={3}>
