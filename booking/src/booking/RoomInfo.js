@@ -416,7 +416,7 @@ export default class RoomInfo extends Component {
                                     variant="h5"
                                     gutterBottom
                                 >
-                                    Available This Room Rates
+                                    Select Room Rates
                                 </Typography>
                                 <Grid container spacing={3}>
                                     <Grid xs={12} sm={7}>
