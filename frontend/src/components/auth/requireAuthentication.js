@@ -10,7 +10,8 @@ export default function requireAuthentication(Component, role) {
             super(props);
 
             this.state = {
-                fetching: true
+                fetching: true,
+                user: {}
             };
         }
 
@@ -22,7 +23,7 @@ export default function requireAuthentication(Component, role) {
             try {
                 let { data } = await GET("/api/user");
                 if (role === data.role) {
-                    this.setState({ fetching: false });
+                    this.setState({ fetching: false, user: data });
                 }
             } catch (err) {
                 this.props.history.push("/sign-in");
@@ -43,7 +44,7 @@ export default function requireAuthentication(Component, role) {
                         <CircularProgress />
                     </div>
                 );
-            else return <Component {...this.props} />;
+            else return <Component {...this.props} user={this.state.user} />;
         }
     };
 }

@@ -29,7 +29,7 @@ export const PUT = (path, data, config) => {
             Authorization: "Bearer " + token
         }
     });
-    axios.put(path, data, config);
+    return axios.put(path, data, config);
 };
 
 export const DELETE = (path, config) => {

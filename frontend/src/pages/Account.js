@@ -16,7 +16,7 @@ import Paper from "@material-ui/core/Paper";
 
 import axios from "axios";
 import { Typography } from "@material-ui/core";
-import { GET, PUT, POST, DELETE } from '../utils/restUtils'
+import { GET, PUT, POST, DELETE } from "../utils/restUtils";
 
 const useStyles = makeStyles(theme => ({
     fab: {
@@ -51,6 +51,10 @@ export default class Account extends Component {
         }
     };
 
+    editAccount = id => {
+        this.props.history.push("/edit/account/" + id);
+    };
+
     render() {
         return (
             <AdminLayout {...this.props}>
@@ -72,13 +76,7 @@ export default class Account extends Component {
                             }}
                         >
                             <Typography variant="h5">Account(s)</Typography>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={() =>
-                                    this.props.history.push("/add/account")
-                                }
-                            >
+                            <Button variant="contained" color="primary" onClick={() => this.props.history.push("/add/account")}>
                                 Add Account
                             </Button>
                         </div>
@@ -97,45 +95,23 @@ export default class Account extends Component {
                             <Table>
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell align="left">
-                                            Firstname
-                                        </TableCell>
-                                        <TableCell align="left">
-                                            Middlename
-                                        </TableCell>
-                                        <TableCell align="left">
-                                            Lastname
-                                        </TableCell>
-                                        <TableCell align="left">
-                                            Email address
-                                        </TableCell>
-                                        <TableCell align="left">
-                                            Contact number
-                                        </TableCell>
-                                        <TableCell align="left">
-                                            Action
-                                        </TableCell>
+                                        <TableCell align="left">Firstname</TableCell>
+                                        <TableCell align="left">Middlename</TableCell>
+                                        <TableCell align="left">Lastname</TableCell>
+                                        <TableCell align="left">Email address</TableCell>
+                                        <TableCell align="left">Contact number</TableCell>
+                                        <TableCell align="left">Action</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
                                     {this.state.data.map((el, i) => {
                                         return (
                                             <TableRow key={el.id}>
-                                                <TableCell align="left">
-                                                    {el.firstname}
-                                                </TableCell>
-                                                <TableCell align="left">
-                                                    {el.middlename}
-                                                </TableCell>
-                                                <TableCell align="left">
-                                                    {el.lastname}
-                                                </TableCell>
-                                                <TableCell align="left">
-                                                    {el.email}
-                                                </TableCell>
-                                                <TableCell align="left">
-                                                    {el.contactno}
-                                                </TableCell>
+                                                <TableCell align="left">{el.firstname}</TableCell>
+                                                <TableCell align="left">{el.middlename}</TableCell>
+                                                <TableCell align="left">{el.lastname}</TableCell>
+                                                <TableCell align="left">{el.email}</TableCell>
+                                                <TableCell align="left">{el.contactno}</TableCell>
                                                 <TableCell align="left">
                                                     <Fab
                                                         style={{
@@ -143,17 +119,17 @@ export default class Account extends Component {
                                                         }}
                                                         size="small"
                                                         aria-label="add"
-                                                        href="/AddAccount"
+                                                        onClick={() => this.editAccount(el.id)}
                                                     >
                                                         <EditIcon />
                                                     </Fab>
-                                                    <Fab
+                                                    {/* <Fab
                                                         size="small"
                                                         aria-label="delete"
                                                         color="secondary"
                                                     >
                                                         <DeleteIcon />
-                                                    </Fab>
+                                                    </Fab> */}
                                                 </TableCell>
                                             </TableRow>
                                         );
