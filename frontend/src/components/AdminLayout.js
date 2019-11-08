@@ -205,7 +205,7 @@ export default function AdminLayout(props) {
                                     Logout
                                 </Button> */}
                                 <IconButton aria-label="delete">
-                                    <AccountCircleIcon style={{ color: "white" }} />
+                                    <AccountCircleIcon style={{ color: "white" }} onClick={handleOpenMenu} />
                                 </IconButton>
                             </div>
                         </Toolbar>
@@ -301,6 +301,7 @@ export default function AdminLayout(props) {
                     <Avatar style={{ width: 80, height: 80, fontSize: "2.2em", marginBottom: 10, backgroundColor: "#3f51b5" }}>{`${props.user
                         .firstname[0] + props.user.lastname[0]}`}</Avatar>
                     <Typography variant="h5">{`${props.user.firstname} ${props.user.middlename[0]}. ${props.user.lastname}`}</Typography>
+                    <Typography>Admin</Typography>
 
                     <div style={{ display: "flex", flexDirection: "column", marginTop: 30 }}>
                         {/* <Button color="primary" onClick={onLogout} variant="text">
