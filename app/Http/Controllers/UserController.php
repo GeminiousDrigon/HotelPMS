@@ -43,7 +43,13 @@ class UserController extends Controller
                 "message" => "No user found"
             ], 404);
         } else {
-            return response()->json($user, 200);
+            if ($user->role === "User") {
+                return response()->json([
+                    "message" => "AccountUserException"
+                ]);
+            } else {
+                return response()->json($user, 200);
+            }
         }
     }
 

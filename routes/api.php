@@ -22,13 +22,15 @@ Route::get("/roomtype/available", "RoomTypeController@getAvailableRoomsTypes");
 Route::post("/booking", "BookingController@createBooking");
 Route::post('/user/checkemail', "UserController@checkEmail");
 Route::middleware('auth:api')->group(function () {
-    Route::get("/user", "AuthController@getUser");
     Route::post("/createAdmin", "AuthController@createAdminAccount");
     Route::post("/register", "AuthController@createGuestUser");
 
     //users
     Route::get("/user/guests", "UserController@getGuestUsers");
     Route::get("/user/admin", "UserController@getAdminAccounts");
+    Route::get("/user", "AuthController@getUser");
+    Route::get("/user/{id}", "UserController@getOne");
+    Route::put("/user/{id}", "UserController@editOne");
     //amenity-ok
     Route::post("/amenity", "AmenityController@create");
     Route::get("/amenity", "AmenityController@getAll");

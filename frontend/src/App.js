@@ -89,6 +89,7 @@ function App() {
                     <Route path="/roomfacilities/:id" component={requireAuthentication(AddFacilities, "ADMIN")} exact />
                     <Route path="/addfacilities" component={requireAuthentication(AddFacilities, "ADMIN")} exact />
                     <Route path="/account" component={requireAuthentication(Account, "ADMIN")} exact />
+                    <Route path="/edit/account/:id" component={requireAuthentication(AddAccount, "ADMIN")} exact />
                     <Route path="/add/account" component={requireAuthentication(AddAccount, "ADMIN")} exact />
                     {/* Booking */}
                     <Route path="/booking" component={Booking} exact />

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
@@ -25,6 +25,9 @@ import Button from "@material-ui/core/Button";
 import Icon from "@material-ui/core/Icon";
 import PieChartIcon from "@material-ui/icons/PieChart";
 import CalendarViewDayIcon from "@material-ui/icons/CalendarViewDay";
+import Popover from "@material-ui/core/Popover";
+import Avatar from "@material-ui/core/Avatar";
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 
 const drawerWidth = 240;
 
@@ -99,6 +102,7 @@ export default function AdminLayout(props) {
     const classes = useStyles();
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
+    const [anchorEl, setAnchorEl] = React.useState(null);
 
     function handleDrawerOpen() {
         setOpen(!open);
@@ -161,110 +165,154 @@ export default function AdminLayout(props) {
         localStorage.removeItem("user");
         props.history.push("/sign-in");
     };
+    const handleOpenMenu = event => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleCloseMenu = () => {
+        setAnchorEl(null);
+    };
+
+    const openMenu = Boolean(anchorEl);
 
     return (
-        <div className={classes.root}>
-            <CssBaseline />
-            <div className="d-print-none">
-                <AppBar
-                    position="fixed"
-                    className={clsx(classes.appBar, {
-                        [classes.appBarShift]: open
-                    })}
-                    elevation={1}
-                >
-                    <Toolbar>
-                        <IconButton
-                            color="inherit"
-                            aria-label="open drawer"
-                            onClick={handleDrawerOpen}
-                            edge="start"
-                            className={clsx(classes.menuButton)}
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                        <Typography variant="h6" className={classes.title} onClick={() => props.history.push("/")} style={{ cursor: "pointer" }}>
-                            Bluepool Garden
-                        </Typography>
-                        <div>
-                            <Button color="inherit" onClick={onLogout}>
-                                Logout
-                            </Button>
-                        </div>
-                    </Toolbar>
-                </AppBar>
-            </div>
-            <Drawer
-                id="drawer"
-                variant="permanent"
-                className={clsx(classes.drawer, {
-                    [classes.drawerOpen]: open,
-                    [classes.drawerClose]: !open,
-                    ["exclude-print"]: true
-                })}
-                classes={{
-                    paper: clsx({
+        <>
+            <div className={classes.root}>
+                <CssBaseline />
+                <div className="d-print-none">
+                    <AppBar
+                        position="fixed"
+                        className={clsx(classes.appBar, {
+                            [classes.appBarShift]: open
+                        })}
+                        elevation={1}
+                    >
+                        <Toolbar>
+                            <IconButton
+                                color="inherit"
+                                aria-label="open drawer"
+                                onClick={handleDrawerOpen}
+                                edge="start"
+                                className={clsx(classes.menuButton)}
+                            >
+                                <MenuIcon />
+                            </IconButton>
+                            <Typography variant="h6" className={classes.title} onClick={() => props.history.push("/")} style={{ cursor: "pointer" }}>
+                                Bluepool Garden
+                            </Typography>
+                            <div>
+                                {/* <Button color="inherit" onClick={handleOpenMenu}>
+                                    Logout
+                                </Button> */}
+                                <IconButton aria-label="delete">
+                                    <AccountCircleIcon style={{ color: "white" }} onClick={handleOpenMenu} />
+                                </IconButton>
+                            </div>
+                        </Toolbar>
+                    </AppBar>
+                </div>
+
+                <Drawer
+                    id="drawer"
+                    variant="permanent"
+                    className={clsx(classes.drawer, {
                         [classes.drawerOpen]: open,
-                        [classes.drawerClose]: !open
-                    })
-                }}
-                open={open}
-            >
-                <Divider />
-                <List style={{ marginTop: 70 }}>
-                    {menus.map((text, index) => {
-                        if (text.items) {
-                            return text.items.map((item, i) => {
-                                if (i === 0) {
-                                    return (
-                                        <React.Fragment key={text.name}>
-                                            <ListItem key={text.name}>
-                                                <ListItemIcon>{text.icon}</ListItemIcon>
-                                                <ListItemText primary={text.name} />
-                                            </ListItem>
-                                            <Divider />
+                        [classes.drawerClose]: !open,
+                        ["exclude-print"]: true
+                    })}
+                    classes={{
+                        paper: clsx({
+                            [classes.drawerOpen]: open,
+                            [classes.drawerClose]: !open
+                        })
+                    }}
+                    open={open}
+                >
+                    <Divider />
+                    <List style={{ marginTop: 70 }}>
+                        {menus.map((text, index) => {
+                            if (text.items) {
+                                return text.items.map((item, i) => {
+                                    if (i === 0) {
+                                        return (
+                                            <React.Fragment key={text.name}>
+                                                <ListItem key={text.name}>
+                                                    <ListItemIcon>{text.icon}</ListItemIcon>
+                                                    <ListItemText primary={text.name} />
+                                                </ListItem>
+                                                <Divider />
+                                                <ListItem button key={item.name} onClick={() => goToPage(item.path)} style={{ marginLeft: 5 }}>
+                                                    <ListItemIcon>{item.icon}</ListItemIcon>
+                                                    <ListItemText primary={item.name} />
+                                                </ListItem>
+                                            </React.Fragment>
+                                        );
+                                    } else
+                                        return (
                                             <ListItem button key={item.name} onClick={() => goToPage(item.path)} style={{ marginLeft: 5 }}>
                                                 <ListItemIcon>{item.icon}</ListItemIcon>
                                                 <ListItemText primary={item.name} />
                                             </ListItem>
-                                        </React.Fragment>
-                                    );
-                                } else
-                                    return (
-                                        <ListItem button key={item.name} onClick={() => goToPage(item.path)} style={{ marginLeft: 5 }}>
-                                            <ListItemIcon>{item.icon}</ListItemIcon>
-                                            <ListItemText primary={item.name} />
-                                        </ListItem>
-                                    );
-                            });
-                        } else
-                            return (
-                                <ListItem button key={text.name} onClick={() => goToPage(text.path)}>
-                                    <ListItemIcon>{text.icon}</ListItemIcon>
-                                    <ListItemText primary={text.name} />
-                                </ListItem>
-                            );
-                    })}
-                </List>
-                <Divider />
-            </Drawer>
+                                        );
+                                });
+                            } else
+                                return (
+                                    <ListItem button key={text.name} onClick={() => goToPage(text.path)}>
+                                        <ListItemIcon>{text.icon}</ListItemIcon>
+                                        <ListItemText primary={text.name} />
+                                    </ListItem>
+                                );
+                        })}
+                    </List>
+                    <Divider />
+                </Drawer>
 
-            <div
-                id="content-container"
-                className={classes.content}
-                style={Object.assign(
-                    {},
-                    {
-                        overlow: "auto",
-                        padding: props.noPadding ? "0" : "84px 24px 24px",
-                        backgroundColor: "#f7f7f7",
-                        flex: 1
-                    },
-                    props.style
-                )}
-            >
-                {props.children}
+                <div
+                    id="content-container"
+                    className={classes.content}
+                    style={Object.assign(
+                        {},
+                        {
+                            overlow: "auto",
+                            padding: props.noPadding ? "0" : "84px 24px 24px",
+                            backgroundColor: "#f7f7f7",
+                            flex: 1
+                        },
+                        props.style
+                    )}
+                >
+                    {props.children}
+                </div>
             </div>
-        </div>
+            <Popover
+                open={openMenu}
+                anchorEl={anchorEl}
+                onClose={handleCloseMenu}
+                anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "left"
+                }}
+                transformOrigin={{
+                    vertical: "top",
+                    horizontal: "center"
+                }}
+            >
+                <div style={{ padding: 30, display: "flex", justifyContent: "center", flexDirection: "column", alignItems: "center" }}>
+                    <Avatar style={{ width: 80, height: 80, fontSize: "2.2em", marginBottom: 10, backgroundColor: "#3f51b5" }}>{`${props.user
+                        .firstname[0] + props.user.lastname[0]}`}</Avatar>
+                    <Typography variant="h5">{`${props.user.firstname} ${props.user.middlename[0]}. ${props.user.lastname}`}</Typography>
+                    <Typography>Admin</Typography>
+
+                    <div style={{ display: "flex", flexDirection: "column", marginTop: 30 }}>
+                        {/* <Button color="primary" onClick={onLogout} variant="text">
+                            Change Password
+                        </Button> */}
+                        <Button color="primary" onClick={onLogout} variant="text">
+                            Logout
+                        </Button>
+                    </div>
+                </div>
+            </Popover>
+        </>
     );
 }
