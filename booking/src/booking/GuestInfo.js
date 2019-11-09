@@ -318,9 +318,9 @@ export default class GuestInfo extends Component {
                         <TextField
                             fullWidth
                             id="email"
-                            placeholder="Email address"
+                            placeholder="Gmail address"
                             variant="outlined"
-                            label="Email address"
+                            label="Gmail address"
                             value={values.email}
                             onChange={handleChange}
                             onBlur={handleBlur}
@@ -342,9 +342,9 @@ export default class GuestInfo extends Component {
                         <TextField
                             fullWidth
                             id="confirmEmail"
-                            placeholder="Re-type Email Address"
+                            placeholder="Re-type Gmail Address"
                             variant="outlined"
-                            label="Re-type Email address"
+                            label="Re-type Gmail address"
                             value={values.confirmEmail}
                             onChange={handleChange}
                             onBlur={handleBlur}

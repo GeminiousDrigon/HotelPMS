@@ -10,7 +10,7 @@ import { withFormik } from "formik";
 import * as yup from "yup";
 
 import axios from "axios";
-import { GET, PUT, POST, DELETE } from '../utils/restUtils'
+import { GET, PUT, POST, DELETE } from "../utils/restUtils";
 
 class AddAccount extends Component {
     constructor(props) {
@@ -208,8 +208,8 @@ class AddAccount extends Component {
                             <Grid item xs={6}>
                                 <TextField
                                     id="contactno"
-                                    placeholder="Email Address"
-                                    label="Email Address"
+                                    placeholder="Contact number"
+                                    label="Contact number"
                                     variant="outlined"
                                     fullWidth
                                     type="number"
