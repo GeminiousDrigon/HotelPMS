@@ -14,15 +14,15 @@ class ReportController extends Controller
 {
     public function getReports(Request $request)
     {
-        $now = Carbon::now();
+        $now = Carbon::today();
         $today = Carbon::today()->addDays(1);
         $thisMonth = Carbon::now()->month;
         $thisYear = Carbon::now()->year;
-        $daysThisMonth = $now->daysInMonth;
+        $daysThisMonth = Carbon::now()->daysInMonth;
 
 
 
-        $dailyReservation = Booking::whereDay('from_date', $today)->count();
+        $dailyReservation = Booking::whereDay('from_date', $now)->count();
         $monthlyReservation = Booking::whereMonth('from_date', $thisMonth)->count();
         $monthlyIncome = BookRoom::whereHas('booking', function ($query) use ($thisMonth) {
             $query->whereMonth('from_date', $thisMonth)->where('status', 'CHECKEDOUT');

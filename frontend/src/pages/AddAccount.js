@@ -68,17 +68,6 @@ class AddAccount extends Component {
         }
     };
 
-    onChangeNumber = e => {
-        if (e.target.value.length > 9) {
-            this.props.setFieldValue(
-                "contactno",
-                e.target.value.substring(0, 9)
-            );
-        } else {
-            this.props.setFieldValue("contactno", e.target.value);
-        }
-    };
-
     getAccount = async () => {
         try {
             let { id } = this.props.match.params;
@@ -165,8 +154,19 @@ class AddAccount extends Component {
                     handleChange,
                     handleBlur,
                     handleSubmit,
-                    isSubmitting
+                    isSubmitting,
+                    setFieldValue
                 }) => {
+                    const onChangeNumber = e => {
+                        if (e.target.value.length > 9) {
+                            setFieldValue(
+                                "contactno",
+                                e.target.value.substring(0, 9)
+                            );
+                        } else {
+                            setFieldValue("contactno", e.target.value);
+                        }
+                    };
                     return (
                         <AdminLayout {...this.props}>
                             <div
@@ -344,8 +344,7 @@ class AddAccount extends Component {
                                                                 fullWidth
                                                                 type="number"
                                                                 onChange={
-                                                                    this
-                                                                        .onChangeNumber
+                                                                    onChangeNumber
                                                                 }
                                                                 onBlur={
                                                                     handleBlur

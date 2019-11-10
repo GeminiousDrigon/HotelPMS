@@ -410,7 +410,7 @@ export default class GuestInfo extends Component {
                                     in the information below:
                                 </h6>
                                 <br></br>
-                                Account Number : 1234 5678 9012 3456<br></br>
+                                Account Number :4382 7881 9012 3456<br></br>
                                 Account Name : Maria Paz Bacareza
                             </Typography>
                         </div>

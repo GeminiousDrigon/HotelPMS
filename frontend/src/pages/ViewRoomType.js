@@ -102,6 +102,16 @@ export default class ViewRoomType extends Component {
     };
 
     addRate = () => this.setState({ rateDialog: !this.state.rateDialog });
+    
+    closeRate = () => {
+        this.setState({ rateDialog: false, editRate: false, anchorEl: null, rateId: null });
+    }
+    
+    
+    handleCloseRate = () => {
+        this.setState({ rateDialog: false, editRate: false, anchorEl: null, rateId: null });
+        this.getRates();
+    };
 
     getFacilities = async () => {
         try {
@@ -128,7 +138,8 @@ export default class ViewRoomType extends Component {
     };
 
     handleCloseRate = () => {
-        this.setState({ anchorEl: null, selectedRoom: null });
+        this.setState({ anchorEl: null, selectedRoom: null, rateId: null });
+        this.getRates();
     };
 
     getAllRates = async () => {
@@ -160,7 +171,7 @@ export default class ViewRoomType extends Component {
     handleCloseImage = fetchImages => {
         if (fetchImages) {
             //get images
-            console.log("getImages")
+            console.log("getImages");
             this.getImages();
         }
         this.setState({ addImage: false });
@@ -561,12 +572,13 @@ export default class ViewRoomType extends Component {
                 />
                 <AddRatesDialog
                     open={this.state.rateDialog}
-                    handleClose={this.addRate}
+                    handleClose={this.closeRate}
                     id={this.props.match.params.id}
                     getRates={this.getRates}
                     maxGuest={max_guest}
                     edit={this.state.editRate}
                     rateId={this.state.rateId}
+                    handleCloseRate={this.handleCloseRate}
                 />
                 <AddRoomImageDialog
                     open={this.state.addImage}
