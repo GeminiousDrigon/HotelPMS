@@ -68,14 +68,6 @@ class AddAccount extends Component {
         }
     };
 
-    onChangeNumber = e => {
-        if (e.target.value.length > 9) {
-            this.props.setFieldValue("contactno", e.target.value.substring(0, 9));
-        } else {
-            this.props.setFieldValue("contactno", e.target.value);
-        }
-    };
-
     getAccount = async () => {
         try {
             let { id } = this.props.match.params;
@@ -141,7 +133,14 @@ class AddAccount extends Component {
                 enableReinitialize
                 validateOnBlur
                 validateOnChange
-                render={({ values, touched, errors, handleChange, handleBlur, handleSubmit, isSubmitting }) => {
+                render={({ values, touched, errors, handleChange, handleBlur, handleSubmit, isSubmitting, setFieldValue }) => {
+                    const onChangeNumber = e => {
+                        if (e.target.value.length > 9) {
+                            setFieldValue("contactno", e.target.value.substring(0, 9));
+                        } else {
+                            setFieldValue("contactno", e.target.value);
+                        }
+                    };
                     return (
                         <AdminLayout {...this.props}>
                             <div
@@ -249,7 +248,7 @@ class AddAccount extends Component {
                                                                 variant="outlined"
                                                                 fullWidth
                                                                 type="number"
-                                                                onChange={this.onChangeNumber}
+                                                                onChange={onChangeNumber}
                                                                 onBlur={handleBlur}
                                                                 value={values.contactno}
                                                                 InputProps={{

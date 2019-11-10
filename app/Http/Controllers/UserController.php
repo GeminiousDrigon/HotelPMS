@@ -64,7 +64,6 @@ class UserController extends Controller
         } else {
             $user->fill([
                 'email' => $request->email,
-                'password' => $request->password,
                 'role' => $request->role,
                 'honorific' => $request->honorific,
                 'firstname' => $request->firstname,

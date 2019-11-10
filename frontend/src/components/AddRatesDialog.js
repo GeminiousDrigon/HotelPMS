@@ -23,220 +23,177 @@ import makeStyles from "@material-ui/styles/makeStyles";
 import { GET, POST, PUT, DELETE } from "../utils/restUtils";
 
 export default class AddRatesDialog extends Component {
-                   constructor(props) {
-                       super(props);
+    constructor(props) {
+        super(props);
 
-                       this.state = {
-                           name: "",
-                           price: 0,
-                           sleep: 0,
-                           breakfast: false,
-                           fetching: false,
-                           sleepsLabelWidth: 0
-                       };
-                   }
+        this.state = {
+            name: "",
+            price: 0,
+            sleep: 0,
+            breakfast: false,
+            fetching: false,
+            sleepsLabelWidth: 0
+        };
+    }
 
-                   onEntering = () => {
-                       if (this.props.edit) this.setState({ fetching: true });
-                   };
+    onEntering = () => {
+        if (this.props.edit) this.setState({ fetching: true });
+    };
 
-                   onClose = get => {
-                       this.setState({
-                           fetching: true,
-                           name: "",
-                           price: 0,
-                           sleep: 0,
-                           breakfast: false
-                       });
-                       this.props.handleClose();
-                       if (get) this.props.getRates();
-                   };
+    onClose = get => {
+        this.setState({
+            fetching: true,
+            name: "",
+            price: 0,
+            sleep: 0,
+            breakfast: false
+        });
+        // this.props.handleClose();
+        console.log(get)
+        if (get) {
+            this.props.getRates();
+            this.props.handleClose();
+        } else {
+            console.log('dont')
+            this.props.handleClose();
+        }
+    };
 
-                   componentDidUpdate = (prevProps, prevState) => {
-                     if(this.sleepsInput && this.state.sleepsLabelWidth === 0){
-                         this.setState({sleepsLabelWidth: this.sleepsInput.offsetWidth})
-                     }  
-                   };
+    componentDidUpdate = (prevProps, prevState) => {
+        if (this.sleepsInput && this.state.sleepsLabelWidth === 0) {
+            this.setState({ sleepsLabelWidth: this.sleepsInput.offsetWidth });
+        }
+    };
 
-                   onEntered = async () => {
-                       let { edit } = this.props;
-                       if (edit) {
-                           console.log("entered!");
-                           let { data } = await GET(
-                               "/api/rate/" + this.props.rateId
-                           );
-                           this.setState({
-                               price: data.price,
-                               sleep: data.sleep,
-                               breakfast: data.breakfast,
-                               name: data.name,
-                               fetching: false
-                           });
-                       }
-                   };
+    onEntered = async () => {
+        let { edit } = this.props;
+        if (edit) {
+            console.log("entered!");
+            let { data } = await GET("/api/rate/" + this.props.rateId);
+            this.setState({
+                price: data.price,
+                sleep: data.sleep,
+                breakfast: data.breakfast,
+                name: data.name,
+                fetching: false
+            });
+        }
+    };
 
-                   submitRate = async () => {
-                       try {
-                           let { sleep, price, breakfast, name } = this.state;
-                           let rate = {
-                               sleep,
-                               price,
-                               breakfast,
-                               name,
-                               room_type_id: this.props.id
-                           };
-                           if (this.props.edit) {
-                               rate = { ...rate, id: this.props.rateId };
-                               await PUT(
-                                   "/api/rate/" + this.props.rateId,
-                                   rate
-                               );
-                           } else {
-                               await POST(`/api/rate`, rate);
-                           }
-                           this.onClose(true);
-                       } catch (err) {
-                           console.log(err);
-                       }
-                   };
+    onExit = () => {
+        this.setState({ name: "", price: 0, sleep: 0, breakfast: false, fetching: false, sleepsLabelWidth: 0 });
+    }
+    
 
-                   onChange = e => {
-                       this.setState({ [e.target.id]: e.target.value });
-                   };
+    submitRate = async () => {
+        try {
+            let { sleep, price, breakfast, name } = this.state;
+            let rate = {
+                sleep,
+                price,
+                breakfast,
+                name,
+                room_type_id: this.props.id
+            };
+            if (this.props.edit) {
+                rate = { ...rate, id: this.props.rateId };
+                await PUT("/api/rate/" + this.props.rateId, rate);
+            } else {
+                await POST(`/api/rate`, rate);
+            }
+            this.onClose(true);
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
-                   onChangeSleepSelect = e =>
-                       this.setState({ sleep: e.target.value });
-                   onChangeBreakfast = e =>
-                       this.setState({ breakfast: e.target.checked });
+    onChange = e => {
+        this.setState({ [e.target.id]: e.target.value });
+    };
 
-                   render() {
-                       let { sleep, price, breakfast, name } = this.state;
+    onChangeSleepSelect = e => this.setState({ sleep: e.target.value });
+    onChangeBreakfast = e => this.setState({ breakfast: e.target.checked });
 
-                       let sleepsMenu = [];
-                       for (let i = 0; i <= this.props.maxGuest; i++) {
-                           sleepsMenu.push(
-                               <MenuItem value={i} key={i}>
-                                   {i}
-                               </MenuItem>
-                           );
-                       }
-                       return (
-                           <Dialog
-                               onClose={this.onClose}
-                               onEntered={this.onEntered}
-                               aria-labelledby="simple-dialog-title"
-                               open={this.props.open}
-                               fullWidth
-                               maxWidth="sm"
-                               onEntering={this.onEntering}
-                           >
-                               <DialogTitle id="simple-dialog-title">
-                                   Create rate
-                               </DialogTitle>
-                               <DialogContent>
-                                   <DialogContentText>
-                                       Please fill up the form to create a new
-                                       rate.
-                                   </DialogContentText>
-                                   {this.state.fetching ? (
-                                       <div
-                                           style={{
-                                               textAlign: "center",
-                                               padding: "20px 0"
-                                           }}
-                                       >
-                                           <CircularProgress />
-                                       </div>
-                                   ) : (
-                                       <>
-                                           <TextField
-                                               id="name"
-                                               value={name}
-                                               onChange={this.onChange}
-                                               label="Name"
-                                               variant="outlined"
-                                               margin="normal"
-                                               fullWidth
-                                           />
-                                           <FormControl
-                                               variant="outlined"
-                                               margin="normal"
-                                               fullWidth
-                                           >
-                                               <InputLabel
-                                                   htmlFor="outlined-age-native-simple"
-                                                   ref={el =>
-                                                       (this.sleepsInput = el)
-                                                   }
-                                               >
-                                                   Number of Sleeps
-                                               </InputLabel>
-                                               <Select
-                                                   value={sleep}
-                                                   input={
-                                                       <OutlinedInput
-                                                           id="sleep"
-                                                           onChange={
-                                                               this
-                                                                   .onChangeSleepSelect
-                                                           }
-                                                           labelWidth={
-                                                               this.state
-                                                                   .sleepsLabelWidth
-                                                           }
-                                                       />
-                                                   }
-                                                   SelectDisplayProps={{
-                                                       style: {
-                                                           display: "flex"
-                                                       }
-                                                   }}
-                                               >
-                                                   {sleepsMenu}
-                                               </Select>
-                                           </FormControl>
+    render() {
+        let { sleep, price, breakfast, name } = this.state;
 
-                                           <TextField
-                                               id="price"
-                                               value={price}
-                                               onChange={this.onChange}
-                                               label="Price per night"
-                                               type="number"
-                                               variant="outlined"
-                                               margin="normal"
-                                               fullWidth
-                                           />
-                                           <FormControlLabel
-                                               control={
-                                                   <Checkbox
-                                                       checked={breakfast? true: false}
-                                                       onChange={
-                                                           this
-                                                               .onChangeBreakfast
-                                                       }
-                                                       color="primary"
-                                                   />
-                                               }
-                                               label="With breakfast"
-                                           />
-                                       </>
-                                   )}
-                               </DialogContent>
-                               <DialogActions>
-                                   <Button
-                                       color="primary"
-                                       onClick={this.onClose}
-                                   >
-                                       Cancel
-                                   </Button>
-                                   <Button
-                                       color="primary"
-                                       onClick={this.submitRate}
-                                   >
-                                       Add
-                                   </Button>
-                               </DialogActions>
-                           </Dialog>
-                       );
-                   }
-               }
+        let sleepsMenu = [];
+        for (let i = 0; i <= this.props.maxGuest; i++) {
+            sleepsMenu.push(
+                <MenuItem value={i} key={i}>
+                    {i}
+                </MenuItem>
+            );
+        }
+        return (
+            <Dialog
+                onClose={this.onClose}
+                onEntered={this.onEntered}
+                aria-labelledby="simple-dialog-title"
+                open={this.props.open}
+                fullWidth
+                maxWidth="sm"
+                onEntering={this.onEntering}
+                onExit={this.onExit}
+            >
+                <DialogTitle id="simple-dialog-title">Create rate</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>Please fill up the form to create a new rate.</DialogContentText>
+                    {this.state.fetching ? (
+                        <div
+                            style={{
+                                textAlign: "center",
+                                padding: "20px 0"
+                            }}
+                        >
+                            <CircularProgress />
+                        </div>
+                    ) : (
+                        <>
+                            <TextField id="name" value={name} onChange={this.onChange} label="Name" variant="outlined" margin="normal" fullWidth />
+                            <FormControl variant="outlined" margin="normal" fullWidth>
+                                <InputLabel htmlFor="outlined-age-native-simple" ref={el => (this.sleepsInput = el)}>
+                                    Number of Sleeps
+                                </InputLabel>
+                                <Select
+                                    value={sleep}
+                                    input={<OutlinedInput id="sleep" onChange={this.onChangeSleepSelect} labelWidth={this.state.sleepsLabelWidth} />}
+                                    SelectDisplayProps={{
+                                        style: {
+                                            display: "flex"
+                                        }
+                                    }}
+                                >
+                                    {sleepsMenu}
+                                </Select>
+                            </FormControl>
+
+                            <TextField
+                                id="price"
+                                value={price}
+                                onChange={this.onChange}
+                                label="Price per night"
+                                type="number"
+                                variant="outlined"
+                                margin="normal"
+                                fullWidth
+                            />
+                            <FormControlLabel
+                                control={<Checkbox checked={breakfast ? true : false} onChange={this.onChangeBreakfast} color="primary" />}
+                                label="With breakfast"
+                            />
+                        </>
+                    )}
+                </DialogContent>
+                <DialogActions>
+                    <Button color="primary" onClick={()=>this.onClose(false)}>
+                        Cancel
+                    </Button>
+                    <Button color="primary" onClick={this.submitRate}>
+                        Add
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        );
+    }
+}
