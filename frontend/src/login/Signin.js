@@ -13,7 +13,7 @@ import Fab from "@material-ui/core/Fab";
 import * as yup from "yup";
 import axios from "axios";
 import { withFormik } from "formik";
-import { GET, PUT, POST, DELETE } from '../utils/restUtils'
+import { GET, PUT, POST, DELETE } from "../utils/restUtils";
 
 class Signin extends Component {
     constructor(props) {
@@ -91,6 +91,12 @@ class Signin extends Component {
         } else
             return (
                 <div>
+                    {/* <img
+                        src="img/login.jpg"
+                        style={{
+                            width: "1200px"
+                        }}
+                    ></img> */}
                     <Grid
                         container
                         spacing={3}
