@@ -157,8 +157,7 @@ export default function AdminLayout(props) {
 			name: "Booking",
 			icon: <TodayIcon />,
 			path: "/booking"
-		},
-
+		}
 	];
 
 	const onLogout = () => {
@@ -170,48 +169,50 @@ export default function AdminLayout(props) {
 	return (
 		<div className={classes.root}>
 			<CssBaseline />
-			<AppBar
-				position="fixed"
-				className={clsx(classes.appBar, {
-					[classes.appBarShift]: open
-				})}
-				elevation={1}
-			>
-				<Toolbar>
-					<IconButton
-						color="inherit"
-						aria-label="open drawer"
-						onClick={handleDrawerOpen}
-						edge="start"
-						className={clsx(classes.menuButton)}
-					>
-						<MenuIcon />
-					</IconButton>
-					<Typography
-						variant="h6"
-						className={classes.title}
-						onClick={() => props.history.push("/")}
-						style={{ cursor: "pointer" }}
-					>
-						Bluepool Garden
-					</Typography>
-					<div style={{ display: "flex", flexDirection: "row" }}>
-						<Tooltip title="Asia/Manila Dec. 02, 2019 10:10:10">
-							<Button color="inherit">Local Timezone</Button>
-						</Tooltip>
-						<Typography variant="h2" style={{ fontWeight: "200" }}>
-							I
+			<div className="d-print-none">
+				<AppBar
+					position="fixed"
+					className={clsx(classes.appBar, {
+						[classes.appBarShift]: open
+					})}
+					elevation={1}
+				>
+					<Toolbar>
+						<IconButton
+							color="inherit"
+							aria-label="open drawer"
+							onClick={handleDrawerOpen}
+							edge="start"
+							className={clsx(classes.menuButton)}
+						>
+							<MenuIcon />
+						</IconButton>
+						<Typography
+							variant="h6"
+							className={classes.title}
+							onClick={() => props.history.push("/")}
+							style={{ cursor: "pointer" }}
+						>
+							Bluepool Garden
 						</Typography>
-						<Button color="inherit" onClick={handleClickOpen}>
-							{/* Mr. Dominic Anuta Vega */}
-							{user.honorific}{" "}
-							{` ${user.firstname ? user.firstname : null} ${user.middlename ? user.middlename : null} ${
-								user.lastname ? user.lastname : null
-							}`}
-						</Button>
-					</div>
-				</Toolbar>
-			</AppBar>
+						<div style={{ display: "flex", flexDirection: "row" }}>
+							<Tooltip title="Asia/Manila Dec. 02, 2019 10:10:10">
+								<Button color="inherit">Local Timezone</Button>
+							</Tooltip>
+							<Typography variant="h2" style={{ fontWeight: "200" }}>
+								I
+							</Typography>
+							<Button color="inherit" onClick={handleClickOpen}>
+								{/* Mr. Dominic Anuta Vega */}
+								{user.honorific}{" "}
+								{` ${user.firstname ? user.firstname : null} ${user.middlename ? user.middlename : null} ${
+									user.lastname ? user.lastname : null
+								}`}
+							</Button>
+						</div>
+					</Toolbar>
+				</AppBar>
+			</div>
 			<Dialog
 				style={{ margin: "10px" }}
 				fullWidth={true}
@@ -293,7 +294,8 @@ export default function AdminLayout(props) {
 				classes={{
 					paper: clsx({
 						[classes.drawerOpen]: open,
-						[classes.drawerClose]: !open
+						[classes.drawerClose]: !open,
+						["d-print-none"]: true
 					})
 				}}
 				open={open}

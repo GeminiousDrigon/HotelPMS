@@ -36,13 +36,15 @@ import cebuana from "../images/cebuana.png";
 import bpi from "../images/bpi.png";
 import mlhuillier from "../images/mlhuillier.png";
 import palawan from "../images/palawan.png";
+import { GET } from "../utils/restUtils";
 
 export default class GuestInfo extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            countryWidth: 0
+            countryWidth: 0,
+            user: {}
         };
     }
 
@@ -50,6 +52,9 @@ export default class GuestInfo extends Component {
         this.setState({
             countryWidth: this.countryInput.offsetWidth
         });
+        // let { data } = await GET('/api/user');
+        // this.setState({user: data})
+
     }
 
     handleSelectChange = e => {
