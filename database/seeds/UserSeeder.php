@@ -21,7 +21,7 @@ class UserSeeder extends Seeder
             "password" => '$2y$12$//7oZunML/cx3MaKOJemvepsuCSAVQP2TDE5PqmHd8TbSi4efayLu',
             "password_updated" => 1,
             "contactno" => "+639728463717",
-            "role" => 'ADMIN'
+            "role_id" => 2
         ]);
     }
 }

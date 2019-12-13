@@ -52,10 +52,10 @@ export default class GuestInfo extends Component {
     };
 
     onChangeNumber = e => {
-        if (e.target.value.length > 9) {
+        if (e.target.value.length > 10) {
             this.props.setFieldValue(
                 "contactno",
-                e.target.value.substring(0, 9)
+                e.target.value.substring(0, 10)
             );
         } else {
             this.props.setFieldValue("contactno", e.target.value);
@@ -287,7 +287,7 @@ export default class GuestInfo extends Component {
                             InputProps={{
                                 startAdornment: (
                                     <InputAdornment position="start">
-                                        +639
+                                        +63
                                     </InputAdornment>
                                 )
                             }}

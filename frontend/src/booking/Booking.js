@@ -164,7 +164,7 @@ class Booking extends Component {
                 address: values.address,
                 country: values.country,
                 email: values.email,
-                contactno: "+639" + values.contactno,
+                contactno: "+63" + values.contactno,
                 selectedRooms: values.selectedRooms,
                 newAccount: true,
                 checkInDate: moment(values.checkInDate).format("YYYY-MM-DD"),
@@ -439,7 +439,7 @@ export default withFormik({
             contactno: yup
                 .string()
                 .required("Contact number is required!")
-                .length(9, "Contact number must be 9 digits"),
+                .length(10, "Contact number must be 10 digits"),
             confirmEmail: yup
                 .string()
                 .required("Email confirmation is required!")

@@ -57,7 +57,7 @@ class GuestInfoItem extends Component {
             this.setState({ fetching: false, fetched: true });
             this.props.setFieldValue("address", data.address);
             this.props.setFieldValue("book_room_id", data.book_room_id);
-            this.props.setFieldValue("contactno", data.contactno.substring(4));
+            this.props.setFieldValue("contactno", data.contactno.substring(3));
             this.props.setFieldValue("created_at", data.created_at);
             this.props.setFieldValue("email", data.email);
             this.props.setFieldValue("firstname", data.firstname);
@@ -85,7 +85,7 @@ class GuestInfoItem extends Component {
                 if (values.id) {
                     //update info
                     let data = { ...values };
-                    data.contactno = "+639" + values.contactno;
+                    data.contactno = "+63" + values.contactno;
                     await PUT(`/api/guest/${values.id}`, {
                         ...data
                     });
@@ -93,7 +93,7 @@ class GuestInfoItem extends Component {
                 } else {
                     //add new info
                     let guest = { ...values };
-                    guest.contactno = "+639" + values.contactno;
+                    guest.contactno = "+63" + values.contactno;
                     guest.book_room_id = this.props.roomId;
                     let { data } = await POST(`/api/bookroom/${guest.book_room_id}/guest`, {
                         ...guest
@@ -148,8 +148,8 @@ class GuestInfoItem extends Component {
     };
 
     onChangeNumber = e => {
-        if (e.target.value.length > 9) {
-            this.props.setFieldValue("contactno", e.target.value.substring(0, 9));
+        if (e.target.value.length > 10) {
+            this.props.setFieldValue("contactno", e.target.value.substring(0, 10));
         } else {
             this.props.setFieldValue("contactno", e.target.value);
         }
@@ -341,7 +341,7 @@ class GuestInfoItem extends Component {
                                         margin="dense"
                                         fullWidth
                                         InputProps={{
-                                            startAdornment: <InputAdornment position="start">+639</InputAdornment>
+                                            startAdornment: <InputAdornment position="start">+63</InputAdornment>
                                         }}
                                         onChange={this.onChangeNumber}
                                         onBlur={handleBlur}
@@ -425,7 +425,7 @@ const WithFormik = withFormik({
             country: yup.string().required("Country is required!"),
             contactno: yup
                 .string()
-                .length(9, "Contact number must be 9 digits only!")
+                .length(10, "Contact number must be 10 digits only!")
                 .required("Contact number is required!"),
             noOfChild: yup
                 .number()

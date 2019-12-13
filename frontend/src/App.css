@@ -37,3 +37,10 @@ input[type=number]::-webkit-outer-spin-button {
   -webkit-appearance: none; 
   margin: 0; 
 }
+
+
+@media print{
+  .print{
+    width: 100%;
+  }
+}

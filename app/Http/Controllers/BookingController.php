@@ -10,6 +10,8 @@ use App\RoomType;
 use App\Billing;
 use App\Rate;
 use App\BookRoom;
+use App\Additional;
+use App\AdditionalBooking;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
@@ -56,6 +58,7 @@ class BookingController extends Controller
                         }
                     ]);
                 },
+                'additionals',
                 'billings'
             ])->find($id);
         }
@@ -161,10 +164,111 @@ class BookingController extends Controller
         ], 200);
     }
 
+    public function addAdditional($id, Request $request)
+    {
+        $booking = Booking::find($id);
+        if (!$booking) {
+            return response()->json([
+                "status" => 404,
+                "message" => "No booking found"
+            ], 404);
+        }
+
+        // $amenities = $roomType->amenities()->sync($amenityIds);
+        $additionals = $request->input('id');
+        $quantity = $request->input('quantity');
+        if (!$additionals) {
+            return response()->json([
+                "status" => 404,
+                "message" => "No room type found"
+            ], 404);
+        }
+        $quantity = $quantity;
+        $additional = Additional::find($additionals);
+
+        $booking->additionals()->save($additional, ['price' => $additional->price, 'quantity' => $quantity]);
+        return response()->json([
+            "status" => 200,
+            "message" => "Operation successful"
+        ], 200);
+    }
+
+    public function getAdditional($id, Request $request)
+    {
+        $booking = Booking::with('additionals')->find($id);
+        if (!$booking) {
+            return response()->json([
+                "status" => 404,
+                "message" => "No booking found"
+            ], 404);
+        }
+        $additional = $booking->additionals;
+        if (!$additional) {
+            return response()->json([
+                "status" => 404,
+                "message" => "No room type found"
+            ], 404);
+        }
+        return response()->json($additional, 200);
+    }
+
+    public function getOneBookingAdditional($id, $additionalId, Request $request)
+    {
+        $booking = Booking::find($id);
+        if (!$booking) {
+            return response()->json([
+                "status" => 404,
+                "message" => "No booking found"
+            ], 404);
+        }
+        $additional = AdditionalBooking::find($additionalId);
+        return response()->json($additional, 200);
+    }
+
+    public function removeAdditional($id, $additionalId, Request $request)
+    {
+        $booking = Booking::find($id);
+        if (!$booking) {
+            return response()->json([
+                "status" => 404,
+                "message" => "No booking found"
+            ], 404);
+        }
+        $additional = AdditionalBooking::find($additionalId);
+        $additional->delete();
+        return response()->json([
+            "status" => 200,
+            "message" => "Operation successful"
+        ], 200);
+    }
+
+    public function editAdditional($id, $additionalId, Request $request)
+    {
+        $booking = Booking::find($id);
+        if (!$booking) {
+            return response()->json([
+                "status" => 404,
+                "message" => "No booking found"
+            ], 404);
+        }
+        $booking->additionals()->updateExistingPivot($additionalId, ["quantity" => $request->input('quantity')]);
+        return response()->json([
+            "status" => 200,
+            "message" => "Operation successful"
+        ], 200);
+    }
+
     public function addRoom($id, Request $request)
     {
         // return response()->json($request->input('rooms'));
         $booking = Booking::find($id);
+        $from_date = $booking->from_date;
+        $to_date = $booking->to_date;
+
+        $from = Carbon::parse($from_date);
+        $to = Carbon::parse($to_date);
+
+        $nights = $from->diffInDays($to);
         if (!$booking) {
             return response()->json([
                 "status" => 404,
@@ -176,7 +280,7 @@ class BookingController extends Controller
             $rooms[] = new BookRoom([
                 'room_type_id' => $room['room_type_id'],
                 'room_id' => $room['room_id'],
-                'price' => $room['price'],
+                'price' => $room['price'] * $nights,
                 'with_breakfast' => $room['with_breakfast'],
                 'guest_no' => $room['guest_no'],
                 'booking_id' => $room['booking_id'],
@@ -289,6 +393,7 @@ class BookingController extends Controller
 
     public function addBilling($id, Request $request)
     {
+        //get all the rooms and additional price
         $booking = Booking::find($id);
         if (!$booking) {
             return response()->json([
@@ -296,10 +401,35 @@ class BookingController extends Controller
                 "message" => "No booking found"
             ], 404);
         }
+
         Billing::create([
             'amount' => $request->input('amount'),
+            'type' => $request->input('type'),
             'booking_id' => $id
         ]);
+
+        $bookingBilling = Booking::with(['billings', 'rooms'])->find($id);
+        $totalPayed = $bookingBilling->billings->sum('amount');
+        $additionals = $bookingBilling->additionals;
+        $totalAdditional = 0;
+        foreach ($additionals as $additional) {
+            $totalAdditional = $totalAdditional + $additional->pivot->price * $additional->pivot->quantity;
+        }
+        $totalAmount = $booking->rooms->sum('price') + $totalAdditional;
+
+        if ($totalPayed >= $totalAmount * (0.10)) {
+            $newBooking = Booking::with('billings')->find($id);
+            foreach ($newBooking->billings as $billing) {
+                # code...
+                $billing->delete = false;
+                $billing->save();
+            }
+            $booking->status = "RESERVED";
+            $booking->save();
+        }
+
+        // return response()->json($bookingBilling->billings->sum('amount'));
+
         return response()->json([
             "status" => 200,
             "message" => "Operation successful"
@@ -341,12 +471,16 @@ class BookingController extends Controller
                 "message" => "No billing found"
             ], 404);
         }
-        $billing->booking()->detach($billing);
-        $billing->save();
-        return response()->json([
-            "status" => 200,
-            "message" => "Operation successful"
-        ], 200);
+        if ($billing->delete) {
+            $billing->booking()->detach($billing);
+            $billing->save();
+            return response()->json([
+                "status" => 200,
+                "message" => "Operation successful"
+            ], 200);
+        } else {
+            return response()->json("Can't delete Billing", 403);
+        }
     }
 
     public function createWalkInBooking(Request $request)
@@ -382,9 +516,9 @@ class BookingController extends Controller
                     $query->whereBetween('from_date', [$from_date, $to_date])
                         ->orWhereBetween('to_date', [$from_date, $to_date])
                         ->orWhere(function ($query) use ($from_date, $to_date) {
-                        $query->where('from_date', '<=', $from_date);
-                        $query->where('to_date', '>=', $to_date);
-                });
+                            $query->where('from_date', '<=', $from_date);
+                            $query->where('to_date', '>=', $to_date);
+                        });
                 })->whereIn('status', ["CHECKEDIN", "RESERVED"]);
             })
             // ->get();
@@ -433,7 +567,7 @@ class BookingController extends Controller
                 'from_date' => $from_date,
                 'to_date' => $to_date,
                 'user_id' => $user->id,
-                'status' => "RESERVED",
+                'status' => "PENDING",
                 'checkin_date' => null,
                 'checkout_date' => null,
                 'arrival' => Carbon::parse($request->arrival)
@@ -530,14 +664,14 @@ class BookingController extends Controller
                         'bookings' => function ($query) use ($from, $to) {
                             $query->whereHas('booking', function ($query) use ($from, $to) {
                                 $query->whereIn('status', ["CHECKEDIN", "RESERVED"])
-                                ->where(function ($query) use ($from, $to) {
-                                    $query->whereBetween('from_date', [$from, $to])
-                                        ->orWhereBetween('to_date', [$from, $to])
-                                        ->orWhere(function ($query) use ($from, $to) {
-                                            $query->where('from_date', '<=', $from);
-                                            $query->where('to_date', '>=', $to);
-                                        });
-                                });
+                                    ->where(function ($query) use ($from, $to) {
+                                        $query->whereBetween('from_date', [$from, $to])
+                                            ->orWhereBetween('to_date', [$from, $to])
+                                            ->orWhere(function ($query) use ($from, $to) {
+                                                $query->where('from_date', '<=', $from);
+                                                $query->where('to_date', '>=', $to);
+                                            });
+                                    });
                             });
                         }
                     ])->orderBy('room_number');
@@ -588,7 +722,7 @@ class BookingController extends Controller
             'user_id' => $user->id,
             'checkin_date' => null,
             'checkout_date' => null,
-            'status' => "RESERVED",
+            'status' => "PENDING",
             'arrival' => $request->arrival
         ]);
         foreach ($finalRooms as $selectedRoom) {
@@ -603,6 +737,8 @@ class BookingController extends Controller
                 'rate_id' => $selectedRoom["rateId"]
             ]);
         }
+
+        //TODO: add the additionals here
 
         Mail::to($user)->send(new BookingCreated($user, $booking));
 

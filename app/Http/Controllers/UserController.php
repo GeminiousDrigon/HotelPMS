@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -30,13 +32,13 @@ class UserController extends Controller
 
     public function getAll()
     {
-        $users = User::all();
+        $users = User::with('role')->get();
         return response()->json($users, 200);
     }
 
     public function getOne($id)
     {
-        $user = User::find($id);
+        $user = User::with('role')->find($id);
         if (!$user) {
             return response()->json([
                 "status" => 404,
@@ -95,13 +97,13 @@ class UserController extends Controller
     }
     public function getGuestUsers()
     {
-        $users = User::where('role', 'USER')->get();
+        $users = User::where('role_id', 1)->get();
         return response()->json($users, 200);
     }
 
     public function getAdminAccounts()
     {
-        $users = User::where('role', 'ADMIN')->get();
+        $users = User::where('role_id', '!=', 1)->with('role')->get();
         return response()->json($users, 200);
     }
 
@@ -122,5 +124,14 @@ class UserController extends Controller
         } else {
             return response()->json("OK", 200);
         }
+    }
+
+    public function getUserBookings($id, Request $request)
+    {
+        $user = User::with(['bookings' => function ($query) {
+            $query->with(['user', 'rooms', 'billings'])->orderBy('from_date', 'desc');
+        }])->find($id);
+        $bookings = $user->bookings;
+        return response()->json($bookings, 200);
     }
 }

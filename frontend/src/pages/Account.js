@@ -100,6 +100,7 @@ export default class Account extends Component {
                                         <TableCell align="left">Lastname</TableCell>
                                         <TableCell align="left">Email address</TableCell>
                                         <TableCell align="left">Contact number</TableCell>
+                                        <TableCell align="left">Role</TableCell>
                                         <TableCell align="left">Action</TableCell>
                                     </TableRow>
                                 </TableHead>
@@ -111,6 +112,7 @@ export default class Account extends Component {
                                                 <TableCell align="left">{el.middlename}</TableCell>
                                                 <TableCell align="left">{el.lastname}</TableCell>
                                                 <TableCell align="left">{el.email}</TableCell>
+                                                <TableCell align="left">{el.role.name}</TableCell>
                                                 <TableCell align="left">{el.contactno}</TableCell>
                                                 <TableCell align="left">
                                                     <Fab

@@ -7,6 +7,7 @@ import AdminLayout from "../components/AdminLayout";
 import RoomType from "./RoomType";
 import Room from "./Room";
 import RoomFacilities from "./RoomFacilities";
+import Additionals from "./Additionals";
 
 import { Switch, Route, Redirect } from "react-router-dom";
 
@@ -34,22 +35,27 @@ export default class Property extends Component {
             name: "Facilities",
             path: "/property/facilities",
             component: RoomFacilities
-        }
+        },
+        // {
+        //     name: "Additionals",
+        //     path: "/property/additionals",
+        //     component: Additionals
+        // }
     ];
 
     handleTabChange = (e, tabValue) => this.setState({ tabValue });
 
     render() {
         return (
-            <AdminLayout style={{ padding:"60px 0 0"}} {...this.props}>
+            <AdminLayout style={{ padding: "60px 0 0" }} {...this.props}>
                 <Paper elevation={1}>
                     <Tabs
                         value={this.props.location.pathname}
-                        onChange={(e,value)=>this.props.history.push(value)}
+                        onChange={(e, value) => this.props.history.push(value)}
                         aria-label="simple tabs example"
                     >
                         {this.tabContents.map(e => (
-                            <Tab label={e.name} value={e.path} key={e.path}/>
+                            <Tab label={e.name} value={e.path} key={e.path} />
                         ))}
                     </Tabs>
                 </Paper>

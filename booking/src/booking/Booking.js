@@ -35,6 +35,7 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import WarningIcon from "@material-ui/icons/Warning";
+import { GET } from "../utils/restUtils";
 
 class Booking extends Component {
     constructor(props) {
@@ -52,6 +53,15 @@ class Booking extends Component {
             dialogType: null,
             submitting: false
         };
+    }
+
+    async componentDidMount() {
+        let token = localStorage.getItem('login')
+        let { data } = await GET(`/api/user`);
+        let user = data;
+        console.log(user)
+        console.log(user === true)
+        if(user && !this.props.match.path === '/booking') this.props.history.replace('/booking')
     }
 
     setStateValue = value => {
@@ -437,7 +447,7 @@ export default withFormik({
             contactno: yup
                 .string()
                 .required("Contact number is required!")
-                .length(9, "Contact number must be 9 digits"),
+                .length(10, "Contact number must be 10 digits"),
             confirmEmail: yup
                 .string()
                 .required("Email confirmation is required!")

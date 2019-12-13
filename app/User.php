@@ -18,7 +18,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'email', 'password', 'role', 'honorific', 'firstname', 'lastname', 'middlename', 'contactno', 'address', 'country'
+        'email', 'password', 'role', 'honorific', 'firstname', 'lastname', 'middlename', 'contactno', 'address', 'country', 'role_id'
     ];
 
     /**
@@ -40,7 +40,11 @@ class User extends Authenticatable
     ];
 
     public function bookings(){
-        return $this->hasMany('App\BookRoom');
+        return $this->hasMany('App\Booking');
+    }
+
+    public function role(){
+        return $this->belongsTo('App\Role');
     }
 
     public $incrementing = false;

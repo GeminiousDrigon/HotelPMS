@@ -21,9 +21,18 @@ export default function requireAuthentication(Component, role) {
 
         checkAuth = async () => {
             try {
-                let { data } = await GET("/api/user");
-                if (role === data.role) {
+                let token = localStorage.getItem("login");
+                let { data } = await axios.get("/api/user", {
+                    headers: {
+                        Authorization: "Bearer " + token
+                    }
+                });
+                if (role.includes(data.role.name)) {
                     this.setState({ fetching: false, user: data });
+                } else {
+                    localStorage.removeItem("login");
+                    localStorage.removeItem("user");
+                    this.props.history.push("/sign-in");
                 }
             } catch (err) {
                 this.props.history.push("/sign-in");

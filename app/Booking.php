@@ -28,5 +28,9 @@ class Booking extends Model
         return $this->hasMany('App\Billing');
     }
 
+    public function additionals(){
+        return $this->belongsToMany('App\Additional')->withPivot('price', 'quantity', 'id');
+    }
+
     public $incrementing = false;
 }

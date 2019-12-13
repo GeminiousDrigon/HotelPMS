@@ -14,10 +14,10 @@ class AuthController extends Controller
         if (Auth::attempt([
             'email' => $request->email,
             'password' => $request->password,
-            'role' => 'USER'
+            'role_id' => 1
         ])) {
 
-            $user = User::find(Auth::id());
+            $user = User::with('role')->find(Auth::id());
             $token = $user->createToken("hello", [])->accessToken;
 
             $responseContent = json_encode([
@@ -32,9 +32,54 @@ class AuthController extends Controller
         } elseif (Auth::attempt([
             'email' => $request->email,
             'password' => $request->password,
-            'role' => 'ADMIN'
+            'role_id' => 2
         ])) {
-            $user = User::find(Auth::id());
+            $user = User::with('role')->find(Auth::id());
+            $token = $user->createToken("hello", [])->accessToken;
+
+            $responseContent = json_encode([
+                'status' => 200,
+                'access_token' => $token,
+                'user_id' => $user->id,
+                'user' => $user,
+                'message' => 'Successful'
+            ]);
+
+            return response($responseContent)->cookie('name', $token, 20160);
+        } elseif (Auth::attempt([
+            'email' => $request->email,
+            'password' => $request->password,
+            'role_id' => 3
+        ])) {
+            $user = User::with('role')->find(Auth::id());
+            $token = $user->createToken("hello", [])->accessToken;
+
+            $responseContent = json_encode([
+                'status' => 200,
+                'access_token' => $token,
+                'user_id' => $user->id,
+                'user' => $user,
+                'message' => 'Successful'
+            ]);
+
+            return response($responseContent)->cookie('name', $token, 20160);
+        } else {
+            return response()->json([
+                'status' => 401,
+                'message' => 'Unauthorized'
+            ], 401);
+        }
+    }
+
+    public function loginUser(Request $request)
+    {
+        if (Auth::attempt([
+            'email' => $request->email,
+            'password' => $request->password,
+            'role_id' => 1
+        ])) {
+
+            $user = User::with('role')->find(Auth::id());
             $token = $user->createToken("hello", [])->accessToken;
 
             $responseContent = json_encode([
@@ -56,14 +101,16 @@ class AuthController extends Controller
 
     public function getUser(Request $request)
     {
-        return response()->json($request->user());
+        $user = User::with('role')->find($request->user()->id);
+        $user->role = $user->role->name;
+        return response()->json($user);
     }
 
     public function createAdminAccount(Request $request)
     {
         $data = $request->all();
         $data['password'] = Hash::make($request->input('password'));
-        $data['role'] = 'ADMIN';
+        $data['contactno'] = "+63" + $request->input('contactno');
 
         $user = User::create($data);
 
@@ -76,7 +123,7 @@ class AuthController extends Controller
 
         $data = $request->all();
         $data['password'] = Hash::make($data->password);
-        $data['role'] = 'USER';
+        $data['role_id'] = 1;
 
         $user = User::create($data);
 

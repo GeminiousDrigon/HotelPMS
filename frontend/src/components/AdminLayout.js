@@ -160,6 +160,24 @@ export default function AdminLayout(props) {
         }
     ];
 
+    const receptionistMenu = [
+        {
+            name: "Calendar",
+            icon: <Icon>calendar_today</Icon>,
+            path: "/calendar"
+        },
+        {
+            name: "Walk-in",
+            icon: <HotelTwoToneIcon />,
+            path: "/walkin"
+        },
+        {
+            name: "Bookings",
+            icon: <EventTwoToneIcon />,
+            path: "/bookings"
+        }
+    ];
+
     const onLogout = () => {
         localStorage.removeItem("login");
         localStorage.removeItem("user");
@@ -197,7 +215,12 @@ export default function AdminLayout(props) {
                             >
                                 <MenuIcon />
                             </IconButton>
-                            <Typography variant="h6" className={classes.title} onClick={() => props.history.push("/")} style={{ cursor: "pointer" }}>
+                            <Typography
+                                variant="h6"
+                                className={classes.title}
+                                onClick={() => props.history.push("/")}
+                                style={{ cursor: "pointer" }}
+                            >
                                 Bluepool Garden
                             </Typography>
                             <div>
@@ -205,7 +228,10 @@ export default function AdminLayout(props) {
                                     Logout
                                 </Button> */}
                                 <IconButton aria-label="delete">
-                                    <AccountCircleIcon style={{ color: "white" }} onClick={handleOpenMenu} />
+                                    <AccountCircleIcon
+                                        style={{ color: "white" }}
+                                        onClick={handleOpenMenu}
+                                    />
                                 </IconButton>
                             </div>
                         </Toolbar>
@@ -230,39 +256,165 @@ export default function AdminLayout(props) {
                 >
                     <Divider />
                     <List style={{ marginTop: 70 }}>
-                        {menus.map((text, index) => {
-                            if (text.items) {
-                                return text.items.map((item, i) => {
-                                    if (i === 0) {
-                                        return (
-                                            <React.Fragment key={text.name}>
-                                                <ListItem key={text.name}>
-                                                    <ListItemIcon>{text.icon}</ListItemIcon>
-                                                    <ListItemText primary={text.name} />
-                                                </ListItem>
-                                                <Divider />
-                                                <ListItem button key={item.name} onClick={() => goToPage(item.path)} style={{ marginLeft: 5 }}>
-                                                    <ListItemIcon>{item.icon}</ListItemIcon>
-                                                    <ListItemText primary={item.name} />
-                                                </ListItem>
-                                            </React.Fragment>
-                                        );
-                                    } else
-                                        return (
-                                            <ListItem button key={item.name} onClick={() => goToPage(item.path)} style={{ marginLeft: 5 }}>
-                                                <ListItemIcon>{item.icon}</ListItemIcon>
-                                                <ListItemText primary={item.name} />
-                                            </ListItem>
-                                        );
-                                });
-                            } else
-                                return (
-                                    <ListItem button key={text.name} onClick={() => goToPage(text.path)}>
-                                        <ListItemIcon>{text.icon}</ListItemIcon>
-                                        <ListItemText primary={text.name} />
-                                    </ListItem>
-                                );
-                        })}
+                        {props.user.role.name === "ADMIN"
+                            ? menus.map((text, index) => {
+                                  if (text.items) {
+                                      return text.items.map((item, i) => {
+                                          if (i === 0) {
+                                              return (
+                                                  <React.Fragment
+                                                      key={text.name}
+                                                  >
+                                                      <ListItem key={text.name}>
+                                                          <ListItemIcon>
+                                                              {text.icon}
+                                                          </ListItemIcon>
+                                                          <ListItemText
+                                                              primary={
+                                                                  text.name
+                                                              }
+                                                          />
+                                                      </ListItem>
+                                                      <Divider />
+                                                      <ListItem
+                                                          button
+                                                          key={item.name}
+                                                          onClick={() =>
+                                                              goToPage(
+                                                                  item.path
+                                                              )
+                                                          }
+                                                          style={{
+                                                              marginLeft: 5
+                                                          }}
+                                                      >
+                                                          <ListItemIcon>
+                                                              {item.icon}
+                                                          </ListItemIcon>
+                                                          <ListItemText
+                                                              primary={
+                                                                  item.name
+                                                              }
+                                                          />
+                                                      </ListItem>
+                                                  </React.Fragment>
+                                              );
+                                          } else
+                                              return (
+                                                  <ListItem
+                                                      button
+                                                      key={item.name}
+                                                      onClick={() =>
+                                                          goToPage(item.path)
+                                                      }
+                                                      style={{ marginLeft: 5 }}
+                                                  >
+                                                      <ListItemIcon>
+                                                          {item.icon}
+                                                      </ListItemIcon>
+                                                      <ListItemText
+                                                          primary={item.name}
+                                                      />
+                                                  </ListItem>
+                                              );
+                                      });
+                                  } else
+                                      return (
+                                          <ListItem
+                                              button
+                                              key={text.name}
+                                              onClick={() =>
+                                                  goToPage(text.path)
+                                              }
+                                          >
+                                              <ListItemIcon>
+                                                  {text.icon}
+                                              </ListItemIcon>
+                                              <ListItemText
+                                                  primary={text.name}
+                                              />
+                                          </ListItem>
+                                      );
+                              })
+                            : receptionistMenu.map((text, index) => {
+                                  if (text.items) {
+                                      return text.items.map((item, i) => {
+                                          if (i === 0) {
+                                              return (
+                                                  <React.Fragment
+                                                      key={text.name}
+                                                  >
+                                                      <ListItem key={text.name}>
+                                                          <ListItemIcon>
+                                                              {text.icon}
+                                                          </ListItemIcon>
+                                                          <ListItemText
+                                                              primary={
+                                                                  text.name
+                                                              }
+                                                          />
+                                                      </ListItem>
+                                                      <Divider />
+                                                      <ListItem
+                                                          button
+                                                          key={item.name}
+                                                          onClick={() =>
+                                                              goToPage(
+                                                                  item.path
+                                                              )
+                                                          }
+                                                          style={{
+                                                              marginLeft: 5
+                                                          }}
+                                                      >
+                                                          <ListItemIcon>
+                                                              {item.icon}
+                                                          </ListItemIcon>
+                                                          <ListItemText
+                                                              primary={
+                                                                  item.name
+                                                              }
+                                                          />
+                                                      </ListItem>
+                                                  </React.Fragment>
+                                              );
+                                          } else
+                                              return (
+                                                  <ListItem
+                                                      button
+                                                      key={item.name}
+                                                      onClick={() =>
+                                                          goToPage(item.path)
+                                                      }
+                                                      style={{ marginLeft: 5 }}
+                                                  >
+                                                      <ListItemIcon>
+                                                          {item.icon}
+                                                      </ListItemIcon>
+                                                      <ListItemText
+                                                          primary={item.name}
+                                                      />
+                                                  </ListItem>
+                                              );
+                                      });
+                                  } else
+                                      return (
+                                          <ListItem
+                                              button
+                                              key={text.name}
+                                              onClick={() =>
+                                                  goToPage(text.path)
+                                              }
+                                          >
+                                              <ListItemIcon>
+                                                  {text.icon}
+                                              </ListItemIcon>
+                                              <ListItemText
+                                                  primary={text.name}
+                                              />
+                                          </ListItem>
+                                      );
+                              })}
                     </List>
                     <Divider />
                 </Drawer>
@@ -297,17 +449,43 @@ export default function AdminLayout(props) {
                     horizontal: "center"
                 }}
             >
-                <div style={{ padding: 30, display: "flex", justifyContent: "center", flexDirection: "column", alignItems: "center" }}>
-                    <Avatar style={{ width: 80, height: 80, fontSize: "2.2em", marginBottom: 10, backgroundColor: "#3f51b5" }}>{`${props.user
-                        .firstname[0] + props.user.lastname[0]}`}</Avatar>
+                <div
+                    style={{
+                        padding: 30,
+                        display: "flex",
+                        justifyContent: "center",
+                        flexDirection: "column",
+                        alignItems: "center"
+                    }}
+                >
+                    <Avatar
+                        style={{
+                            width: 80,
+                            height: 80,
+                            fontSize: "2.2em",
+                            marginBottom: 10,
+                            backgroundColor: "#3f51b5"
+                        }}
+                    >{`${props.user.firstname[0] +
+                        props.user.lastname[0]}`}</Avatar>
                     <Typography variant="h5">{`${props.user.firstname} ${props.user.middlename[0]}. ${props.user.lastname}`}</Typography>
-                    <Typography>Admin</Typography>
+                    <Typography>{props.user.role.name}</Typography>
 
-                    <div style={{ display: "flex", flexDirection: "column", marginTop: 30 }}>
+                    <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            marginTop: 30
+                        }}
+                    >
                         {/* <Button color="primary" onClick={onLogout} variant="text">
                             Change Password
                         </Button> */}
-                        <Button color="primary" onClick={onLogout} variant="text">
+                        <Button
+                            color="primary"
+                            onClick={onLogout}
+                            variant="text"
+                        >
                             Logout
                         </Button>
                     </div>

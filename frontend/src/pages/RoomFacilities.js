@@ -118,7 +118,7 @@ export default class RoomFacilities extends Component {
                                 justifyContent: "space-between"
                             }}
                         >
-                            <Typography variant="h5">Facilities</Typography>
+                            <Typography variant="h5">Additionals</Typography>
                             <Tooltip title="Add Facility">
                                 <IconButton
                                     variant="contained"

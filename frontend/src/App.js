@@ -40,11 +40,7 @@ import AddRoomType from "./pages/AddRoomType";
 import ViewRoomType from "./pages/ViewRoomType";
 
 import DateFnsUtils from "@date-io/date-fns";
-import {
-    MuiPickersUtilsProvider,
-    KeyboardTimePicker,
-    KeyboardDatePicker
-} from "@material-ui/pickers";
+import { MuiPickersUtilsProvider, KeyboardTimePicker, KeyboardDatePicker } from "@material-ui/pickers";
 
 import axios from "axios";
 import requireAuthentication from "./components/auth/requireAuthentication";
@@ -54,161 +50,62 @@ import YearReport from "./pages/YearReport";
 import ViewUser from "./pages/ViewUser";
 
 export const history = createBrowserHistory({
-    forceRefresh: false
+	forceRefresh: false
 });
 
 history.location = _.assign(history.location, {
-    search: queryString.parse(history.location.search)
+	search: queryString.parse(history.location.search)
 });
 
 history.listen((location, action) => {
-    location.search = queryString.parse(location.search);
+	location.search = queryString.parse(location.search);
 });
 
 function App() {
-    return (
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <Router history={history}>
-                <Switch>
-                    {/* Admin */}
+	return (
+		<MuiPickersUtilsProvider utils={DateFnsUtils}>
+			<Router history={history}>
+				<Switch>
+					{/* Admin */}
 
-                    {/* <Route path="/booking" component={Booking} exact /> */}
-                    <Route
-                        path="/calendar"
-                        component={requireAuthentication(Component, "ADMIN")}
-                        exact
-                    />
-                    <Route
-                        path="/Test"
-                        component={requireAuthentication(Test, "ADMIN")}
-                        exact
-                    />
-                    <Route
-                        path="/reports"
-                        render={() => <Redirect to="/reports/summary" />}
-                        exact
-                    />
-                    <Route
-                        path="/reports/summary"
-                        component={requireAuthentication(Report, "ADMIN")}
-                        exact
-                    />
-                    <Route
-                        path="/reports/yearly"
-                        component={requireAuthentication(YearReport, "ADMIN")}
-                        exact
-                    />
-                    <Route
-                        path="/walkin"
-                        component={requireAuthentication(Walkin, "ADMIN")}
-                        exact
-                    />
-                    <Route
-                        path="/bookings/view/:id"
-                        component={requireAuthentication(ViewBooking, "ADMIN")}
-                        exact
-                    />
-                    <Route
-                        path="/bookings"
-                        component={requireAuthentication(Bookings, "ADMIN")}
-                    />
-                    <Route path="/pending" component={Pending} exact />
-                    <Route path="/checkIn" component={CheckIn} exact />
-                    <Route
-                        path="/property"
-                        component={requireAuthentication(Property, "ADMIN")}
-                    />
-                    <Route
-                        path="/room/:id/edit"
-                        component={requireAuthentication(AddRoom, "ADMIN")}
-                        exact
-                    />
-                    <Route
-                        path="/room/:id/view"
-                        component={requireAuthentication(ViewRoom, "ADMIN")}
-                        exact
-                    />
-                    <Route
-                        path="/room/add"
-                        component={requireAuthentication(AddRoom, "ADMIN")}
-                        exact
-                    />
-                    <Route
-                        path="/roomtype/:id/view"
-                        component={requireAuthentication(ViewRoomType, "ADMIN")}
-                        exact
-                    />
-                    <Route
-                        path="/roomtype/add"
-                        component={requireAuthentication(AddRoomType, "ADMIN")}
-                        exact
-                    />
-                    <Route
-                        path="/roomtype/:id/edit"
-                        component={requireAuthentication(AddRoomType, "ADMIN")}
-                        exact
-                    />
-                    <Route
-                        path="/roomfacilities"
-                        component={requireAuthentication(
-                            RoomFacilities,
-                            "ADMIN"
-                        )}
-                        exact
-                    />
-                    <Route
-                        path="/roomfacilities/:id"
-                        component={requireAuthentication(
-                            AddFacilities,
-                            "ADMIN"
-                        )}
-                        exact
-                    />
-                    <Route
-                        path="/addfacilities"
-                        component={requireAuthentication(
-                            AddFacilities,
-                            "ADMIN"
-                        )}
-                        exact
-                    />
-                    <Route
-                        path="/account"
-                        component={requireAuthentication(Account, "ADMIN")}
-                        exact
-                    />
-                    <Route
-                        path="/edit/account/:id"
-                        component={requireAuthentication(AddAccount, "ADMIN")}
-                        exact
-                    />
-                    <Route
-                        path="/add/account"
-                        component={requireAuthentication(AddAccount, "ADMIN")}
-                        exact
-                    />
-                    {/* Booking */}
-                    <Route path="/booking" component={Booking} exact />
-                    <Route path="/roominfo" component={RoomInfo} exact />
-                    <Route path="/guestinfo" component={GuestInfo} exact />
-                    <Route
-                        path="/confirmation"
-                        component={Confirmation}
-                        exact
-                    />
-                    <Route path="/viewuser" component={ViewUser} exact />
-                    {/* Log-in */}
-                    <Route path="/sign-in" component={Signin} exact />
+					{/* <Route path="/booking" component={Booking} exact /> */}
+					<Route path="/calendar" component={requireAuthentication(Component, ["ADMIN", "RECEPTIONIST"])} exact />
+					<Route path="/Test" component={requireAuthentication(Test, ["ADMIN"])} exact />
+					<Route path="/reports" render={() => <Redirect to="/reports/summary" />} exact />
+					<Route path="/reports/summary" component={requireAuthentication(Report, ["ADMIN"])} exact />
+					<Route path="/reports/yearly" component={requireAuthentication(YearReport, ["ADMIN"])} exact />
+					<Route path="/walkin" component={requireAuthentication(Walkin, ["ADMIN", "RECEPTIONIST"])} exact />
+					<Route path="/bookings/view/:id" component={requireAuthentication(ViewBooking, ["ADMIN", "RECEPTIONIST"])} exact />
+					<Route path="/bookings" component={requireAuthentication(Bookings, ["ADMIN", "RECEPTIONIST"])} />
+					{/* <Route path="/pending" component={Pending} exact />
+                    <Route path="/checkIn" component={CheckIn} exact /> */}
+					<Route path="/property" component={requireAuthentication(Property, ["ADMIN", "RECEPTIONIST"])} />
+					<Route path="/room/:id/edit" component={requireAuthentication(AddRoom, ["ADMIN"])} exact />
+					<Route path="/room/:id/view" component={requireAuthentication(ViewRoom, ["ADMIN"])} exact />
+					<Route path="/room/add" component={requireAuthentication(AddRoom, ["ADMIN"])} exact />
+					<Route path="/roomtype/:id/view" component={requireAuthentication(ViewRoomType, ["ADMIN"])} exact />
+					<Route path="/roomtype/add" component={requireAuthentication(AddRoomType, ["ADMIN"])} exact />
+					<Route path="/roomtype/:id/edit" component={requireAuthentication(AddRoomType, ["ADMIN"])} exact />
+					<Route path="/roomfacilities" component={requireAuthentication(RoomFacilities, ["ADMIN"])} exact />
+					<Route path="/roomfacilities/:id" component={requireAuthentication(AddFacilities, ["ADMIN"])} exact />
+					<Route path="/addfacilities" component={requireAuthentication(AddFacilities, ["ADMIN"])} exact />
+					<Route path="/account" component={requireAuthentication(Account, ["ADMIN"])} exact />
+					<Route path="/edit/account/:id" component={requireAuthentication(AddAccount, ["ADMIN"])} exact />
+					<Route path="/add/account" component={requireAuthentication(AddAccount, ["ADMIN"])} exact />
+					{/* Booking */}
+					<Route path="/booking" component={Booking} exact />
+					<Route path="/roominfo" component={RoomInfo} exact />
+					<Route path="/guestinfo" component={GuestInfo} exact />
+					<Route path="/confirmation" component={Confirmation} exact />
+					<Route path="/viewuser" component={ViewUser} exact />
+					{/* Log-in */}
+					<Route path="/sign-in" component={Signin} exact />
 
-                    <Route
-                        path="/"
-                        render={() => <Redirect to="/sign-in" />}
-                        exact
-                    />
-                </Switch>
-            </Router>
-        </MuiPickersUtilsProvider>
-    );
+					<Route path="/" render={() => <Redirect to="/sign-in" />} exact />
+				</Switch>
+			</Router>
+		</MuiPickersUtilsProvider>
+	);
 }
 
 export default App;

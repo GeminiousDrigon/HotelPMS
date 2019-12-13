@@ -119,7 +119,7 @@ export default class RateItem extends Component {
                         fullWidth
                         onClick={this.onAddRoom}
                     >
-                        + ADD RATE
+                        + ADD ROOM
                     </Button>
                 </div>
             </Paper>

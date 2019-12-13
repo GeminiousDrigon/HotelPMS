@@ -129,7 +129,7 @@ export default class Confirmation extends Component {
                                 variant="subtitle1"
                                 style={{ fontWeight: 300, paddingLeft: 25 }}
                             >
-                                +639{values.contactno}
+                                +63{values.contactno}
                             </Typography>
                         </Grid>
                         <Grid item xs={12} md={4}>

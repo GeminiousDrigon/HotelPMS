@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Billing;
 use App\Booking;
+use Illuminate\Support\Facades\Storage;
 
 class BillingController extends Controller
 {
@@ -122,5 +123,32 @@ class BillingController extends Controller
         return response()->json([
             "message" => "Operation success!"
         ])->status(200);
+    }
+
+    public function getFiles($id, Request $request)
+    {
+        $files = Storage::files("/public/booking/" . $id);
+        $files = array_map(function ($file) {
+            return  [
+                "src" => Storage::url($file),
+                "filename" => basename($file)
+            ];
+        }, $files);
+        return response()->json($files);
+    }
+
+    public function uploadFile($id, Request $request)
+    {
+        $file = $request->file('image');
+        // return response()->json($files);
+        $file->store('public/booking/' . $id);
+        return response()->json($request->all());
+    }
+
+    public function deleteFile($id, Request $request)
+    {
+        $path = 'public/booking/' . $id . "/" . $request->query('filename');
+        Storage::delete($path);
+        return response()->json(200);
     }
 }

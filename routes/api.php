@@ -1,9 +1,12 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use App\Mail\BookingCreated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\User;
+use App\Booking;
+use Illuminate\Support\Carbon;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,6 +20,21 @@ use App\User;
 */
 
 Route::post("/login", "AuthController@login");
+Route::post("/login/user", "AuthController@loginUser");
+Route::get('/user/{id}/booking', 'UserController@getUserBookings');
+Route::get('/booking/test', function (Request $request) {
+    $dayAgo = 2; // where here there is your calculation for now How many days
+    $dayToCheck = Carbon::now()->subDays($dayAgo);
+    $bookings = Booking::whereDate("created_at", '<=', $dayToCheck)->where('status', '=', 'PENDING')->get();
+
+    // foreach ($bookings as $booking) {
+    //     # code...
+    //     $booking->status = "NOSHOW";
+    //     $booking->save();
+    // }
+
+    return response()->json($bookings);
+});
 
 Route::get("/roomtype/available", "RoomTypeController@getAvailableRoomsTypes");
 Route::post("/booking", "BookingController@createBooking");
@@ -28,6 +46,7 @@ Route::middleware('auth:api')->group(function () {
     //users
     Route::get("/user/guests", "UserController@getGuestUsers");
     Route::get("/user/admin", "UserController@getAdminAccounts");
+    Route::get("/user/all", "UserController@getAll");
     Route::get("/user", "AuthController@getUser");
     Route::get("/user/{id}", "UserController@getOne");
     Route::put("/user/{id}", "UserController@editOne");
@@ -61,6 +80,9 @@ Route::middleware('auth:api')->group(function () {
     Route::get("/billing/{id}/booking", "BillingController@getBooking");
     Route::post("/billing/{id}/booking", "BillingController@addBooking");
     Route::delete("/billing/{id}/booking", "BillingController@removeBooking");
+    Route::get("/billing/{id}/file", "BillingController@getFiles");
+    Route::post("/billing/{id}/file", "BillingControleer@uploadFile");
+    Route::delete("/billing/{id}/file", "BillingController@deleteFile");
     //booking
     Route::get("/booking", "BookingController@getAll");
     Route::post("/booking/walkin", "BookingController@createWalkInBooking");
@@ -80,6 +102,11 @@ Route::middleware('auth:api')->group(function () {
     Route::post("/booking/{id}/billing", "BookingController@addBilling");
     Route::get("/booking/{id}/billing", "BookingController@getBilling");
     Route::delete("/booking/{id}/billing", "BookingController@removeBilling");
+    Route::post("/booking/{id}/additional", "BookingController@addAdditional");
+    Route::get("/booking/{id}/additional", "BookingController@getAdditional");
+    Route::delete("/booking/{id}/additional/{additionalId}", "BookingController@removeAdditional");
+    Route::put("/booking/{id}/additional/{additionalId}", "BookingController@editAdditional");
+    Route::get("/booking/{id}/additional/{additionalId}", "BookingController@getOneBookingAdditional");
     //room-ok
     Route::post("/room", "RoomController@create");
     Route::get("/room", "RoomController@getAll");
@@ -120,6 +147,13 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/reports', "ReportController@getReports");
     Route::get('/reports/roomtype/{id}', "ReportController@getRoomTypeReport");
     Route::get('/reports/yearly', "ReportController@yearlyReservation");
+
+    //additionals-ok
+    Route::post("/additional", "AdditionalController@create");
+    Route::get("/additional", "AdditionalController@getAll");
+    Route::get("/additional/{id}", "AdditionalController@getOne");
+    Route::put("/additional/{id}", "AdditionalController@editOne");
+    Route::delete("/additional/{id}", "AdditionalController@deleteOne");
 });
 
 
