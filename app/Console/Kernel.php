@@ -40,7 +40,7 @@ class Kernel extends ConsoleKernel
                 $booking->status = "NOSHOW";
                 $booking->save();
             }
-        })->everyFiveMinutes();
+        })->everyMinute();
     }
 
     /**
