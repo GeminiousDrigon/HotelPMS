@@ -557,7 +557,7 @@ class BookingController extends Controller
             //create user
             // return response()->json($room->room_type_id);
             // return response()->json($user);
-            if ($user->role === "ADMIN") {
+            if ($user->role->name === 2) {
                 return response()->json([
                     'message' => "UserIsAdmin"
                 ], 500);
@@ -699,7 +699,7 @@ class BookingController extends Controller
 
         $userDetails = [
             'email' => $request->email,
-            'role' => $request->newAccount ? "USER" : "GUEST",
+            'role_id' => 1,
             'honorific' => $request->honorific,
             'firstname' => $request->firstname,
             'lastname' => $request->lastname,
@@ -708,10 +708,11 @@ class BookingController extends Controller
             'address' => $request->address,
             'country' => $request->country
         ];
+
         $userDetails['password'] = Hash::make(Str::random(12));
         $user = User::firstOrCreate([
             'email' => $request->email,
-            'role' => 'USER'
+            'role_id' => 1
         ], $userDetails);
         //create the bookings;
         //from_date, to_date, status, user_id, room_type_id, room_id, price, with_breakfast

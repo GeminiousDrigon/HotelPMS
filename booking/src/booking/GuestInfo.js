@@ -25,6 +25,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormLabel from "@material-ui/core/FormLabel";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import Radio from "@material-ui/core/Radio";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import ExpansionPanel from "@material-ui/core/ExpansionPanel";
 import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
@@ -39,390 +40,300 @@ import palawan from "../images/palawan.png";
 import { GET } from "../utils/restUtils";
 
 export default class GuestInfo extends Component {
-    constructor(props) {
-        super(props);
+	constructor(props) {
+		super(props);
 
-        this.state = {
-            countryWidth: 0,
-            user: {}
-        };
-    }
+		this.state = {
+			countryWidth: 0,
+			user: {},
+			fetching: true,
+			hasUser: false
+		};
+	}
 
-    componentDidMount() {
-        this.setState({
-            countryWidth: this.countryInput.offsetWidth
-        });
-        // let { data } = await GET('/api/user');
-        // this.setState({user: data})
+	componentDidMount() {
+		// let { data } = await GET('/api/user');
+		// this.setState({user: data})
+		this.getUserDetails();
+	}
 
-    }
+	componentDidUpdate(prevProps, prevState) {
+		// if (prevState.countryWidth === 0) {
+		// 	this.setState({
+		// 		countryWidth: this.countryInput.offsetWidth
+		// 	});
+		// }
+	}
 
-    handleSelectChange = e => {
-        this.props.setFieldValue(e.target.name, e.target.value);
-    };
+	handleSelectChange = e => {
+		this.props.setFieldValue(e.target.name, e.target.value);
+	};
 
-    onChangeNumber = e => {
-        if (e.target.value.length > 10) {
-            this.props.setFieldValue(
-                "contactno",
-                e.target.value.substring(0, 10)
-            );
-        } else {
-            this.props.setFieldValue("contactno", e.target.value);
-        }
-    };
+	onChangeNumber = e => {
+		if (e.target.value.length > 10) {
+			this.props.setFieldValue("contactno", e.target.value.substring(0, 10));
+		} else {
+			this.props.setFieldValue("contactno", e.target.value);
+		}
+	};
 
-    // handleClickOpen = () => {
-    //     setOpen(true);
-    // };
+	getUserDetails = async () => {
+		try {
+			let { data } = await GET(`/api/user`);
+			this.setState({ fetching: false, hasUser: true });
+			this.props.setFieldValue("honorific", data.honorific);
+			this.props.setFieldValue("firstname", data.firstname);
+			this.props.setFieldValue("lastname", data.lastname);
+			this.props.setFieldValue("middlename", data.middlename);
+			this.props.setFieldValue("address", data.address);
+			this.props.setFieldValue("contactno", parseInt(data.contactno.substring(3)));
+			this.props.setFieldValue("country", data.country);
+			this.props.setFieldValue("email", data.email);
+			this.props.setFieldValue("confirmEmail", data.email);
+			console.log(data);
+		} catch (err) {
+			this.setState({ fetching: false });
+			console.log(err);
+		}
+	};
 
-    // handleClose = () => {
-    //     setOpen(false);
-    // };
-    render() {
-        const {
-            values,
-            touched,
-            errors,
-            handleChange,
-            handleBlur,
-            handleSubmit,
-            validateCalled
-        } = this.props;
-        return (
-            <Paper style={{ padding: 25 }}>
-                <Typography
-                    variant="h5"
-                    style={{ fontWeight: 300 }}
-                    gutterBottom
-                >
-                    Personal Information
-                </Typography>
-                <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                        <FormControl
-                            component="fieldset"
-                            error={
-                                (validateCalled || touched.honorific) &&
-                                errors.honorific
-                                    ? true
-                                    : false
-                            }
-                        >
-                            <FormLabel component="legend">Honorifics</FormLabel>
-                            <RadioGroup
-                                value={values.honorific}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                style={{
-                                    display: "flex",
-                                    flexDirection: "row"
-                                }}
-                            >
-                                <FormControlLabel
-                                    value="Mr"
-                                    control={
-                                        <Radio color="primary" id="honorific" />
-                                    }
-                                    label="Mr"
-                                />
-                                <FormControlLabel
-                                    value="Ms"
-                                    control={
-                                        <Radio color="primary" id="honorific" />
-                                    }
-                                    label="Ms"
-                                />
-                            </RadioGroup>
-                            <FormHelperText>
-                                {(validateCalled || touched.honorific) &&
-                                errors.honorific
-                                    ? errors.honorific
-                                    : ""}
-                            </FormHelperText>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={12} md={4}>
-                        <TextField
-                            fullWidth
-                            id="firstname"
-                            placeholder="First Name"
-                            variant="outlined"
-                            label="First name"
-                            value={values.firstname}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            helperText={
-                                (validateCalled || touched.firstname) &&
-                                errors.firstname
-                                    ? errors.firstname
-                                    : ""
-                            }
-                            error={
-                                (validateCalled || touched.firstname) &&
-                                errors.firstname
-                                    ? true
-                                    : false
-                            }
-                        />
-                    </Grid>
-                    <Grid item xs={12} md={4}>
-                        <TextField
-                            fullWidth
-                            id="middlename"
-                            placeholder="Middle Name"
-                            variant="outlined"
-                            label="Middle name"
-                            value={values.middlename}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            helperText={
-                                (validateCalled || touched.middlename) &&
-                                errors.middlename
-                                    ? errors.middlename
-                                    : ""
-                            }
-                            error={
-                                (validateCalled || touched.middlename) &&
-                                errors.middlename
-                                    ? true
-                                    : false
-                            }
-                        />
-                    </Grid>
-                    <Grid item xs={12} md={4}>
-                        <TextField
-                            fullWidth
-                            id="lastname"
-                            placeholder="Lastname Name"
-                            variant="outlined"
-                            label="Last name"
-                            value={values.lastname}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            helperText={
-                                (validateCalled || touched.lastname) &&
-                                errors.lastname
-                                    ? errors.lastname
-                                    : ""
-                            }
-                            error={
-                                (validateCalled || touched.lastname) &&
-                                errors.lastname
-                                    ? true
-                                    : false
-                            }
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <TextField
-                            fullWidth
-                            id="address"
-                            placeholder="Address"
-                            variant="outlined"
-                            label="Address"
-                            value={values.address}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            helperText={
-                                (validateCalled || touched.address) &&
-                                errors.address
-                                    ? errors.address
-                                    : ""
-                            }
-                            error={
-                                (validateCalled || touched.address) &&
-                                errors.address
-                                    ? true
-                                    : false
-                            }
-                        />
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                        <FormControl
-                            variant="outlined"
-                            error={
-                                (validateCalled || touched.country) &&
-                                errors.country
-                                    ? true
-                                    : false
-                            }
-                            fullWidth
-                        >
-                            <InputLabel
-                                htmlFor="outlined-age-native-simple"
-                                ref={el => (this.countryInput = el)}
-                            >
-                                Country
-                            </InputLabel>
-                            <Select
-                                name="country"
-                                onChange={this.handleSelectChange}
-                                value={values.country}
-                                SelectDisplayProps={{
-                                    style: {
-                                        display: "flex"
-                                    }
-                                }}
-                                input={
-                                    <OutlinedInput
-                                        labelWidth={this.state.countryWidth}
-                                    />
-                                }
-                                // disabled={!newGuest}
-                            >
-                                {countries.map((c, i) => {
-                                    return (
-                                        <MenuItem value={c} key={c}>
-                                            {c}
-                                        </MenuItem>
-                                    );
-                                })}
-                            </Select>
-                            <FormHelperText>
-                                {(validateCalled || touched.country) &&
-                                errors.country
-                                    ? errors.country
-                                    : ""}
-                            </FormHelperText>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                        <TextField
-                            fullWidth
-                            id="contactno"
-                            placeholder="Contact number"
-                            variant="outlined"
-                            label="Contact number"
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position="start">
-                                        +63
-                                    </InputAdornment>
-                                )
-                            }}
-                            value={values.contactno}
-                            onChange={this.onChangeNumber}
-                            onBlur={handleBlur}
-                            type="number"
-                            helperText={
-                                (validateCalled || touched.contactno) &&
-                                errors.contactno
-                                    ? errors.contactno
-                                    : ""
-                            }
-                            error={
-                                (validateCalled || touched.contactno) &&
-                                errors.contactno
-                                    ? true
-                                    : false
-                            }
-                        />
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                        <TextField
-                            fullWidth
-                            id="email"
-                            placeholder="Gmail address"
-                            variant="outlined"
-                            label="Gmail address"
-                            value={values.email}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            helperText={
-                                (validateCalled || touched.email) &&
-                                errors.email
-                                    ? errors.email
-                                    : ""
-                            }
-                            error={
-                                (validateCalled || touched.email) &&
-                                errors.email
-                                    ? true
-                                    : false
-                            }
-                        />
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                        <TextField
-                            fullWidth
-                            id="confirmEmail"
-                            placeholder="Re-type Gmail Address"
-                            variant="outlined"
-                            label="Re-type Gmail address"
-                            value={values.confirmEmail}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            helperText={
-                                (validateCalled || touched.confirmEmail) &&
-                                errors.confirmEmail
-                                    ? errors.confirmEmail
-                                    : ""
-                            }
-                            error={
-                                (validateCalled || touched.confirmEmail) &&
-                                errors.confirmEmail
-                                    ? true
-                                    : false
-                            }
-                        />
-                    </Grid>
-                    <Grid
-                        item
-                        xs={12}
-                        md={12}
-                        justify="center"
-                        alignItems="center"
-                    >
-                        <div
-                            style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                textAlign: "center"
-                            }}
-                        >
-                            <Typography variant="h6">Payment Method</Typography>
-                            <div>
-                                <img
-                                    src={palawan}
-                                    style={{ marginRight: "10px" }}
-                                    width="15%"
-                                ></img>
-                                <img
-                                    src={cebuana}
-                                    style={{ marginRight: "10px" }}
-                                    width="15%"
-                                ></img>
-                                <img
-                                    src={mlhuillier}
-                                    style={{ marginRight: "10px" }}
-                                    width="15%"
-                                ></img>
-                                <img src={bpi} width="15%"></img>
-                            </div>
-                            <Typography>
-                                <h6>
-                                    Please choose only one(1) of this payment
-                                    method:
-                                </h6>
-                                <h6>
-                                    Palawan Express Pera Padala / Cebuana
-                                    Lhuiller / MLhuiller
-                                    <br></br>
-                                    Receiver : Maria Paz Bacareza<br></br>
-                                    Contact Number: 09217661951<br></br>
-                                    For your BPI payment method please deposit
-                                    in the information below:
-                                </h6>
-                                <br></br>
-                                Account Number :4382 7881 9012 3456<br></br>
-                                Account Name : Maria Paz Bacareza
-                            </Typography>
-                        </div>
-                    </Grid>
-                </Grid>
+	// handleClickOpen = () => {
+	//     setOpen(true);
+	// };
 
-                {/* <div style={{ marginTop: 25 }}>
+	// handleClose = () => {
+	//     setOpen(false);
+	// };
+	render() {
+		const { values, touched, errors, handleChange, handleBlur, handleSubmit, validateCalled } = this.props;
+		if (this.state.fetching)
+			return (
+				<div style={{ width: "100%", textAlign: "center", marginTop: 20 }}>
+					<CircularProgress />
+				</div>
+			);
+		else
+			return (
+				<Paper style={{ padding: 25 }}>
+					<Typography variant="h5" style={{ fontWeight: 300 }} gutterBottom>
+						Personal Information
+					</Typography>
+					<Grid container spacing={2}>
+						<Grid item xs={12}>
+							<FormControl component="fieldset" error={(validateCalled || touched.honorific) && errors.honorific ? true : false}>
+								<FormLabel component="legend">Honorifics</FormLabel>
+								<RadioGroup
+									value={values.honorific}
+									onChange={handleChange}
+									onBlur={handleBlur}
+									style={{
+										display: "flex",
+										flexDirection: "row"
+									}}
+								>
+									<FormControlLabel
+										value="Mr"
+										control={<Radio color="primary" id="honorific" disabled={this.state.hasUser} />}
+										label="Mr"
+										disabled={this.state.hasUser}
+									/>
+									<FormControlLabel
+										value="Ms"
+										control={<Radio color="primary" id="honorific" disabled={this.state.hasUser} />}
+										label="Ms"
+										disabled={this.state.hasUser}
+									/>
+									<FormControlLabel
+										value="Dr"
+										control={<Radio color="primary" id="honorific" disabled={this.state.hasUser} />}
+										label="Dr"
+										disabled={this.state.hasUser}
+									/>
+									<FormControlLabel
+										value="Atty"
+										control={<Radio color="primary" id="honorific" disabled={this.state.hasUser} />}
+										label="Atty"
+										disabled={this.state.hasUser}
+									/>
+								</RadioGroup>
+								<FormHelperText>{(validateCalled || touched.honorific) && errors.honorific ? errors.honorific : ""}</FormHelperText>
+							</FormControl>
+						</Grid>
+						<Grid item xs={12} md={4}>
+							<TextField
+								fullWidth
+								id="firstname"
+								placeholder="First Name"
+								variant="outlined"
+								label="First name"
+								value={values.firstname}
+								onChange={handleChange}
+								onBlur={handleBlur}
+								helperText={(validateCalled || touched.firstname) && errors.firstname ? errors.firstname : ""}
+								error={(validateCalled || touched.firstname) && errors.firstname ? true : false}
+								disabled={this.state.hasUser}
+							/>
+						</Grid>
+						<Grid item xs={12} md={4}>
+							<TextField
+								fullWidth
+								id="middlename"
+								placeholder="Middle Name"
+								variant="outlined"
+								label="Middle name"
+								value={values.middlename}
+								onChange={handleChange}
+								onBlur={handleBlur}
+								helperText={(validateCalled || touched.middlename) && errors.middlename ? errors.middlename : ""}
+								error={(validateCalled || touched.middlename) && errors.middlename ? true : false}
+								disabled={this.state.hasUser}
+							/>
+						</Grid>
+						<Grid item xs={12} md={4}>
+							<TextField
+								fullWidth
+								id="lastname"
+								placeholder="Lastname Name"
+								variant="outlined"
+								label="Last name"
+								value={values.lastname}
+								onChange={handleChange}
+								onBlur={handleBlur}
+								helperText={(validateCalled || touched.lastname) && errors.lastname ? errors.lastname : ""}
+								error={(validateCalled || touched.lastname) && errors.lastname ? true : false}
+								disabled={this.state.hasUser}
+							/>
+						</Grid>
+						<Grid item xs={12}>
+							<TextField
+								fullWidth
+								id="address"
+								placeholder="Address"
+								variant="outlined"
+								label="Address"
+								value={values.address}
+								onChange={handleChange}
+								onBlur={handleBlur}
+								helperText={(validateCalled || touched.address) && errors.address ? errors.address : ""}
+								error={(validateCalled || touched.address) && errors.address ? true : false}
+								disabled={this.state.hasUser}
+							/>
+						</Grid>
+						<Grid item xs={12} md={6}>
+							<FormControl
+								variant="outlined"
+								error={(validateCalled || touched.country) && errors.country ? true : false}
+								fullWidth
+								disabled={this.state.hasUser}
+							>
+								<InputLabel htmlFor="outlined-age-native-simple" ref={el => (this.countryInput = el)}>
+									Country
+								</InputLabel>
+								<Select
+									name="country"
+									onChange={this.handleSelectChange}
+									value={values.country}
+									SelectDisplayProps={{
+										style: {
+											display: "flex"
+										}
+									}}
+									input={<OutlinedInput labelWidth={this.state.countryWidth} />}
+									// disabled={!newGuest}
+								>
+									{countries.map((c, i) => {
+										return (
+											<MenuItem value={c} key={c}>
+												{c}
+											</MenuItem>
+										);
+									})}
+								</Select>
+								<FormHelperText>{(validateCalled || touched.country) && errors.country ? errors.country : ""}</FormHelperText>
+							</FormControl>
+						</Grid>
+						<Grid item xs={12} md={6}>
+							<TextField
+								fullWidth
+								id="contactno"
+								placeholder="Contact number"
+								variant="outlined"
+								label="Contact number"
+								InputProps={{
+									startAdornment: <InputAdornment position="start">+63</InputAdornment>
+								}}
+								value={values.contactno}
+								onChange={this.onChangeNumber}
+								onBlur={handleBlur}
+								type="number"
+								helperText={(validateCalled || touched.contactno) && errors.contactno ? errors.contactno : ""}
+								error={(validateCalled || touched.contactno) && errors.contactno ? true : false}
+								disabled={this.state.hasUser}
+							/>
+						</Grid>
+						<Grid item xs={12} md={6}>
+							<TextField
+								fullWidth
+								id="email"
+								placeholder="Gmail address"
+								variant="outlined"
+								label="Gmail address"
+								value={values.email}
+								onChange={handleChange}
+								onBlur={handleBlur}
+								helperText={(validateCalled || touched.email) && errors.email ? errors.email : ""}
+								error={(validateCalled || touched.email) && errors.email ? true : false}
+								disabled={this.state.hasUser}
+							/>
+						</Grid>
+						<Grid item xs={12} md={6}>
+							<TextField
+								fullWidth
+								id="confirmEmail"
+								placeholder="Re-type Gmail Address"
+								variant="outlined"
+								label="Re-type Gmail address"
+								value={values.confirmEmail}
+								onChange={handleChange}
+								onBlur={handleBlur}
+								helperText={(validateCalled || touched.confirmEmail) && errors.confirmEmail ? errors.confirmEmail : ""}
+								error={(validateCalled || touched.confirmEmail) && errors.confirmEmail ? true : false}
+								disabled={this.state.hasUser}
+							/>
+						</Grid>
+						<Grid item xs={12} md={12} justify="center" alignItems="center">
+							<div
+								style={{
+									display: "flex",
+									flexDirection: "column",
+									textAlign: "center"
+								}}
+							>
+								<Typography variant="h6">Payment Method</Typography>
+								<div>
+									<img src={palawan} style={{ marginRight: "10px" }} width="15%"></img>
+									<img src={cebuana} style={{ marginRight: "10px" }} width="15%"></img>
+									<img src={mlhuillier} style={{ marginRight: "10px" }} width="15%"></img>
+									<img src={bpi} width="15%"></img>
+								</div>
+								<Typography>
+									<h6>Please choose only one(1) of this payment method:</h6>
+									<h6>
+										Palawan Express Pera Padala / Cebuana Lhuiller / MLhuiller
+										<br></br>
+										Receiver : Maria Paz Bacareza<br></br>
+										Contact Number: 09217661951<br></br>
+										For your BPI payment method please deposit in the information below:
+									</h6>
+									<br></br>
+									Account Number :4382 7881 9012 3456<br></br>
+									Account Name : Maria Paz Bacareza
+								</Typography>
+							</div>
+						</Grid>
+					</Grid>
+
+					{/* <div style={{ marginTop: 25 }}>
                     <Typography
                         variant="h4"
                         style={{ fontWeight: 300 }}
@@ -451,7 +362,7 @@ export default class GuestInfo extends Component {
                         <FormHelperText>Be careful</FormHelperText>
                     </FormControl>
                 </div> */}
-            </Paper>
-        );
-    }
+				</Paper>
+			);
+	}
 }

@@ -171,7 +171,7 @@ class Booking extends Component {
                 address: values.address,
                 country: values.country,
                 email: values.email,
-                contactno: "+639" + values.contactno,
+                contactno: "+63" + values.contactno,
                 selectedRooms: values.selectedRooms,
                 newAccount: true,
                 checkInDate: moment(values.checkInDate).format("YYYY-MM-DD"),

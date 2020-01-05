@@ -23,6 +23,7 @@
         "vue": "^2.5.17"
     },
     "dependencies": {
-        "chart.js": "^2.8.0"
+        "chart.js": "^2.8.0",
+        "qrcode": "^1.4.4"
     }
 }
