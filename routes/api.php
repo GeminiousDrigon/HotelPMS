@@ -1,12 +1,11 @@
 <?php
 
-use App\Http\Controllers\UserController;
-use App\Mail\BookingCreated;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
-use App\User;
-use App\Booking;
-use Illuminate\Support\Carbon;
+// use App\Mail\BookingCreated;
+// use Illuminate\Http\Request;
+// use Illuminate\Support\Facades\Mail;
+// use App\User;
+// use App\Booking;
+// use Illuminate\Support\Carbon;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,19 +21,19 @@ use Illuminate\Support\Carbon;
 Route::post("/login", "AuthController@login");
 Route::post("/login/user", "AuthController@loginUser");
 Route::get('/user/{id}/booking', 'UserController@getUserBookings');
-Route::get('/booking/test', function (Request $request) {
-    $dayAgo = 2; // where here there is your calculation for now How many days
-    $dayToCheck = Carbon::now()->subDays($dayAgo);
-    $bookings = Booking::whereDate("created_at", '<=', $dayToCheck)->where('status', '=', 'PENDING')->get();
+// Route::get('/booking/test', function (Request $request) {
+//     $dayAgo = 2; // where here there is your calculation for now How many days
+//     $dayToCheck = Carbon::now()->subDays($dayAgo);
+//     $bookings = Booking::whereDate("created_at", '<=', $dayToCheck)->where('status', '=', 'PENDING')->get();
 
-    // foreach ($bookings as $booking) {
-    //     # code...
-    //     $booking->status = "NOSHOW";
-    //     $booking->save();
-    // }
+//     // foreach ($bookings as $booking) {
+//     //     # code...
+//     //     $booking->status = "NOSHOW";
+//     //     $booking->save();
+//     // }
 
-    return response()->json($bookings);
-});
+//     return response()->json($bookings);
+// });
 
 Route::get("/roomtype/available", "RoomTypeController@getAvailableRoomsTypes");
 Route::post("/booking", "BookingController@createBooking");
@@ -50,7 +49,13 @@ Route::middleware('auth:api')->group(function () {
     Route::get("/user", "AuthController@getUser");
     Route::get("/user/{id}", "UserController@getOne");
     Route::put("/user/{id}", "UserController@editOne");
+    Route::put("/user/{id}/password", "UserController@editPassword");
+    Route::get("/user/{id}/notifications", "UserController@getUserNotifications");
+    Route::post("/user/{id}/notifications", "UserController@maekAllNotificationRead");
+    Route::post("/user/{id}/notifications/{notificationId}", "UserController@markOneNotificationRead");
+    Route::post("/user/register", "UserController@create");
     //amenity-ok
+    
     Route::post("/amenity", "AmenityController@create");
     Route::get("/amenity", "AmenityController@getAll");
     Route::get("/amenity/{id}", "AmenityController@getOne");
@@ -81,7 +86,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post("/billing/{id}/booking", "BillingController@addBooking");
     Route::delete("/billing/{id}/booking", "BillingController@removeBooking");
     Route::get("/billing/{id}/file", "BillingController@getFiles");
-    Route::post("/billing/{id}/file", "BillingControleer@uploadFile");
+    Route::post("/billing/{id}/file", "BillingController@uploadFile");
     Route::delete("/billing/{id}/file", "BillingController@deleteFile");
     //booking
     Route::get("/booking", "BookingController@getAll");
@@ -158,19 +163,19 @@ Route::middleware('auth:api')->group(function () {
 
 
 
-Route::post("/email/test", function (Request $request) {
-    $to_name = 'John Bill Suarez';
-    $to_email = 'geminiousdrigon@gmail.com';
-    $data = array("name" => 'Ogbonna', "body" => 'A test mail');
-    $user = User::find("ced8cce6-0571-4c5d-a71d-8078f8de42bd");
-    // return response()->json($user);
-    Mail::to($user)->send(new BookingCreated($user));
-    // Mail::send('emails.home', [], function ($message) use ($to_name, $to_email) {
-    //     $message->to($to_email, $to_name)
-    //         ->subject('Artisans Web Testing Mail');
-    //     $message->from('bluepoolgarden2@gmail.com', 'Artisans Web');
-    // });
-});
+// Route::post("/email/test", function (Request $request) {
+//     $to_name = 'John Bill Suarez';
+//     $to_email = 'geminiousdrigon@gmail.com';
+//     $data = array("name" => 'Ogbonna', "body" => 'A test mail');
+//     $user = User::find("ced8cce6-0571-4c5d-a71d-8078f8de42bd");
+//     // return response()->json($user);
+//     Mail::to($user)->send(new BookingCreated($user));
+//     // Mail::send('emails.home', [], function ($message) use ($to_name, $to_email) {
+//     //     $message->to($to_email, $to_name)
+//     //         ->subject('Artisans Web Testing Mail');
+//     //     $message->from('bluepoolgarden2@gmail.com', 'Artisans Web');
+//     // });
+// });
 
 Route::fallback(function () {
     return response()->json(['message' => 'Not Found.'], 404);

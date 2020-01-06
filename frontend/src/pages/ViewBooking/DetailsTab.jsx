@@ -57,6 +57,8 @@ import Icon from "@material-ui/core/Icon";
 import Snackbar from "@material-ui/core/Snackbar";
 import numeral from "numeral";
 import { GET, PUT, POST, DELETE } from "../../utils/restUtils";
+import AddBillingImageDialog from "../../components/AddBillingImageDialog";
+import AddRoomImageDialog from "../../components/AddRoomImageDialog";
 
 const NumeralComponent = React.memo(function Numeral(props) {
 	return numeral(props.number).format("0,0.00");
@@ -79,10 +81,12 @@ export default class DetailsTab extends Component {
 			selectedPayment: null,
 			fetchingViewPayment: false,
 			initialPayment: 0,
-			paymnetType: "",
+			paymentType: "",
+			other: "",
 			fetchingPayment: false,
 			deletePayment: false,
 			deletingPayment: false,
+			addBillingImage: false,
 
 			//adding rooms
 			addingRooms: false,
@@ -195,13 +199,14 @@ export default class DetailsTab extends Component {
 	onAddBilling = async values => {
 		try {
 			let { editBilling } = this.state;
-			let { amount, type } = values;
+			let { amount, type, other } = values;
 			if (editBilling) {
 				let { id, booking_id } = this.state.selectedPayment;
 				await PUT(`/api/billing/${id}`, {
 					amount,
 					type,
-					booking_id
+					booking_id,
+					other
 				});
 				this.setState({
 					addBilling: false,
@@ -244,12 +249,15 @@ export default class DetailsTab extends Component {
 	//add payment dialog actions
 
 	onExitBilling = () => {
+		console.log("exiting");
 		this.setState({
 			addBilling: false,
 			paymentAnchorEl: null,
 			selectedPayment: null,
 			fetchingViewPayment: false,
 			initialPayment: 0,
+			paymentType: "",
+			other: "",
 			fetchingPayment: false,
 			deletePayment: false,
 			deletingPayment: false
@@ -276,7 +284,9 @@ export default class DetailsTab extends Component {
 		console.log(data);
 		this.setState({
 			fetchingViewPayment: false,
-			initialPayment: data.amount
+			initialPayment: data.amount,
+			paymentType: data.type,
+			other: data.other
 		});
 	};
 
@@ -294,6 +304,13 @@ export default class DetailsTab extends Component {
 			selectedPayment: null
 		});
 	};
+
+	//add image in payment
+	handleBillingAddImage = () => {
+		this.setState({ addBillingImage: !this.state.addBillingImage, paymentAnchorEl: null });
+	};
+
+	handleCloseBillingAddImage = () => this.setState({ addBillingImage: false });
 
 	//guest actions
 	onMoreAction = e => {
@@ -526,7 +543,8 @@ export default class DetailsTab extends Component {
 		let open = Boolean(guestAnchorEl);
 		let openPayment = Boolean(paymentAnchorEl);
 		let openAdditional = Boolean(additionalAnchorEl);
-		let viewMode = booking.status === "CHECKEDOUT" || booking.status === "NOSHOW" ? true : false;
+		let viewMode =
+			booking.status === "CHECKEDOUT" || booking.status === "NOSHOW" || booking.status === "CANCELED" ? true : false;
 		return (
 			<>
 				<div>
@@ -570,11 +588,17 @@ export default class DetailsTab extends Component {
 											/>
 											<Typography variant="h5">Guest Information</Typography>
 										</div>
-										{status === "NOSHOW" || status === "CHECKEDOUT" || status === "PENDING" ? (
+										{status === "NOSHOW" || status === "CHECKEDOUT" || status === "PENDING" || status === "CANCELED" ? (
 											<div>
 												<Typography component="span">Status: </Typography>
 												<Typography component="span">
-													{status === "NOSHOW" ? "No show" : status === "CHECKEDOUT" ? "Checked-out" : status === "PENDING" && "Pending"}
+													{status === "NOSHOW"
+														? "No show"
+														: status === "CHECKEDOUT"
+														? "Checked-out"
+														: status === "PENDING"
+														? "Pending"
+														: status === "CANCELED" && "Canceled"}
 												</Typography>
 											</div>
 										) : (
@@ -875,7 +899,7 @@ export default class DetailsTab extends Component {
 																	<TableCell component="th" scope="row">
 																		{i + 1}
 																	</TableCell>
-																	<TableCell>{row.type}</TableCell>
+																	<TableCell>{row.type === "other" ? row.other : row.type}</TableCell>
 																	<TableCell>{moment(row.created_at).format("MMM DD, YYYY hh:mm A")}</TableCell>
 																	<TableCell align="right" component="th" scope="row">
 																		&#8369;
@@ -884,20 +908,56 @@ export default class DetailsTab extends Component {
 																	{!viewMode && (
 																		<TableCell align="right" component="th" scope="row">
 																			{row.delete ? (
-																				<IconButton
-																					aria-label="more"
-																					aria-controls="long-menu"
-																					aria-haspopup="true"
-																					onClick={e => this.onMorePayment(e, row)}
-																					size="small"
-																				>
-																					<MoreVertIcon
-																						style={{
-																							fontSize: "1.25em"
-																						}}
-																					/>
-																				</IconButton>
-																			) : null}
+																				<>
+																					<IconButton
+																						aria-label="more"
+																						aria-controls="long-menu"
+																						aria-haspopup="true"
+																						onClick={e => this.onMorePayment(e, row)}
+																						size="small"
+																					>
+																						<MoreVertIcon
+																							style={{
+																								fontSize: "1.25em"
+																							}}
+																						/>
+																					</IconButton>
+																					<Menu
+																						id="long-menu"
+																						anchorEl={paymentAnchorEl}
+																						open={openPayment && this.state.selectedPayment.id === row.id}
+																						onClose={this.onClosePayment}
+																					>
+																						<MenuItem onClick={this.onOpenEditPayment}>Edit</MenuItem>
+																						<MenuItem onClick={this.onOpenDeleteBilling}>Remove</MenuItem>
+																						<MenuItem onClick={this.handleBillingAddImage}>View Photos</MenuItem>
+																					</Menu>
+																				</>
+																			) : (
+																				<>
+																					<IconButton
+																						aria-label="more"
+																						aria-controls="long-menu"
+																						aria-haspopup="true"
+																						onClick={e => this.onMorePayment(e, row)}
+																						size="small"
+																					>
+																						<MoreVertIcon
+																							style={{
+																								fontSize: "1.25em"
+																							}}
+																						/>
+																					</IconButton>
+																					<Menu
+																						id="long-menu"
+																						anchorEl={paymentAnchorEl}
+																						open={openPayment && this.state.selectedPayment.id === row.id}
+																						onClose={this.onClosePayment}
+																					>
+																						<MenuItem onClick={this.handleBillingAddImage}>View Photos</MenuItem>
+																					</Menu>
+																				</>
+																			)}
 																		</TableCell>
 																	)}
 																</TableRow>
@@ -942,10 +1002,6 @@ export default class DetailsTab extends Component {
 															{!viewMode && <TableCell align="right"></TableCell>}
 														</TableRow>
 													</TableBody>
-													<Menu id="long-menu" anchorEl={paymentAnchorEl} open={openPayment} onClose={this.onClosePayment}>
-														<MenuItem onClick={this.onOpenEditPayment}>Edit</MenuItem>
-														<MenuItem onClick={this.onOpenDeleteBilling}>Remove</MenuItem>
-													</Menu>
 												</Table>
 											</div>
 											{/* <div
@@ -1112,7 +1168,8 @@ export default class DetailsTab extends Component {
 					<Formik
 						initialValues={{
 							type: this.state.paymentType,
-							amount: this.state.initialPayment
+							amount: this.state.initialPayment,
+							other: this.state.other
 						}}
 						onSubmit={async (values, actions) => {
 							console.log(actions, values);
@@ -1125,7 +1182,12 @@ export default class DetailsTab extends Component {
 									.number()
 									.min(1, "Must not be zero(0)")
 									.required("Amount field is required!"),
-								type: yup.string().required("Please select payment type")
+								type: yup.string().required("Please select payment type"),
+								other: yup.string().when("type", {
+									is: "other",
+									then: yup.string().required("Please specify the other."),
+									otherwise: yup.string().notRequired()
+								})
 							});
 							return schema;
 						}}
@@ -1192,9 +1254,25 @@ export default class DetailsTab extends Component {
 														<MenuItem value={"Cash"}>Cash</MenuItem>
 														<MenuItem value={"Bank Transfer"}>Bank Transfer</MenuItem>
 														<MenuItem value={"Pera Padala"}>Pera Padala</MenuItem>
+														<MenuItem value={"other"}>Other</MenuItem>
 													</Select>
 													<FormHelperText>{touched.type && errors.type ? errors.type : ""}</FormHelperText>
 												</FormControl>
+												{values.type === "other" && (
+													<TextField
+														style={{ marginTop: 10 }}
+														variant="outlined"
+														id="other"
+														label="Other Type"
+														fullWidth
+														margin="normal"
+														onChange={handleChange}
+														onBlur={handleBlur}
+														value={values.other}
+														helperText={touched.other && errors.other ? errors.other : ""}
+														error={touched.other && errors.other ? true : false}
+													/>
+												)}
 												<TextField
 													style={{ marginTop: 10 }}
 													variant="outlined"
@@ -1202,6 +1280,7 @@ export default class DetailsTab extends Component {
 													label="Amount"
 													type="number"
 													fullWidth
+													margin="normal"
 													onChange={handleChange}
 													onBlur={handleBlur}
 													value={values.amount}
@@ -1358,6 +1437,12 @@ export default class DetailsTab extends Component {
 							</Button>
 						</DialogActions>
 					</Dialog>
+					<AddBillingImageDialog
+						open={this.state.addBillingImage}
+						paymentId={this.state.selectedPayment ? this.state.selectedPayment.id : ""}
+						handleImage={this.handleBillingAddImage}
+						handleCloseImage={this.handleCloseBillingAddImage}
+					/>
 				</div>
 			</>
 		);

@@ -4,30 +4,30 @@ namespace App\Http\Controllers;
 
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
     public function create(Request $request)
     {
-        if ($request->input('quantity') == 1) {
-            $user = User::create($request->all());
-            return response()->json($user, 200);
-        } else {
-            $users = array();
-            $quantity = $request->input('quantity');
-            $room_type_id = $request->input('room_type_id');
-            $now = Carbon::now();
-            for ($i = 0; $i < $quantity; $i++) {
-                $users[$i] = ["room_type_id" => $room_type_id, "id" => Str::uuid(), 'updated_at' => $now, 'created_at' => $now];
-            }
-            User::insert($users);
-            return response()->json([
-                "message" => "Operation successful!"
-            ], 200);
-        }
+        $user = User::create($request->all());
+        $user->password = Hash::make($request->password);
+        $user->role = 1;
+
+        $token = $user->createToken("hello", [])->accessToken;
+        return response([
+            'status' => 200,
+            'access_token' => $token,
+            'user_id' => $user->id,
+            'user' => $user,
+            'message' => 'Successful'
+        ])->cookie('name', $token, 20160);
     }
 
     public function getAll()
@@ -65,8 +65,6 @@ class UserController extends Controller
             ], 404);
         } else {
             $user->fill([
-                'email' => $request->email,
-                'role' => $request->role,
                 'honorific' => $request->honorific,
                 'firstname' => $request->firstname,
                 'lastname' => $request->lastname,
@@ -74,8 +72,23 @@ class UserController extends Controller
                 'contactno' => $request->contactno,
                 'address' => $request->address
             ]);
+            if ($request->email) {
+                $user->email = $request->email;
+            }
             $user->save();
             return response()->json($user, 200);
+        }
+    }
+
+    public function editPassword($id, Request $request)
+    {
+        $user = User::find($id);
+        if (Hash::check($request->oldPassword, $user->password)) {
+            $user->password = Hash::make($request->newPassword);
+            $user->save();
+            return response()->json("Sucess!", 200);
+        } else {
+            return response()->json("PasswordNotMatch", 401);
         }
     }
 
@@ -133,5 +146,32 @@ class UserController extends Controller
         }])->find($id);
         $bookings = $user->bookings;
         return response()->json($bookings, 200);
+    }
+
+    public function getUserNotifications($id)
+    {
+        $user = User::find($id);
+        $notifications = $user->notifications;
+        $unreadNotifications = $user->unreadNotifications;
+        return response()->json([
+            "notifications" =>$notifications,
+            "unreadNotifications" => count($unreadNotifications)
+        ]);
+    }
+
+    public function markOneNotificationRead($id, $notificationId)
+    {
+        $user = User::find($id);
+        $notification = DatabaseNotification::find($notificationId);
+        $notification->read_at = Carbon::now();
+        $notification->save();
+        return response()->json($notification);
+    }
+
+    public function maekAllNotificationRead($id)
+    {
+        $user = User::find($id);
+        $user->unreadNotifications->markAsRead();
+        return response()->json("Success!;");
     }
 }

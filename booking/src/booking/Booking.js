@@ -51,7 +51,8 @@ class Booking extends Component {
 
       handleDialog: false,
       dialogType: null,
-      submitting: false
+      submitting: false,
+      totalCharge: 0
     };
   }
 
@@ -171,7 +172,7 @@ class Booking extends Component {
         address: values.address,
         country: values.country,
         email: values.email,
-        contactno: "+639" + values.contactno,
+        contactno: "+63" + values.contactno,
         selectedRooms: values.selectedRooms,
         newAccount: true,
         checkInDate: moment(values.checkInDate).format("YYYY-MM-DD"),
@@ -206,10 +207,18 @@ class Booking extends Component {
           <div
             style={{
               display: "flex",
-              justifyContent: "center"
+              justifyContent: "center",
+              marginTop: "5%"
             }}
           >
-            <DatePicker setStateValue={this.setStateValue} {...this.props} validateCalled={this.state.validatedSteps[0]} />
+            <Paper
+              style={{
+                padding: "20px",
+                backgroundColor: "#E6E6E6"
+              }}
+            >
+              <DatePicker setStateValue={this.setStateValue} {...this.props} validateCalled={this.state.validatedSteps[0]} />
+            </Paper>
           </div>
         );
       case 1:
@@ -219,15 +228,26 @@ class Booking extends Component {
             {...this.props}
             datesFullyBooked={this.state.datesFullyBooked}
             validateCalled={this.state.validatedSteps[1]}
+            totalCharge={this.state.totalCharge || 0}
           />
         );
       case 2:
         return (
-          <GuestInfo setStateValue={this.setStateValue} {...this.props} validateCalled={this.state.validatedSteps[2]} />
+          <GuestInfo
+            setStateValue={this.setStateValue}
+            {...this.props}
+            validateCalled={this.state.validatedSteps[2]}
+            totalCharge={this.state.totalCharge}
+          />
         );
       case 3:
         return (
-          <Confirmation setStateValue={this.setStateValue} {...this.props} validateCalled={this.state.validatedSteps[3]} />
+          <Confirmation
+            setStateValue={this.setStateValue}
+            {...this.props}
+            validateCalled={this.state.validatedSteps[3]}
+            totalCharge={this.state.totalCharge}
+          />
         );
     }
   };
@@ -241,15 +261,20 @@ class Booking extends Component {
     });
   };
 
-  closeBookingPrompt = () => {
-    if (this.state.dialogType === "ERROR") {
-      this.setState({
-        activeStep: 0,
-        handleDialog: false,
-        dialogType: null
-      });
-    } else {
-      //reset
+  closeBookingPrompt = async () => {
+    try {
+      if (this.state.dialogType === "ERROR") {
+        this.setState({
+          activeStep: 0,
+          handleDialog: false,
+          dialogType: null
+        });
+      } else {
+        //reset
+        let { data } = await GET("/api/user");
+        this.props.history.replace("/home");
+      }
+    } catch (err) {
       window.location.reload();
     }
   };
@@ -301,7 +326,7 @@ class Booking extends Component {
       return (
         <div>
           <BookingLayout {...this.props}>
-            <Stepper activeStep={activeStep} alternativeLabel>
+            <Stepper activeStep={activeStep} alternativeLabel style={{ backgroundColor: "#f7f7f7" }}>
               {steps.map(label => (
                 <Step key={label.title}>
                   <StepLabel>

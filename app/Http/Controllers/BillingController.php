@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Billing;
 use App\Booking;
+use App\Notifications\PaymentAdded;
+use App\User;
 use Illuminate\Support\Facades\Storage;
 
 class BillingController extends Controller
@@ -46,6 +48,8 @@ class BillingController extends Controller
             $billing->fill([
                 'amount' => $request->amount,
                 'booking_id' => $request->booking_id,
+                'type' => $request->type,
+                'other' => $request->other
             ]);
             $billing->save();
             return response()->json($billing, 200);
@@ -62,6 +66,7 @@ class BillingController extends Controller
             ], 404);
         } else {
             Billing::destroy($id);
+
             return response()->json([
                 'status' => 200,
                 'message' => "You have successfully deleted the item"
@@ -97,6 +102,8 @@ class BillingController extends Controller
                 "message" => "No billing found"
             ], 404);
         }
+        $files = Storage::files("/public/billing/" . $id);
+        Storage::delete($files);
         $booking = Booking::find($request->id);
         if (!$booking) {
             return response()->json([
@@ -127,7 +134,7 @@ class BillingController extends Controller
 
     public function getFiles($id, Request $request)
     {
-        $files = Storage::files("/public/booking/" . $id);
+        $files = Storage::files("/public/billing/" . $id);
         $files = array_map(function ($file) {
             return  [
                 "src" => Storage::url($file),
@@ -141,13 +148,13 @@ class BillingController extends Controller
     {
         $file = $request->file('image');
         // return response()->json($files);
-        $file->store('public/booking/' . $id);
+        $file->store('public/billing/' . $id);
         return response()->json($request->all());
     }
 
     public function deleteFile($id, Request $request)
     {
-        $path = 'public/booking/' . $id . "/" . $request->query('filename');
+        $path = 'public/billing/' . $id . "/" . $request->query('filename');
         Storage::delete($path);
         return response()->json(200);
     }

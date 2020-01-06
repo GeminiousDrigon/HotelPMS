@@ -15,6 +15,7 @@ class CreateAdditionalBookRoomsTable extends Migration
     {
         Schema::create('additional_booking', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->integer('price');
             $table->uuid('additional_id');
             $table->foreign('additional_id')->references('id')->on('additionals');
             $table->uuid('booking_id');

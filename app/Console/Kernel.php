@@ -5,7 +5,11 @@ namespace App\Console;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use App\Booking;
+use App\Notifications\PendingBookingCleanup;
+use App\Notifications\UserBookingCanceled;
+use App\User;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Notification;
 
 class Kernel extends ConsoleKernel
 {
@@ -37,9 +41,14 @@ class Kernel extends ConsoleKernel
 
             foreach ($bookings as $booking) {
                 # code...
-                $booking->status = "NOSHOW";
+                $booking->status = "CANCELED";
                 $booking->save();
+                $user = User::find($booking->user_id);
+                $user->notify(new UserBookingCanceled($booking));
             }
+
+            $admins = User::whereIn('role_id', array(2, 3))->get();
+            Notification::send($admins, new PendingBookingCleanup(count($bookings)));
         })->everyMinute();
     }
 

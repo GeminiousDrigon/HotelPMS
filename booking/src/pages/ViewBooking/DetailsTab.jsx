@@ -57,6 +57,7 @@ import Icon from "@material-ui/core/Icon";
 import Snackbar from "@material-ui/core/Snackbar";
 import numeral from "numeral";
 import { GET, PUT, POST, DELETE } from "../../utils/restUtils";
+import QRCode from "qrcode";
 
 const NumeralComponent = React.memo(function Numeral(props) {
 	return numeral(props.number).format("0,0.00");
@@ -103,7 +104,10 @@ export default class DetailsTab extends Component {
 
 			//balance prompt
 			balancePrompt: false,
-			tabValue: 0
+			tabValue: 0,
+
+			//qr dialog
+			showQr: false
 		};
 	}
 
@@ -117,6 +121,7 @@ export default class DetailsTab extends Component {
 			this.setState({ fetching: true });
 			let { id } = this.props.match.params;
 			let { data } = await GET(`/api/booking/${id}`);
+			console.log(data);
 			data.total = data.billings.reduce((total, billing) => {
 				return total + billing.amount;
 			}, 0);
@@ -510,7 +515,9 @@ export default class DetailsTab extends Component {
 		});
 	};
 
-	//Additionals
+	//qr
+	handleShowQrCode = () => this.setState({ showQr: !this.state.showQr });
+
 	render() {
 		let {
 			fetching,
@@ -546,6 +553,10 @@ export default class DetailsTab extends Component {
 								padding: "25px"
 							}}
 						>
+							<Button variant="contained" color="primary" style={{ marginBottom: 20 }} onClick={this.handleShowQrCode}>
+								Show Qr Code
+							</Button>
+							<br />
 							<Grid container spacing={3}>
 								<Grid item xs={6}>
 									<div
@@ -1363,6 +1374,31 @@ export default class DetailsTab extends Component {
 							</Button>
 							<Button onClick={this.handleBalancePrompt} color="primary">
 								Okay
+							</Button>
+						</DialogActions>
+					</Dialog>
+
+					<Dialog
+						open={this.state.showQr}
+						onClose={this.handleShowQrCode}
+						aria-labelledby="alert-dialog-title"
+						aria-describedby="alert-dialog-description"
+						onEnter={() => {
+							QRCode.toCanvas(this.qrCodeELement, this.props.match.params.id, {
+								width: 400
+							});
+						}}
+					>
+						<DialogTitle id="alert-dialog-title">QR Code</DialogTitle>
+						<DialogContent>
+							<DialogContentText id="alert-dialog-description">Show to the receptionist.</DialogContentText>
+							<div style={{ width: "100%" }}>
+								<canvas ref={el => (this.qrCodeELement = el)} width="100%"></canvas>
+							</div>
+						</DialogContent>
+						<DialogActions>
+							<Button onClick={this.handleShowQrCode} color="primary">
+								Close
 							</Button>
 						</DialogActions>
 					</Dialog>

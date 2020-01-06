@@ -10,7 +10,7 @@ class Billing extends Model
     use Uuid;
 
     protected $fillable = [
-        'type', 'amount', 'booking_id'
+        'type', 'amount', 'booking_id', "other"
     ];
 
     public function booking()
