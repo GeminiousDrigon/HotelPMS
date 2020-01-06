@@ -214,11 +214,13 @@ export default function BookingLayout(props) {
 							}`}
 						</Button>
 					)}
-					<IconButton aria-label="delete" onClick={handleNotification} style={{ marginLeft: 5 }}>
-						<Badge badgeContent={notif.unreadNotifications} color="secondary">
-							<NotificationsIcon style={{ color: "white" }} />
-						</Badge>
-					</IconButton>
+					{!noUser && (
+						<IconButton aria-label="delete" onClick={handleNotification} style={{ marginLeft: 5 }}>
+							<Badge badgeContent={notif.unreadNotifications} color="secondary">
+								<NotificationsIcon style={{ color: "white" }} />
+							</Badge>
+						</IconButton>
+					)}
 
 					<Dialog
 						style={{ margin: "10px" }}

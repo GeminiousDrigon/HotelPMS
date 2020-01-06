@@ -308,11 +308,14 @@ export default function AdminLayout(props) {
 									}`}
 								</Button>
 							)}
-							<IconButton aria-label="delete" onClick={handleNotification} style={{ marginLeft: 5 }}>
-								<Badge badgeContent={notif.unreadNotifications} color="secondary">
-									<NotificationsIcon style={{ color: "white" }} />
-								</Badge>
-							</IconButton>
+
+							{!noUser && (
+								<IconButton aria-label="delete" onClick={handleNotification} style={{ marginLeft: 5 }}>
+									<Badge badgeContent={notif.unreadNotifications} color="secondary">
+										<NotificationsIcon style={{ color: "white" }} />
+									</Badge>
+								</IconButton>
+							)}
 						</div>
 					</Toolbar>
 				</AppBar>
