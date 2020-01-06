@@ -50,8 +50,12 @@ Route::middleware('auth:api')->group(function () {
     Route::get("/user/{id}", "UserController@getOne");
     Route::put("/user/{id}", "UserController@editOne");
     Route::put("/user/{id}/password", "UserController@editPassword");
+    Route::get("/user/{id}/notifications", "UserController@getUserNotifications");
+    Route::post("/user/{id}/notifications", "UserController@maekAllNotificationRead");
+    Route::post("/user/{id}/notifications/{notificationId}", "UserController@markOneNotificationRead");
     Route::post("/user/register", "UserController@create");
     //amenity-ok
+    
     Route::post("/amenity", "AmenityController@create");
     Route::get("/amenity", "AmenityController@getAll");
     Route::get("/amenity/{id}", "AmenityController@getOne");
@@ -82,7 +86,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post("/billing/{id}/booking", "BillingController@addBooking");
     Route::delete("/billing/{id}/booking", "BillingController@removeBooking");
     Route::get("/billing/{id}/file", "BillingController@getFiles");
-    Route::post("/billing/{id}/file", "BillingControleer@uploadFile");
+    Route::post("/billing/{id}/file", "BillingController@uploadFile");
     Route::delete("/billing/{id}/file", "BillingController@deleteFile");
     //booking
     Route::get("/booking", "BookingController@getAll");

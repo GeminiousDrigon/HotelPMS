@@ -13,19 +13,17 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Grid from "@material-ui/core/Grid";
+import IconButton from "@material-ui/core/IconButton";
+import Popover from "@material-ui/core/Popover";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import Divider from "@material-ui/core/Divider";
 import Badge from "@material-ui/core/Badge";
-import Paper from "@material-ui/core/Paper";
-import CloseIcon from "@material-ui/icons/Close";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
 import NotificationsIcon from "@material-ui/icons/Notifications";
-import { GET, PUT } from "../utils/restUtils";
+import { GET, PUT, POST } from "../utils/restUtils";
 import { useState, useEffect } from "react";
 import { Formik } from "formik";
-import axios from "axios";
 import {
 	InputAdornment,
 	FormControl,
@@ -36,6 +34,7 @@ import {
 	CircularProgress
 } from "@material-ui/core";
 import * as yup from "yup";
+import moment from "moment";
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -49,10 +48,14 @@ const useStyles = makeStyles(theme => ({
 	}
 }));
 
+const DateComponent = React.memo(function DateFormatter(props) {
+	return moment(new Date(props.date)).format("ddd, MMM D, YYYY hA");
+});
+
 export default function BookingLayout(props) {
 	const [open, setOpen] = React.useState(false);
-	const [failedUpdate, setFailedUpdate] = React.useState(false);
 	const [noUser, setNoUser] = React.useState(false);
+	const [failedUpdate, setFailedUpdate] = React.useState(false);
 	const [successPassword, setSuccessPassword] = React.useState(false);
 	const [user, setUser] = useState({
 		honorific: "",
@@ -65,9 +68,64 @@ export default function BookingLayout(props) {
 		email: "",
 		id: ""
 	});
+	const [notification, setNotification] = React.useState(false);
+	const [appBarRef, setAppBarRef] = React.useState(null);
+	const [notif, setNotif] = React.useState({
+		notifications: [],
+		unreadNotifications: 0
+	});
+
 	useEffect(() => {
 		getUser();
 	}, []);
+
+	const handleNotification = e => {
+		setAppBarRef(notification ? null : e.currentTarget);
+		setNotification(!notification);
+	};
+
+	const onExitNotification = async () => {
+		if (notif.unreadNotifications > 0) {
+			let { data } = await GET("/api/user");
+			let { id } = data;
+			await POST(`/api/user/${id}/notifications`);
+		}
+		setAppBarRef(null);
+		setNotification(!notification);
+	};
+
+	useEffect(() => {
+		getNotifications();
+		let id = setInterval(() => {
+			getNotifications();
+		}, 4500);
+		return () => {
+			clearInterval(id);
+		};
+	}, []);
+
+	const getNotifications = async paras => {
+		try {
+			let account;
+			account = await GET("/api/user");
+			account = account.data;
+			console.log(noUser, account);
+			let { data } = await GET(`/api/user/${account.id}/notifications`);
+			setNotif(data);
+		} catch (err) {
+			console.log(err);
+		}
+	};
+
+	const notificationGoToPage = async (path, notificationId) => {
+		try {
+			let { id } = props.user;
+			await POST(`/api/user/${id}/notifications/${notificationId}`);
+			props.history.push(path);
+		} catch (err) {
+			props.history.push(path);
+		}
+	};
 
 	const getUser = async () => {
 		try {
@@ -156,6 +214,11 @@ export default function BookingLayout(props) {
 							}`}
 						</Button>
 					)}
+					<IconButton aria-label="delete" onClick={handleNotification} style={{ marginLeft: 5 }}>
+						<Badge badgeContent={notif.unreadNotifications} color="secondary">
+							<NotificationsIcon style={{ color: "white" }} />
+						</Badge>
+					</IconButton>
 
 					<Dialog
 						style={{ margin: "10px" }}
@@ -505,6 +568,52 @@ export default function BookingLayout(props) {
 					</Dialog>
 				</Toolbar>
 			</AppBar>
+			<Popover
+				open={notification}
+				anchorEl={appBarRef}
+				onClose={onExitNotification}
+				anchorOrigin={{
+					vertical: "bottom",
+					horizontal: "right"
+				}}
+				transformOrigin={{
+					vertical: "top",
+					horizontal: "right"
+				}}
+			>
+				<div
+					style={{
+						width: 450
+					}}
+				>
+					<List>
+						{notif.notifications.map(item => {
+							return (
+								<>
+									<ListItem
+										alignItems="flex-start"
+										onClick={item.data.action_url ? () => notificationGoToPage(item.data.action_url, item.id) : () => {}}
+										button={item.data.action_url ? true : false}
+									>
+										<ListItemText
+											primary={item.data.title}
+											secondary={
+												<React.Fragment>
+													{item.data.message}
+													<Typography component="div" variant="caption" className={classes.inline} color="textPrimary">
+														<DateComponent date={item.created_at} />
+													</Typography>
+												</React.Fragment>
+											}
+										/>
+									</ListItem>
+									<Divider component="li" />
+								</>
+							);
+						})}
+					</List>
+				</div>
+			</Popover>
 
 			<main className={classes.content} style={{ padding: 25 }}>
 				{props.children}

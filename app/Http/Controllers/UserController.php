@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -144,5 +146,32 @@ class UserController extends Controller
         }])->find($id);
         $bookings = $user->bookings;
         return response()->json($bookings, 200);
+    }
+
+    public function getUserNotifications($id)
+    {
+        $user = User::find($id);
+        $notifications = $user->notifications;
+        $unreadNotifications = $user->unreadNotifications;
+        return response()->json([
+            "notifications" =>$notifications,
+            "unreadNotifications" => count($unreadNotifications)
+        ]);
+    }
+
+    public function markOneNotificationRead($id, $notificationId)
+    {
+        $user = User::find($id);
+        $notification = DatabaseNotification::find($notificationId);
+        $notification->read_at = Carbon::now();
+        $notification->save();
+        return response()->json($notification);
+    }
+
+    public function maekAllNotificationRead($id)
+    {
+        $user = User::find($id);
+        $user->unreadNotifications->markAsRead();
+        return response()->json("Success!;");
     }
 }

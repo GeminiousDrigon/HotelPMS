@@ -2,7 +2,7 @@ import React from "react";
 import { Switch, Route, Router, Redirect } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import _ from "lodash";
-import queryString from "query-string";
+import qs from "qs";
 
 //pages
 import Test from "./pages/Test";
@@ -53,12 +53,11 @@ export const history = createBrowserHistory({
 	forceRefresh: false
 });
 
-history.location = _.assign(history.location, {
-	search: queryString.parse(history.location.search)
-});
+
+history.location = Object.assign(history.location, { search: qs.parse(history.location.search) });
 
 history.listen((location, action) => {
-	location.search = queryString.parse(location.search);
+	location.search = qs.parse(location.search);
 });
 
 function App() {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Notifications\CreatedPendingBooking;
 use App\Booking;
 use App\User;
 use App\Room;
@@ -17,7 +18,9 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use App\Mail\BookingCreated;
+use App\Notifications\PaymentAdded;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
 
 class BookingController extends Controller
@@ -417,7 +420,7 @@ class BookingController extends Controller
         }
         $totalAmount = $booking->rooms->sum('price') + $totalAdditional;
 
-        if ($totalPayed >= $totalAmount * (0.10)) {
+        if ($totalPayed >= $totalAmount * (0.10) && $booking->status === "PENDING") {
             $newBooking = Booking::with('billings')->find($id);
             foreach ($newBooking->billings as $billing) {
                 # code...
@@ -427,7 +430,12 @@ class BookingController extends Controller
             $booking->status = "RESERVED";
             $booking->save();
         }
-
+        $user = User::find($booking->user_id);
+        $user->notify(new PaymentAdded([
+            "type" => $request->type,
+            "amount" => $request->amount,
+            'booking_id' => $booking->id
+        ]));
         // return response()->json($bookingBilling->billings->sum('amount'));
 
         return response()->json([
@@ -601,6 +609,9 @@ class BookingController extends Controller
             //     $message->from('bluepoolgarden2@gmail.com', 'Artisans Web');
             // });
 
+            $admins = User::whereIn('role_id', array(2, 3))->get();
+            Notification::send($admins, new CreatedPendingBooking(["booking_id" => "d9eac925-8d6c-492f-9581-4a8ccc94dbdf"]));
+
             return response()->json($booking);
         } else {
             //
@@ -613,6 +624,8 @@ class BookingController extends Controller
 
     public function createBooking(Request $request)
     {
+
+
 
         //check availability of the rooms selected room type
         $from_date = $request->input('checkInDate');
@@ -742,6 +755,10 @@ class BookingController extends Controller
         //TODO: add the additionals here
 
         Mail::to($user)->send(new BookingCreated($user, $booking));
+
+        //get all admin and receptionist users
+        $admins = User::whereIn('role_id', array(2, 3))->get();
+        Notification::send($admins, new CreatedPendingBooking($booking));
 
         return response()->json($selectedRooms, 200);
 

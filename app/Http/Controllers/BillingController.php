@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Billing;
 use App\Booking;
+use App\Notifications\PaymentAdded;
+use App\User;
 use Illuminate\Support\Facades\Storage;
 
 class BillingController extends Controller
@@ -46,7 +48,8 @@ class BillingController extends Controller
             $billing->fill([
                 'amount' => $request->amount,
                 'booking_id' => $request->booking_id,
-                'type' => $request->type
+                'type' => $request->type,
+                'other' => $request->other
             ]);
             $billing->save();
             return response()->json($billing, 200);
