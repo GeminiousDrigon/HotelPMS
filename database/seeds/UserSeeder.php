@@ -14,13 +14,13 @@ class UserSeeder extends Seeder
     public function run()
     {
         User::create([
-            "firstname" => "Domenic",
-            "middlename" => "Chuchu",
-            "lastname" => "Vega",
-            "email" => "dominic.vega@gmail.com",
+            "firstname" => "Anecita",
+            "middlename" => "Bautista",
+            "lastname" => "Ceniza",
+            "email" => "administrator@gmail.com",
             "password" => '$2y$12$//7oZunML/cx3MaKOJemvepsuCSAVQP2TDE5PqmHd8TbSi4efayLu',
             "password_updated" => 1,
-            "contactno" => "+639728463717",
+            "contactno" => "+639361180320",
             "role_id" => 2
         ]);
     }

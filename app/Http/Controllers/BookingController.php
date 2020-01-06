@@ -1,4 +1,4 @@
-<?php
+``<?php
 
 namespace App\Http\Controllers;
 
@@ -49,7 +49,6 @@ class BookingController extends Controller
         if ($request->query('type') === 'detail') {
             $booking = Booking::find($id);
         } else {
-
             $booking = Booking::with([
                 'user',
                 'rooms' => function ($query) {
@@ -660,7 +659,7 @@ class BookingController extends Controller
                 ];
             }
             return $output;
-            // if (!$roomType) {
+        // if (!$roomType) {
             //     return $output[$item['id']] = [
             //         "id" => [$item['id']]
             //     ];
@@ -693,10 +692,11 @@ class BookingController extends Controller
             ])->find($room['id']);
             $newRooms = array(); // bakante nga rooms
             for ($i = 0; $i < count($roomType->rooms); $i++) {
-                if (!(count($roomType->rooms[$i]->bookings) > 0))
+                if (!(count($roomType->rooms[$i]->bookings) > 0)) {
                     $newRooms[] = $roomType->rooms[$i];
+                }
             };
-            // return respon 
+            // return respon
             if (count($newRooms) >= count($room['selectedRooms'])) {
                 $selectedRooms[$room['id']]['bookable'] = true;
             } else {
