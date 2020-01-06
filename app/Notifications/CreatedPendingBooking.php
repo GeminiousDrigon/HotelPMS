@@ -68,7 +68,7 @@ class CreatedPendingBooking extends Notification
     {
         return [
             "booking_id" => $this->booking->id,
-            "action_url" => "/booking/view/".$this->booking->id,
+            "action_url" => "/bookings/view/".$this->booking->id,
             "message" => "A new pending booking has just been created!!",
             "title" => "New Pending Booking!"
         ];

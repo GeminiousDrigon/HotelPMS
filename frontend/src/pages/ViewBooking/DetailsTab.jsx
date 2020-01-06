@@ -543,7 +543,8 @@ export default class DetailsTab extends Component {
 		let open = Boolean(guestAnchorEl);
 		let openPayment = Boolean(paymentAnchorEl);
 		let openAdditional = Boolean(additionalAnchorEl);
-		let viewMode = booking.status === "CHECKEDOUT" || booking.status === "NOSHOW" ? true : false;
+		let viewMode =
+			booking.status === "CHECKEDOUT" || booking.status === "NOSHOW" || booking.status === "CANCELED" ? true : false;
 		return (
 			<>
 				<div>
@@ -587,11 +588,17 @@ export default class DetailsTab extends Component {
 											/>
 											<Typography variant="h5">Guest Information</Typography>
 										</div>
-										{status === "NOSHOW" || status === "CHECKEDOUT" || status === "PENDING" ? (
+										{status === "NOSHOW" || status === "CHECKEDOUT" || status === "PENDING" || status === "CANCELED" ? (
 											<div>
 												<Typography component="span">Status: </Typography>
 												<Typography component="span">
-													{status === "NOSHOW" ? "No show" : status === "CHECKEDOUT" ? "Checked-out" : status === "PENDING" && "Pending"}
+													{status === "NOSHOW"
+														? "No show"
+														: status === "CHECKEDOUT"
+														? "Checked-out"
+														: status === "PENDING"
+														? "Pending"
+														: status === "CANCELED" && "Canceled"}
 												</Typography>
 											</div>
 										) : (

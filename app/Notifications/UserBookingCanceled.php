@@ -64,7 +64,7 @@ class UserBookingCanceled extends Notification
     {
         return [
             "booking_id" => $this->booking->id,
-            "action_url" => "/booking/view/" . $this->booking->id,
+            "action_url" => "/bookings/view/" . $this->booking->id,
             "message" => "Your booking has been cancelled.",
             "title" => "New Pending Booking!"
         ];
