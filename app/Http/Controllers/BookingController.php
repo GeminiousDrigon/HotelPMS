@@ -18,6 +18,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use App\Mail\BookingCreated;
+use App\Mail\UserCreated;
 use App\Notifications\PaymentAdded;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
@@ -721,12 +722,15 @@ class BookingController extends Controller
             'address' => $request->address,
             'country' => $request->country
         ];
+        $password = Str::random(12);
 
-        $userDetails['password'] = Hash::make(Str::random(12));
+        $userDetails['password'] = Hash::make($password);
+        echo $password;
         $user = User::firstOrCreate([
             'email' => $request->email,
             'role_id' => 1
         ], $userDetails);
+        Mail::to($user)->send(new UserCreated($user, $password));
         //create the bookings;
         //from_date, to_date, status, user_id, room_type_id, room_id, price, with_breakfast
 
