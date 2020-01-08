@@ -192,12 +192,12 @@ export default function BookingLayout(props) {
           <Button color="inherit" onClick={() => props.history.push("/home")}>
             Home
           </Button>
-          <Typography variant="h2" style={{ fontWeight: "200" }}>
+          {/* <Typography variant="h2" style={{ fontWeight: "200" }}>
             I
           </Typography>
           <Tooltip title="Asia/Manila Dec. 02, 2019 10:10:10">
             <Button color="inherit">Local Timezone</Button>
-          </Tooltip>
+          </Tooltip> */}
           <Typography variant="h2" style={{ fontWeight: "200" }}>
             I
           </Typography>

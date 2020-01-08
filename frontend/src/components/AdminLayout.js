@@ -36,487 +36,487 @@ import moment from "moment";
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
-	root: {
-		display: "flex",
-		height: "100%"
-	},
-	appBar: {
-		zIndex: theme.zIndex.drawer + 5
-		// transition: theme.transitions.create(["width", "margin"], {
-		//     easing: theme.transitions.easing.sharp,
-		//     duration: theme.transitions.duration.leavingScreen
-		// })
-	},
-	appBarShift: {
-		marginLeft: drawerWidth
-		// width: `calc(100% - ${drawerWidth}px)`,
-		// transition: theme.transitions.create(["width", "margin"], {
-		//     easing: theme.transitions.easing.sharp,
-		//     duration: theme.transitions.duration.enteringScreen
-		// })
-	},
-	menuButton: {
-		marginRight: 36
-	},
-	hide: {
-		display: "none"
-	},
-	drawer: {
-		width: drawerWidth,
-		flexShrink: 0,
-		whiteSpace: "nowrap"
-	},
-	drawerOpen: {
-		width: drawerWidth,
-		transition: theme.transitions.create("width", {
-			easing: theme.transitions.easing.sharp,
-			duration: theme.transitions.duration.enteringScreen
-		}),
-		zIndex: "20 !important"
-	},
-	drawerClose: {
-		transition: theme.transitions.create("width", {
-			easing: theme.transitions.easing.sharp,
-			duration: theme.transitions.duration.leavingScreen
-		}),
-		overflowX: "hidden",
-		width: theme.spacing(7) + 1,
-		[theme.breakpoints.up("sm")]: {
-			width: theme.spacing(9) + 1
-		},
-		zIndex: "20 !important"
-	},
-	toolbar: {
-		display: "flex",
-		alignItems: "center",
-		justifyContent: "flex-end",
-		padding: "0 8px",
-		...theme.mixins.toolbar
-	},
-	content: {
-		flexGrow: 1,
-		overflow: "auto"
-	},
-	title: {
-		flexGrow: 1
-	}
+  root: {
+    display: "flex",
+    height: "100%"
+  },
+  appBar: {
+    zIndex: theme.zIndex.drawer + 5
+    // transition: theme.transitions.create(["width", "margin"], {
+    //     easing: theme.transitions.easing.sharp,
+    //     duration: theme.transitions.duration.leavingScreen
+    // })
+  },
+  appBarShift: {
+    marginLeft: drawerWidth
+    // width: `calc(100% - ${drawerWidth}px)`,
+    // transition: theme.transitions.create(["width", "margin"], {
+    //     easing: theme.transitions.easing.sharp,
+    //     duration: theme.transitions.duration.enteringScreen
+    // })
+  },
+  menuButton: {
+    marginRight: 36
+  },
+  hide: {
+    display: "none"
+  },
+  drawer: {
+    width: drawerWidth,
+    flexShrink: 0,
+    whiteSpace: "nowrap"
+  },
+  drawerOpen: {
+    width: drawerWidth,
+    transition: theme.transitions.create("width", {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen
+    }),
+    zIndex: "20 !important"
+  },
+  drawerClose: {
+    transition: theme.transitions.create("width", {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen
+    }),
+    overflowX: "hidden",
+    width: theme.spacing(7) + 1,
+    [theme.breakpoints.up("sm")]: {
+      width: theme.spacing(9) + 1
+    },
+    zIndex: "20 !important"
+  },
+  toolbar: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    padding: "0 8px",
+    ...theme.mixins.toolbar
+  },
+  content: {
+    flexGrow: 1,
+    overflow: "auto"
+  },
+  title: {
+    flexGrow: 1
+  }
 }));
 
 const DateComponent = React.memo(function DateFormatter(props) {
-	return moment(new Date(props.date)).format("ddd, MMM D, YYYY hA");
+  return moment(new Date(props.date)).format("ddd, MMM D, YYYY hA");
 });
 
 export default function AdminLayout(props) {
-	const classes = useStyles();
-	const [open, setOpen] = React.useState(true);
-	const [anchorEl, setAnchorEl] = React.useState(null);
-	const [notification, setNotification] = React.useState(false);
-	const [appBarRef, setAppBarRef] = React.useState(null);
-	const [notif, setNotif] = React.useState({
-		notifications: [],
-		unreadNotifications: 0
-	});
+  const classes = useStyles();
+  const [open, setOpen] = React.useState(true);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [notification, setNotification] = React.useState(false);
+  const [appBarRef, setAppBarRef] = React.useState(null);
+  const [notif, setNotif] = React.useState({
+    notifications: [],
+    unreadNotifications: 0
+  });
 
-	function handleDrawerOpen() {
-		setOpen(!open);
-	}
+  function handleDrawerOpen() {
+    setOpen(!open);
+  }
 
-	function handleDrawerClose() {
-		setOpen(false);
-	}
+  function handleDrawerClose() {
+    setOpen(false);
+  }
 
-	const goToPage = path => {
-		props.history.push(path);
-	};
+  const goToPage = path => {
+    props.history.push(path);
+  };
 
-	const handleNotification = e => {
-		setAppBarRef(notification ? null : e.currentTarget);
-		setNotification(!notification);
-	};
+  const handleNotification = e => {
+    setAppBarRef(notification ? null : e.currentTarget);
+    setNotification(!notification);
+  };
 
-	const onExitNotification = async () => {
-		if (notif.unreadNotifications > 0) {
-			let { id } = props.user;
-			await POST(`/api/user/${id}/notifications`);
-		}
-		setAppBarRef(null);
-		setNotification(!notification);
-	};
+  const onExitNotification = async () => {
+    if (notif.unreadNotifications > 0) {
+      let { id } = props.user;
+      await POST(`/api/user/${id}/notifications`);
+    }
+    setAppBarRef(null);
+    setNotification(!notification);
+  };
 
-	useEffect(() => {
-		getNotifications();
-		let id = setInterval(() => {
-			getNotifications();
-		}, 4500);
-		return () => {
-			clearInterval(id);
-		};
-	}, []);
+  useEffect(() => {
+    getNotifications();
+    let id = setInterval(() => {
+      getNotifications();
+    }, 4500);
+    return () => {
+      clearInterval(id);
+    };
+  }, []);
 
-	const getNotifications = async paras => {
-		try {
-			let { data } = await GET(`/api/user/${props.user.id}/notifications`);
-			setNotif(data);
-		} catch (err) {
-			console.log(err);
-		}
-	};
+  const getNotifications = async paras => {
+    try {
+      let { data } = await GET(`/api/user/${props.user.id}/notifications`);
+      setNotif(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-	const notificationGoToPage = async (path, notificationId) => {
-		try {
-			let { id } = props.user;
-			await POST(`/api/user/${id}/notifications/${notificationId}`);
-			props.history.push(path);
-		} catch (err) {
-			props.history.push(path);
-		}
-	};
+  const notificationGoToPage = async (path, notificationId) => {
+    try {
+      let { id } = props.user;
+      await POST(`/api/user/${id}/notifications/${notificationId}`);
+      props.history.push(path);
+    } catch (err) {
+      props.history.push(path);
+    }
+  };
 
-	const menus = [
-		{
-			name: "Calendar",
-			icon: <Icon>calendar_today</Icon>,
-			path: "/calendar"
-		},
-		{
-			name: "Walk-in",
-			icon: <HotelTwoToneIcon />,
-			path: "/walkin"
-		},
-		{
-			name: "Bookings",
-			icon: <EventTwoToneIcon />,
-			path: "/bookings"
-		},
-		{
-			name: "Accounts",
-			icon: <GroupTwoToneIcon />,
-			path: "/account"
-		},
-		{
-			name: "Property",
-			icon: <Icon>apartment</Icon>,
-			path: "/property"
-		},
-		{
-			name: "Reports",
-			icon: <DescriptionTwoToneIcon />,
-			items: [
-				{
-					name: "Summary",
-					icon: <PieChartIcon />,
-					path: "/reports/summary"
-				},
-				{
-					name: "Yearly Report",
-					icon: <CalendarViewDayIcon />,
-					path: "/reports/yearly"
-				}
-			]
-		}
-	];
+  const menus = [
+    {
+      name: "Calendar",
+      icon: <Icon>calendar_today</Icon>,
+      path: "/calendar"
+    },
+    {
+      name: "Walk-in",
+      icon: <HotelTwoToneIcon />,
+      path: "/walkin"
+    },
+    {
+      name: "Bookings",
+      icon: <EventTwoToneIcon />,
+      path: "/bookings"
+    },
+    {
+      name: "Accounts",
+      icon: <GroupTwoToneIcon />,
+      path: "/account"
+    },
+    {
+      name: "Property",
+      icon: <Icon>apartment</Icon>,
+      path: "/property"
+    },
+    {
+      name: "Reports",
+      icon: <DescriptionTwoToneIcon />,
+      items: [
+        {
+          name: "Summary",
+          icon: <PieChartIcon />,
+          path: "/reports/summary"
+        },
+        {
+          name: "Monthly Report",
+          icon: <CalendarViewDayIcon />,
+          path: "/reports/yearly"
+        }
+      ]
+    }
+  ];
 
-	const receptionistMenu = [
-		{
-			name: "Calendar",
-			icon: <Icon>calendar_today</Icon>,
-			path: "/calendar"
-		},
-		{
-			name: "Walk-in",
-			icon: <HotelTwoToneIcon />,
-			path: "/walkin"
-		},
-		{
-			name: "Bookings",
-			icon: <EventTwoToneIcon />,
-			path: "/bookings"
-		}
-	];
+  const receptionistMenu = [
+    {
+      name: "Calendar",
+      icon: <Icon>calendar_today</Icon>,
+      path: "/calendar"
+    },
+    {
+      name: "Walk-in",
+      icon: <HotelTwoToneIcon />,
+      path: "/walkin"
+    },
+    {
+      name: "Bookings",
+      icon: <EventTwoToneIcon />,
+      path: "/bookings"
+    }
+  ];
 
-	const onLogout = () => {
-		localStorage.removeItem("login");
-		localStorage.removeItem("user");
-		props.history.push("/sign-in");
-	};
-	const handleOpenMenu = event => {
-		setAnchorEl(event.currentTarget);
-	};
+  const onLogout = () => {
+    localStorage.removeItem("login");
+    localStorage.removeItem("user");
+    props.history.push("/sign-in");
+  };
+  const handleOpenMenu = event => {
+    setAnchorEl(event.currentTarget);
+  };
 
-	const handleCloseMenu = () => {
-		setAnchorEl(null);
-	};
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
 
-	const openMenu = Boolean(anchorEl);
+  const openMenu = Boolean(anchorEl);
 
-	return (
-		<>
-			<div className={classes.root}>
-				<CssBaseline />
-				<div className="d-print-none">
-					<AppBar
-						position="fixed"
-						className={clsx(classes.appBar, {
-							[classes.appBarShift]: open
-						})}
-						elevation={1}
-					>
-						<Toolbar>
-							<IconButton
-								color="inherit"
-								aria-label="open drawer"
-								onClick={handleDrawerOpen}
-								edge="start"
-								className={clsx(classes.menuButton)}
-							>
-								<MenuIcon />
-							</IconButton>
-							<Typography
-								variant="h6"
-								className={classes.title}
-								onClick={() => props.history.push("/")}
-								style={{ cursor: "pointer" }}
-							>
-								Bluepool Garden
-							</Typography>
-							<div ref={appBarRef}>
-								{/* <Button color="inherit" onClick={handleOpenMenu}>
+  return (
+    <>
+      <div className={classes.root}>
+        <CssBaseline />
+        <div className="d-print-none">
+          <AppBar
+            position="fixed"
+            className={clsx(classes.appBar, {
+              [classes.appBarShift]: open
+            })}
+            elevation={1}
+          >
+            <Toolbar>
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                onClick={handleDrawerOpen}
+                edge="start"
+                className={clsx(classes.menuButton)}
+              >
+                <MenuIcon />
+              </IconButton>
+              <Typography
+                variant="h6"
+                className={classes.title}
+                onClick={() => props.history.push("/")}
+                style={{ cursor: "pointer" }}
+              >
+                Bluepool Garden
+              </Typography>
+              <div ref={appBarRef}>
+                {/* <Button color="inherit" onClick={handleOpenMenu}>
                                     Logout
                                 </Button> */}
-								<IconButton aria-label="delete" onClick={handleNotification}>
-									<Badge badgeContent={notif.unreadNotifications} color="secondary">
-										<NotificationsIcon style={{ color: "white" }} />
-									</Badge>
-								</IconButton>
-							</div>
-							<div>
-								{/* <Button color="inherit" onClick={handleOpenMenu}>
+                <IconButton aria-label="delete" onClick={handleNotification}>
+                  <Badge badgeContent={notif.unreadNotifications} color="secondary">
+                    <NotificationsIcon style={{ color: "white" }} />
+                  </Badge>
+                </IconButton>
+              </div>
+              <div>
+                {/* <Button color="inherit" onClick={handleOpenMenu}>
                                     Logout
                                 </Button> */}
-								<IconButton aria-label="delete" onClick={handleOpenMenu}>
-									<AccountCircleIcon style={{ color: "white" }} />
-								</IconButton>
-							</div>
-						</Toolbar>
-					</AppBar>
-				</div>
+                <IconButton aria-label="delete" onClick={handleOpenMenu}>
+                  <AccountCircleIcon style={{ color: "white" }} />
+                </IconButton>
+              </div>
+            </Toolbar>
+          </AppBar>
+        </div>
 
-				<Drawer
-					id="drawer"
-					variant="permanent"
-					className={clsx(classes.drawer, {
-						[classes.drawerOpen]: open,
-						[classes.drawerClose]: !open,
-						["exclude-print"]: true
-					})}
-					classes={{
-						paper: clsx({
-							[classes.drawerOpen]: open,
-							[classes.drawerClose]: !open
-						})
-					}}
-					open={open}
-				>
-					<Divider />
-					<List style={{ marginTop: 70 }}>
-						{props.user.role.name === "ADMIN"
-							? menus.map((text, index) => {
-									if (text.items) {
-										return text.items.map((item, i) => {
-											if (i === 0) {
-												return (
-													<React.Fragment key={text.name}>
-														<ListItem key={text.name}>
-															<ListItemIcon>{text.icon}</ListItemIcon>
-															<ListItemText primary={text.name} />
-														</ListItem>
-														<Divider />
-														<ListItem
-															button
-															key={item.name}
-															onClick={() => goToPage(item.path)}
-															style={{
-																marginLeft: 5
-															}}
-														>
-															<ListItemIcon>{item.icon}</ListItemIcon>
-															<ListItemText primary={item.name} />
-														</ListItem>
-													</React.Fragment>
-												);
-											} else
-												return (
-													<ListItem button key={item.name} onClick={() => goToPage(item.path)} style={{ marginLeft: 5 }}>
-														<ListItemIcon>{item.icon}</ListItemIcon>
-														<ListItemText primary={item.name} />
-													</ListItem>
-												);
-										});
-									} else
-										return (
-											<ListItem button key={text.name} onClick={() => goToPage(text.path)}>
-												<ListItemIcon>{text.icon}</ListItemIcon>
-												<ListItemText primary={text.name} />
-											</ListItem>
-										);
-							  })
-							: receptionistMenu.map((text, index) => {
-									if (text.items) {
-										return text.items.map((item, i) => {
-											if (i === 0) {
-												return (
-													<React.Fragment key={text.name}>
-														<ListItem key={text.name}>
-															<ListItemIcon>{text.icon}</ListItemIcon>
-															<ListItemText primary={text.name} />
-														</ListItem>
-														<Divider />
-														<ListItem
-															button
-															key={item.name}
-															onClick={() => goToPage(item.path)}
-															style={{
-																marginLeft: 5
-															}}
-														>
-															<ListItemIcon>{item.icon}</ListItemIcon>
-															<ListItemText primary={item.name} />
-														</ListItem>
-													</React.Fragment>
-												);
-											} else
-												return (
-													<ListItem button key={item.name} onClick={() => goToPage(item.path)} style={{ marginLeft: 5 }}>
-														<ListItemIcon>{item.icon}</ListItemIcon>
-														<ListItemText primary={item.name} />
-													</ListItem>
-												);
-										});
-									} else
-										return (
-											<ListItem button key={text.name} onClick={() => goToPage(text.path)}>
-												<ListItemIcon>{text.icon}</ListItemIcon>
-												<ListItemText primary={text.name} />
-											</ListItem>
-										);
-							  })}
-					</List>
-					<Divider />
-				</Drawer>
+        <Drawer
+          id="drawer"
+          variant="permanent"
+          className={clsx(classes.drawer, {
+            [classes.drawerOpen]: open,
+            [classes.drawerClose]: !open,
+            ["exclude-print"]: true
+          })}
+          classes={{
+            paper: clsx({
+              [classes.drawerOpen]: open,
+              [classes.drawerClose]: !open
+            })
+          }}
+          open={open}
+        >
+          <Divider />
+          <List style={{ marginTop: 70 }}>
+            {props.user.role.name === "ADMIN"
+              ? menus.map((text, index) => {
+                  if (text.items) {
+                    return text.items.map((item, i) => {
+                      if (i === 0) {
+                        return (
+                          <React.Fragment key={text.name}>
+                            <ListItem key={text.name}>
+                              <ListItemIcon>{text.icon}</ListItemIcon>
+                              <ListItemText primary={text.name} />
+                            </ListItem>
+                            <Divider />
+                            <ListItem
+                              button
+                              key={item.name}
+                              onClick={() => goToPage(item.path)}
+                              style={{
+                                marginLeft: 5
+                              }}
+                            >
+                              <ListItemIcon>{item.icon}</ListItemIcon>
+                              <ListItemText primary={item.name} />
+                            </ListItem>
+                          </React.Fragment>
+                        );
+                      } else
+                        return (
+                          <ListItem button key={item.name} onClick={() => goToPage(item.path)} style={{ marginLeft: 5 }}>
+                            <ListItemIcon>{item.icon}</ListItemIcon>
+                            <ListItemText primary={item.name} />
+                          </ListItem>
+                        );
+                    });
+                  } else
+                    return (
+                      <ListItem button key={text.name} onClick={() => goToPage(text.path)}>
+                        <ListItemIcon>{text.icon}</ListItemIcon>
+                        <ListItemText primary={text.name} />
+                      </ListItem>
+                    );
+                })
+              : receptionistMenu.map((text, index) => {
+                  if (text.items) {
+                    return text.items.map((item, i) => {
+                      if (i === 0) {
+                        return (
+                          <React.Fragment key={text.name}>
+                            <ListItem key={text.name}>
+                              <ListItemIcon>{text.icon}</ListItemIcon>
+                              <ListItemText primary={text.name} />
+                            </ListItem>
+                            <Divider />
+                            <ListItem
+                              button
+                              key={item.name}
+                              onClick={() => goToPage(item.path)}
+                              style={{
+                                marginLeft: 5
+                              }}
+                            >
+                              <ListItemIcon>{item.icon}</ListItemIcon>
+                              <ListItemText primary={item.name} />
+                            </ListItem>
+                          </React.Fragment>
+                        );
+                      } else
+                        return (
+                          <ListItem button key={item.name} onClick={() => goToPage(item.path)} style={{ marginLeft: 5 }}>
+                            <ListItemIcon>{item.icon}</ListItemIcon>
+                            <ListItemText primary={item.name} />
+                          </ListItem>
+                        );
+                    });
+                  } else
+                    return (
+                      <ListItem button key={text.name} onClick={() => goToPage(text.path)}>
+                        <ListItemIcon>{text.icon}</ListItemIcon>
+                        <ListItemText primary={text.name} />
+                      </ListItem>
+                    );
+                })}
+          </List>
+          <Divider />
+        </Drawer>
 
-				<div
-					id="content-container"
-					className={classes.content}
-					style={Object.assign(
-						{},
-						{
-							overlow: "auto",
-							padding: props.noPadding ? "0" : "84px 24px 24px",
-							backgroundColor: "#f7f7f7",
-							flex: 1
-						},
-						props.style
-					)}
-				>
-					{props.children}
-				</div>
-			</div>
-			<Popover
-				open={openMenu}
-				anchorEl={anchorEl}
-				onClose={handleCloseMenu}
-				anchorOrigin={{
-					vertical: "bottom",
-					horizontal: "left"
-				}}
-				transformOrigin={{
-					vertical: "top",
-					horizontal: "center"
-				}}
-			>
-				<div
-					style={{
-						padding: 30,
-						display: "flex",
-						justifyContent: "center",
-						flexDirection: "column",
-						alignItems: "center"
-					}}
-				>
-					<Avatar
-						style={{
-							width: 80,
-							height: 80,
-							fontSize: "2.2em",
-							marginBottom: 10,
-							backgroundColor: "#3f51b5"
-						}}
-					>{`${props.user.firstname[0] + props.user.lastname[0]}`}</Avatar>
-					<Typography variant="h5">{`${props.user.firstname} ${props.user.middlename[0]}. ${props.user.lastname}`}</Typography>
-					<Typography>{props.user.role.name}</Typography>
+        <div
+          id="content-container"
+          className={classes.content}
+          style={Object.assign(
+            {},
+            {
+              overlow: "auto",
+              padding: props.noPadding ? "0" : "84px 24px 24px",
+              backgroundColor: "#f7f7f7",
+              flex: 1
+            },
+            props.style
+          )}
+        >
+          {props.children}
+        </div>
+      </div>
+      <Popover
+        open={openMenu}
+        anchorEl={anchorEl}
+        onClose={handleCloseMenu}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left"
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "center"
+        }}
+      >
+        <div
+          style={{
+            padding: 30,
+            display: "flex",
+            justifyContent: "center",
+            flexDirection: "column",
+            alignItems: "center"
+          }}
+        >
+          <Avatar
+            style={{
+              width: 80,
+              height: 80,
+              fontSize: "2.2em",
+              marginBottom: 10,
+              backgroundColor: "#3f51b5"
+            }}
+          >{`${props.user.firstname[0] + props.user.lastname[0]}`}</Avatar>
+          <Typography variant="h5">{`${props.user.firstname} ${props.user.middlename[0]}. ${props.user.lastname}`}</Typography>
+          <Typography>{props.user.role.name}</Typography>
 
-					<div
-						style={{
-							display: "flex",
-							flexDirection: "column",
-							marginTop: 30
-						}}
-					>
-						{/* <Button color="primary" onClick={onLogout} variant="text">
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              marginTop: 30
+            }}
+          >
+            {/* <Button color="primary" onClick={onLogout} variant="text">
                             Change Password
                         </Button> */}
-						<Button color="primary" onClick={onLogout} variant="text">
-							Logout
-						</Button>
-					</div>
-				</div>
-			</Popover>
-			<Popover
-				open={notification}
-				anchorEl={appBarRef}
-				onClose={onExitNotification}
-				anchorOrigin={{
-					vertical: "bottom",
-					horizontal: "right"
-				}}
-				transformOrigin={{
-					vertical: "top",
-					horizontal: "right"
-				}}
-			>
-				<div
-					style={{
-						width: 450
-					}}
-				>
-					<List>
-						{notif.notifications.map(item => {
-							return (
-								<>
-									<ListItem
-										alignItems="flex-start"
-										onClick={item.data.action_url ? () => notificationGoToPage(item.data.action_url, item.id) : () => {}}
-										button={item.data.action_url ? true : false}
-									>
-										<ListItemText
-											primary={item.data.title}
-											secondary={
-												<React.Fragment>
-													{item.data.message}
-													<Typography component="div" variant="caption" className={classes.inline} color="textPrimary">
-														<DateComponent date={item.created_at} />
-													</Typography>
-												</React.Fragment>
-											}
-										/>
-									</ListItem>
-									<Divider component="li" />
-								</>
-							);
-						})}
-					</List>
-				</div>
-			</Popover>
-		</>
-	);
+            <Button color="primary" onClick={onLogout} variant="text">
+              Logout
+            </Button>
+          </div>
+        </div>
+      </Popover>
+      <Popover
+        open={notification}
+        anchorEl={appBarRef}
+        onClose={onExitNotification}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right"
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right"
+        }}
+      >
+        <div
+          style={{
+            width: 450
+          }}
+        >
+          <List>
+            {notif.notifications.map(item => {
+              return (
+                <>
+                  <ListItem
+                    alignItems="flex-start"
+                    onClick={item.data.action_url ? () => notificationGoToPage(item.data.action_url, item.id) : () => {}}
+                    button={item.data.action_url ? true : false}
+                  >
+                    <ListItemText
+                      primary={item.data.title}
+                      secondary={
+                        <React.Fragment>
+                          {item.data.message}
+                          <Typography component="div" variant="caption" className={classes.inline} color="textPrimary">
+                            <DateComponent date={item.created_at} />
+                          </Typography>
+                        </React.Fragment>
+                      }
+                    />
+                  </ListItem>
+                  <Divider component="li" />
+                </>
+              );
+            })}
+          </List>
+        </div>
+      </Popover>
+    </>
+  );
 }

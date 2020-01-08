@@ -208,13 +208,13 @@ class Booking extends Component {
             style={{
               display: "flex",
               justifyContent: "center",
-              marginTop: "5%"
+              marginTop: "2%"
             }}
           >
             <Paper
               style={{
                 padding: "20px",
-                backgroundColor: "#E6E6E6"
+                backgroundColor: "#d8d8d8"
               }}
             >
               <DatePicker setStateValue={this.setStateValue} {...this.props} validateCalled={this.state.validatedSteps[0]} />

@@ -24,15 +24,15 @@ class RateSeeder extends Seeder
             Rate::create([
                 "id" => Str::uuid(),
                 'sleep' => $room->max_guest,
-                'price' => 200,
+                'price' => 1000,
                 'breakfast' => 0,
                 'room_type_id' => $room->id,
-                'name' => "Without breakfast"
+                'name' => "Room Only"
             ]);
             Rate::create([
                 "id" => Str::uuid(),
                 'sleep' => $room->max_guest,
-                'price' => 400,
+                'price' => 1250,
                 'breakfast' => 1,
                 'room_type_id' => $room->id,
                 'name' => "With breakfast"

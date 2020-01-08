@@ -27,7 +27,7 @@
                 You must pay for your advance payment through bank deposit or you may send the payment through Palawan Express Pera Padala.<br>
                 If you cannot pay for your advanced payment two(2) days before your check-in date, your booking will be cancelled.<br>
                 Reminder! Advance payment is not necessary if you book for today and your check-in date is tomorrow.<br>
-                You can deposit the payment in any BPI Bank via this information below!<br>
+                You can deposit the payment in any BDO Bank via this information below!<br>
                 <br>Acount Name: Maria Paz Bacareza <br><br>Accout Number: 1234 5678 9011 2234<br></p>
         </div>
     </div>

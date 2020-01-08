@@ -75,10 +75,20 @@ export default class DatePicker extends React.Component {
     const { values, touched, errors, handleChange, handleBlur, handleSubmit } = this.props;
     return (
       <div>
-        <Typography variant="h2" style={{ fontFamily: "Calibri", textAlign: "center" }}>
-          BLUEPOOL GARDEN
+        <Typography variant="h5" style={{ fontFamily: "Calibri", textAlign: "center", fontWeight: "400", color: "#1093bd" }}>
+          <p>
+            Please select{" "}
+            <font color="#c89553">
+              <b>arrival</b>
+            </font>{" "}
+            and{" "}
+            <font color="#c89553">
+              <b>departure</b>
+            </font>{" "}
+            dates to proceed.
+          </p>
         </Typography>
-        <div style={{ backgroundColor: "#7bcbfb", padding: "0px 20px 0px 20px" }}>
+        <div style={{ backgroundColor: "#d8d8d8", padding: "0px 20px 0px 20px" }}>
           <Grid container spacing={3}>
             <Grid item xs={12} xl={12} align="center">
               <KeyboardDatePicker

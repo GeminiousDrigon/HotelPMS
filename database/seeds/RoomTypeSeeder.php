@@ -17,53 +17,41 @@ class RoomTypeSeeder extends Seeder
     {
         //
 
+ 
         $room = RoomType::create([
-            'name' => "Single Room",
-            'room_size' => "50",
-            'bed_no' => "1",
-            'bed_type' => "SINGLE",
-            'max_guest' => "2",
-            'room_size_unit' => "m",
-            'description' => "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed feugiat quis eros sit amet iaculis. Donec mollis dui sed urna pulvinar, eu consectetur mi mattis. Integer molestie sapien a lectus malesuada, vitae fringilla augue dapibus. In eu nunc pulvinar erat luctus imperdiet in in nulla. Ut ornare mattis dolor, ut suscipit ante placerat eu. Nullam convallis magna magna, feugiat pretium nulla aliquam vel. Nulla elementum, enim at faucibus tempor, dolor quam imperdiet magna, nec volutpat enim lectus quis felis. Praesent sit amet neque ullamcorper, accumsan ante in, euismod urna. Etiam metus massa, sodales sed congue vel, posuere auctor eros. Cras non ultrices orci. Donec elementum gravida arcu, vel scelerisque lacus varius vel. Vivamus sed placerat sem. Vestibulum dignissim lacus eros, at volutpat tortor egestas vitae.",
-        ]);
+          'name' => "Single Room",
+          'room_size' => "9",
+          'bed_no' => "1",
+          'bed_type' => "SINGLE",
+          'max_guest' => "1",
+          'room_size_unit' => "m",
+          'description' => "A small and simple room offering everything necessary for a comfortable stay."]);
         $room2 = RoomType::create([
-            'name' => "Double Room",
-            'room_size' => "75",
-            'bed_no' => "1",
-            'bed_type' => "DOUBLE",
-            'max_guest' => "2",
-            'room_size_unit' => "cm",
-            'description' => "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed feugiat quis eros sit amet iaculis. Donec mollis dui sed urna pulvinar, eu consectetur mi mattis. Integer molestie sapien a lectus malesuada, vitae fringilla augue dapibus. In eu nunc pulvinar erat luctus imperdiet in in nulla. Ut ornare mattis dolor, ut suscipit ante placerat eu. Nullam convallis magna magna, feugiat pretium nulla aliquam vel. Nulla elementum, enim at faucibus tempor, dolor quam imperdiet magna, nec volutpat enim lectus quis felis. Praesent sit amet neque ullamcorper, accumsan ante in, euismod urna. Etiam metus massa, sodales sed congue vel, posuere auctor eros. Cras non ultrices orci. Donec elementum gravida arcu, vel scelerisque lacus varius vel. Vivamus sed placerat sem. Vestibulum dignissim lacus eros, at volutpat tortor egestas vitae.",
-        ]);
+          'name' => "Double Room",
+          'room_size' => "9",
+          'bed_no' => "1",
+          'bed_type' => "DOUBLE",
+          'max_guest' => "2",
+          'room_size_unit' => "m",
+          'description' => "A room assigned to two people. May have one or more beds."]);
         $room3 = RoomType::create([
-            'name' => "Twin Room",
-            'room_size' => "65",
-            'bed_no' => "2",
+            'name' => "Native Room",
+            'room_size' => "8",
+            'bed_no' => "1",
             'bed_type' => "SINGLE",
             'max_guest' => "2",
             'room_size_unit' => "m",
-            'description' => "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed feugiat quis eros sit amet iaculis. Donec mollis dui sed urna pulvinar, eu consectetur mi mattis. Integer molestie sapien a lectus malesuada, vitae fringilla augue dapibus. In eu nunc pulvinar erat luctus imperdiet in in nulla. Ut ornare mattis dolor, ut suscipit ante placerat eu. Nullam convallis magna magna, feugiat pretium nulla aliquam vel. Nulla elementum, enim at faucibus tempor, dolor quam imperdiet magna, nec volutpat enim lectus quis felis. Praesent sit amet neque ullamcorper, accumsan ante in, euismod urna. Etiam metus massa, sodales sed congue vel, posuere auctor eros. Cras non ultrices orci. Donec elementum gravida arcu, vel scelerisque lacus varius vel. Vivamus sed placerat sem. Vestibulum dignissim lacus eros, at volutpat tortor egestas vitae.",
-        ]);
+            'description' => "A room with a single sized bed.A room the most comfortable and feel relaxing."     ]);
         $room4 = RoomType::create([
-            'name' => "King Room",
-            'room_size' => "75",
+            'name' => "Master Room",
+            'room_size' => "15",
             'bed_no' => "1",
             'bed_type' => "KING",
-            'max_guest' => "2",
+            'max_guest' => "8",
             'room_size_unit' => "m",
-            'description' => "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed feugiat quis eros sit amet iaculis. Donec mollis dui sed urna pulvinar, eu consectetur mi mattis. Integer molestie sapien a lectus malesuada, vitae fringilla augue dapibus. In eu nunc pulvinar erat luctus imperdiet in in nulla. Ut ornare mattis dolor, ut suscipit ante placerat eu. Nullam convallis magna magna, feugiat pretium nulla aliquam vel. Nulla elementum, enim at faucibus tempor, dolor quam imperdiet magna, nec volutpat enim lectus quis felis. Praesent sit amet neque ullamcorper, accumsan ante in, euismod urna. Etiam metus massa, sodales sed congue vel, posuere auctor eros. Cras non ultrices orci. Donec elementum gravida arcu, vel scelerisque lacus varius vel. Vivamus sed placerat sem. Vestibulum dignissim lacus eros, at volutpat tortor egestas vitae.",
-        ]);
-        $room5 = RoomType::create([
-            'name' => "Queen Room",
-            'room_size' => "75",
-            'bed_no' => "1",
-            'bed_type' => "QUEEN",
-            'max_guest' => "2",
-            'room_size_unit' => "m",
-            'description' => "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed feugiat quis eros sit amet iaculis. Donec mollis dui sed urna pulvinar, eu consectetur mi mattis. Integer molestie sapien a lectus malesuada, vitae fringilla augue dapibus. In eu nunc pulvinar erat luctus imperdiet in in nulla. Ut ornare mattis dolor, ut suscipit ante placerat eu. Nullam convallis magna magna, feugiat pretium nulla aliquam vel. Nulla elementum, enim at faucibus tempor, dolor quam imperdiet magna, nec volutpat enim lectus quis felis. Praesent sit amet neque ullamcorper, accumsan ante in, euismod urna. Etiam metus massa, sodales sed congue vel, posuere auctor eros. Cras non ultrices orci. Donec elementum gravida arcu, vel scelerisque lacus varius vel. Vivamus sed placerat sem. Vestibulum dignissim lacus eros, at volutpat tortor egestas vitae.",
-        ]);
+            'description' => "A room with a king-sized bed. May be occupied by one or more people."       ]);
 
-        $rooms = array($room, $room2, $room3, $room4, $room5);
+        $rooms = array($room, $room2, $room3, $room4);
         foreach ($rooms as $room => $value) {
             # code...
             $amenities = Amenity::all();

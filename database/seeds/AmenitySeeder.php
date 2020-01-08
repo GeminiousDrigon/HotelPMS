@@ -18,11 +18,11 @@ class AmenitySeeder extends Seeder
             "icon" => "restaurant"
         ]);
         Amenity::create([
-            "name" => "Television",
+            "name" => "Cable Television",
             "icon" => "personal_video"
         ]);
         Amenity::create([
-            "name" => "Air Condition",
+            "name" => "Individually controlled air-conditioning",
             "icon" => "ac_unit"
         ]);
         Amenity::create([
@@ -34,16 +34,12 @@ class AmenitySeeder extends Seeder
             "icon" => "pool"
         ]);
         Amenity::create([
-            "name" => "Wifi",
+            "name" => "Free Wifi",
             "icon" => "wifi"
         ]);
         Amenity::create([
-            "name" => "Airport Pick-up",
-            "icon" => "airplanemode_active"
-        ]);
-        Amenity::create([
-            "name" => "Car rental",
-            "icon" => "directions_car"
+            "name" => "Telephone",
+            "icon" => "phone"
         ]);
     }
 }
