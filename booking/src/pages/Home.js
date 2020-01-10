@@ -144,7 +144,7 @@ export default class Home extends Component {
 									<TableHead>
 										<TableRow>
 											<TableCell align="left">Reserve Date</TableCell>
-											<TableCell align="left">Date</TableCell>
+											<TableCell align="left">Status</TableCell>
 											<TableCell align="left">Name</TableCell>
 											<TableCell align="left">Email</TableCell>
 											<TableCell align="right">Contact No</TableCell>
@@ -162,7 +162,7 @@ export default class Home extends Component {
 													<TableCell align="left">
 														{moment(reservation.from_date).format("MM/DD/YYYY") + " - " + moment(reservation.to_date).format("MM/DD/YYYY")}
 													</TableCell>
-													<TableCell align="left">{moment(reservation.created_at).format("MM/DD/YYYY hh:mm A")}</TableCell>
+													<TableCell align="left">{`${reservation.status[0]}${reservation.status.substring(1).toLowerCase()}`}</TableCell>
 													<TableCell align="left">{`${user.honorific}. ${user.firstname} ${user.middlename[0]}. ${user.lastname}`}</TableCell>
 													<TableCell align="left">{user.email}</TableCell>
 													<TableCell align="right">{user.contactno}</TableCell>
