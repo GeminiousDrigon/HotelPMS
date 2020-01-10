@@ -162,6 +162,7 @@ export default class DetailsTab extends Component {
 			let { data } = await GET(`/api/booking/${id}?type=detail`);
 
 			data.totalPrice = this.state.booking.totalPrice + data.additional_beds * 100;
+			data.balance = data.totalPrice - this.state.booking.total;
 			let booking = { ...this.state.booking, ...data };
 			console.log(booking);
 			this.setState({ booking });
