@@ -53,8 +53,15 @@ class ReportController extends Controller
             }
         }
 
-        $yearlyIncome = $yearlyIncome + $yearlyAdditionals;
-        $monthlyIncome = $monthlyIncome + $monthlyAdditionals;
+        $monthlyAdditionalBeds = BookRoom::whereHas('booking', function ($query) use ($thisMonth) {
+            $query->whereMonth('from_date', $thisMonth)->where('status', 'CHECKEDOUT');
+        })->sum('additional_beds');
+        $yearlyAdditionalBeds = BookRoom::whereHas('booking', function ($query) use ($thisYear) {
+            $query->whereYear('from_date', $thisYear)->where('status', 'CHECKEDOUT');
+        })->sum('additional_beds');
+
+        $yearlyIncome = $yearlyIncome + $yearlyAdditionals + $yearlyAdditionalBeds;
+        $monthlyIncome = $monthlyIncome + $monthlyAdditionals + $monthlyAdditionalBeds;
 
         $daysInMonth = array();
         for ($i = 1; $i <= $daysThisMonth; $i++) {
@@ -129,7 +136,7 @@ class ReportController extends Controller
             $monthName = Carbon::now()->month($month)->format('F');
             $year = Carbon::now()->year;
             $rooms =  BookRoom::whereHas('booking', function ($query) use ($year, $month) {
-                $query->whereYear('from_date', $year)->whereMonth('from_date', $month);
+                $query->whereYear('from_date', $year)->whereMonth('from_date', $month)->where('status', 'CHECKEDOUT');
             })->with(['booking.user', 'room', 'roomType'])->get();
             if (count($rooms) === 0) {
                 return response()->json([
@@ -185,7 +192,7 @@ class ReportController extends Controller
             $empty = true;
             for ($i = 0; $i < count($months); $i++) {
                 $rooms =  BookRoom::whereHas('booking', function ($query) use ($year, $i) {
-                    $query->whereYear('from_date', $year)->whereMonth('from_date', $i + 1);
+                    $query->whereYear('from_date', $year)->whereMonth('from_date', $i + 1)->where('status', 'CHECKEDOUT');
                 })->with(['booking.user', 'room', 'roomType'])->get();
                 $months[$i]['data'] = $rooms;
                 if (count($rooms) > 0) {

@@ -130,13 +130,31 @@ export default class Confirmation extends Component {
 								<Grid item xs={12}>
 									<div>
 										<Typography gutterBottom>{values.address}</Typography>
-										<Typography
-											variant="h6"
-											gutterBottom
-											style={{
-												paddingLeft: 10
-											}}
-										></Typography>
+										<Typography component="span"></Typography>
+									</div>
+								</Grid>
+								<Grid item xs={12}>
+									<div>
+										<Typography component="span">Payment method: </Typography>
+										<Typography gutterBottom component="span">
+											{values.payment_method}
+										</Typography>
+									</div>
+								</Grid>
+								<Grid item xs={12}>
+									<div>
+										<Typography component="span">Number of Children: </Typography>
+										<Typography component="span" gutterBottom>
+											{values.noOfChild}
+										</Typography>
+									</div>
+								</Grid>
+								<Grid item xs={12}>
+									<div>
+										<Typography component="span">Additional beds: </Typography>
+										<Typography component="span" gutterBottom>
+											{values.additional_beds}
+										</Typography>
 									</div>
 								</Grid>
 							</div>

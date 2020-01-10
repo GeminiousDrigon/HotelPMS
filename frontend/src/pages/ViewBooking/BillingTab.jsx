@@ -117,14 +117,8 @@ export default class BillingTab extends Component {
 			data.total = data.billings.reduce((total, billing) => {
 				return total + billing.amount;
 			}, 0);
-			data.totalPrice = data.rooms.reduce((totalPrice, room) => {
-				if (room.additional_beds > 0) {
-					totalPrice = totalPrice + room.additional_beds * 100 + room.price;
-					return totalPrice;
-				} else {
-					return totalPrice + room.price;
-				}
-			}, 0);
+			data.totalPrice = data.rooms.reduce((totalPrice, room) => totalPrice + room.price, 0);
+			data.totalPrice = data.totalPrice + data.additional_beds * 100;
 
 			data.totalPrice =
 				data.totalPrice +
@@ -155,6 +149,8 @@ export default class BillingTab extends Component {
 		try {
 			let { id } = this.props.match.params;
 			let { data } = await GET(`/api/booking/${id}?type=detail`);
+
+			data.totalPrice = this.state.booking.totalPrice + data.additional_beds * 100;
 			let booking = { ...this.state.booking, ...data };
 			console.log(booking);
 			this.setState({ booking });
@@ -613,6 +609,30 @@ export default class BillingTab extends Component {
 													></Typography>
 												</div>
 											</Grid>
+											<Grid item xs={12}>
+												<div>
+													<Typography component="span">Payment method: </Typography>
+													<Typography gutterBottom component="span">
+														{booking.payment_method}
+													</Typography>
+												</div>
+											</Grid>
+											<Grid item xs={12}>
+												<div>
+													<Typography component="span">Number of Children: </Typography>
+													<Typography component="span" gutterBottom>
+														{booking.noOfChild}
+													</Typography>
+												</div>
+											</Grid>
+											<Grid item xs={12}>
+												<div>
+													<Typography component="span">Additional beds: </Typography>
+													<Typography component="span" gutterBottom>
+														{booking.additional_beds}
+													</Typography>
+												</div>
+											</Grid>
 										</div>
 									</Paper>
 								</Grid>
@@ -775,20 +795,6 @@ export default class BillingTab extends Component {
 															</ListItemSecondaryAction>
 														</ListItem>
 														<Divider />
-														{room.additional_beds > 0 && (
-															<>
-																<ListItem>
-																	<ListItemText>
-																		{`${room.room.room_number}. ${room.room_type.name} `}({room.additional_beds} Additional bed(s))
-																	</ListItemText>
-																	<ListItemSecondaryAction>
-																		&#8369;
-																		<NumeralComponent number={room.additional_beds * 100} />
-																	</ListItemSecondaryAction>
-																</ListItem>
-																<Divider />
-															</>
-														)}
 													</React.Fragment>
 												);
 											})}
@@ -806,6 +812,16 @@ export default class BillingTab extends Component {
 													</React.Fragment>
 												);
 											})}
+											<React.Fragment>
+												<ListItem>
+													<ListItemText>{`${booking.additional_beds} Additional beds`} </ListItemText>
+													<ListItemSecondaryAction>
+														&#8369;
+														<NumeralComponent number={booking.additional_beds * 100} />
+													</ListItemSecondaryAction>
+												</ListItem>
+												<Divider />
+											</React.Fragment>
 											<ListItem>
 												<ListItemText>Total:</ListItemText>
 												<ListItemSecondaryAction>

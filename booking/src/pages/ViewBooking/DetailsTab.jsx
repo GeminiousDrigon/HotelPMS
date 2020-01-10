@@ -29,6 +29,7 @@ import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import FormHelperText from "@material-ui/core/FormHelperText";
+import OutlinedInput from "@material-ui/core/OutlinedInput";
 
 import Divider from "@material-ui/core/Divider";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -107,7 +108,9 @@ export default class DetailsTab extends Component {
 			tabValue: 0,
 
 			//qr dialog
-			showQr: false
+			showQr: false,
+
+			updatingDetails: false
 		};
 	}
 
@@ -125,14 +128,8 @@ export default class DetailsTab extends Component {
 			data.total = data.billings.reduce((total, billing) => {
 				return total + billing.amount;
 			}, 0);
-			data.totalPrice = data.rooms.reduce((totalPrice, room) => {
-				if (room.additional_beds > 0) {
-					totalPrice = totalPrice + room.additional_beds * 100 + room.price;
-					return totalPrice;
-				} else {
-					return totalPrice + room.price;
-				}
-			}, 0);
+			data.totalPrice = data.rooms.reduce((totalPrice, room) => totalPrice + room.price, 0);
+			data.totalPrice = data.totalPrice + data.additional_beds * 100;
 
 			data.totalPrice =
 				data.totalPrice +
@@ -163,6 +160,8 @@ export default class DetailsTab extends Component {
 		try {
 			let { id } = this.props.match.params;
 			let { data } = await GET(`/api/booking/${id}?type=detail`);
+
+			data.totalPrice = this.state.booking.totalPrice + data.additional_beds * 100;
 			let booking = { ...this.state.booking, ...data };
 			console.log(booking);
 			this.setState({ booking });
@@ -518,6 +517,30 @@ export default class DetailsTab extends Component {
 	//qr
 	handleShowQrCode = () => this.setState({ showQr: !this.state.showQr });
 
+	updateBookingDetails = async (values, actions) => {
+		try {
+			if (!this.state.updatingDetails) this.setState({ updatingDetails: true });
+			let { id } = this.props.match.params;
+			let booking = {
+				from_date: this.state.booking.from_date,
+				to_date: this.state.booking.to_date,
+				user_id: this.state.booking.user_id,
+				status: this.state.booking.status,
+				noOfChild: values.noOfChild,
+				additional_beds: values.additional_beds,
+				payment_method: values.payment_method,
+				checkin_date: this.state.booking.checkin_date,
+				checkout_date: this.state.booking.checkout_date
+			};
+			console.log(booking);
+			await PUT(`/api/booking/${id}`, booking);
+			this.setState({ updatingDetails: false });
+			this.getBookingDetails();
+		} catch (err) {
+			this.setState({ updatingDetails: false });
+		}
+	};
+
 	render() {
 		let {
 			fetching,
@@ -650,8 +673,142 @@ export default class DetailsTab extends Component {
 													></Typography>
 												</div>
 											</Grid>
+											<Grid item xs={12}>
+												<div>
+													<Typography component="span">Payment method: </Typography>
+													<Typography gutterBottom component="span">
+														{booking.payment_method}
+													</Typography>
+												</div>
+											</Grid>
+											<Grid item xs={12}>
+												<div>
+													<Typography component="span">Number of Children: </Typography>
+													<Typography component="span" gutterBottom>
+														{booking.noOfChild}
+													</Typography>
+												</div>
+											</Grid>
+											<Grid item xs={12}>
+												<div>
+													<Typography component="span">Additional beds: </Typography>
+													<Typography component="span" gutterBottom>
+														{booking.additional_beds}
+													</Typography>
+												</div>
+											</Grid>
 										</div>
 									</Paper>
+									{!viewMode && (
+										<div style={{ width: "100%", margin: "10px 0" }}>
+											<Grid container spacing={1}>
+												<Formik
+													initialValues={{
+														noOfChild: booking.noOfChild,
+														additional_beds: booking.additional_beds,
+														payment_method: booking.payment_method
+													}}
+													onSubmit={async (values, actions) => {
+														console.log(actions, values);
+														await this.updateBookingDetails(values);
+													}}
+													validationSchema={function() {
+														let schema = yup.object().shape({
+															payment_method: yup.string().required("Payment method is required!")
+														});
+														return schema;
+													}}
+													enableReinitialize={true}
+													render={props => {
+														const { values, touched, errors, handleChange, handleBlur, handleSubmit, isSubmitting, setFieldValue } = props;
+														const handleSelectChange = e => {
+															setFieldValue(e.target.name, e.target.value);
+														};
+														return (
+															<>
+																<Grid item xs={12} md={6}>
+																	<TextField
+																		fullWidth
+																		margin="dense"
+																		id="noOfChild"
+																		placeholder="Number of Children"
+																		variant="outlined"
+																		label="Number of Children"
+																		value={values.noOfChild}
+																		onChange={handleChange}
+																		onBlur={handleBlur}
+																		helperText={touched.noOfChild && errors.noOfChild ? errors.noOfChild : ""}
+																		error={touched.noOfChild && errors.noOfChild ? true : false}
+																		type="number"
+																	/>
+																</Grid>
+																<Grid item xs={12} md={6}>
+																	<TextField
+																		fullWidth
+																		margin="dense"
+																		id="additional_beds"
+																		placeholder="Additional Beds"
+																		variant="outlined"
+																		label="Additional Beds"
+																		value={values.additional_beds}
+																		onChange={handleChange}
+																		onBlur={handleBlur}
+																		helperText={touched.additional_beds && errors.additional_beds ? errors.additional_beds : ""}
+																		error={touched.additional_beds && errors.additional_beds ? true : false}
+																		type="number"
+																	/>
+																</Grid>
+																<Grid item xs={12} md={6}>
+																	<FormControl
+																		variant="outlined"
+																		error={touched.payment_method && errors.payment_method ? true : false}
+																		fullWidth
+																		labelWidth={100}
+																		margin="dense"
+																	>
+																		<InputLabel htmlFor="outlined-age-native-simple">Payment method</InputLabel>
+																		<Select
+																			name="payment_method"
+																			onChange={handleSelectChange}
+																			value={values.payment_method}
+																			SelectDisplayProps={{
+																				style: {
+																					display: "flex"
+																				}
+																			}}
+																			input={<OutlinedInput labelWidth={125} />}
+																		>
+																			<MenuItem value="">none</MenuItem>
+																			<MenuItem value={"Pera Padala"}>Pera Padala</MenuItem>
+																			<MenuItem value={"Bank"}>Bank</MenuItem>
+																		</Select>
+																		<FormHelperText>
+																			{touched.payment_method && errors.payment_method ? errors.payment_method : ""}
+																		</FormHelperText>
+																	</FormControl>
+																</Grid>
+																<Grid item xs={12}>
+																	<div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
+																		<Button variant="contained" color="primary" onClick={handleSubmit} size="small">
+																			Submit
+																			{this.state.updatingDetails && (
+																				<CircularProgress
+																					size={12}
+																					style={{
+																						marginLeft: 10
+																					}}
+																				/>
+																			)}
+																		</Button>
+																	</div>
+																</Grid>
+															</>
+														);
+													}}
+												/>
+											</Grid>
+										</div>
+									)}
 								</Grid>
 								<Grid item xs={6}>
 									<div

@@ -19,7 +19,7 @@ class CreateBillingsTable extends Migration
             $table->integer('amount');
             $table->uuid('booking_id');
             $table->string('type');
-            $table->string('other');
+            $table->string('other')->nullable();
             $table->foreign('booking_id')->references('id')->on('bookings');
             $table->boolean('delete')->default(1);
             $table->timestamps();

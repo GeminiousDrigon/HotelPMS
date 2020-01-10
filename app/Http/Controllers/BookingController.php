@@ -84,14 +84,15 @@ class BookingController extends Controller
                 "message" => "No booking found"
             ], 404);
         } else {
-            $booking->fill([
-                'from_date' => $request->from_date,
-                'to_date' => $request->to_date,
-                'user_id' => $request->user_id,
-                'status' => $request->status,
-                'checkin_date' => $request->checkin_date,
-                'checkout_date' => $request->checkout_date,
-            ]);
+            $booking->from_date = $request->from_date;
+            $booking->to_date = $request->to_date;
+            $booking->user_id = $request->user_id;
+            $booking->status = $request->status;
+            $booking->noOfChild = $request->noOfChild;
+            $booking->additional_beds = $request->additional_beds;
+            $booking->payment_method = $request->payment_method;
+            $booking->checkin_date = $request->checkin_date;
+            $booking->checkout_date = $request->checkout_date;
             $booking->save();
             return response()->json($booking, 200);
         }
@@ -660,7 +661,7 @@ class BookingController extends Controller
                 ];
             }
             return $output;
-        // if (!$roomType) {
+            // if (!$roomType) {
             //     return $output[$item['id']] = [
             //         "id" => [$item['id']]
             //     ];
@@ -726,10 +727,13 @@ class BookingController extends Controller
 
         $userDetails['password'] = Hash::make($password);
         echo $password;
-        $user = User::firstOrCreate([
+        $user = User::firstOrNew([
             'email' => $request->email,
             'role_id' => 1
         ], $userDetails);
+        if (!$user) {
+            $user->save();
+        }
         Mail::to($user)->send(new UserCreated($user, $password));
         //create the bookings;
         //from_date, to_date, status, user_id, room_type_id, room_id, price, with_breakfast
@@ -741,7 +745,10 @@ class BookingController extends Controller
             'checkin_date' => null,
             'checkout_date' => null,
             'status' => "PENDING",
-            'arrival' => $request->arrival
+            'arrival' => $request->arrival,
+            "noOfChild" => $request->noOfChild,
+            "additional_beds" => $request->additional_beds,
+            "payment_method" => $request->payment_method
         ]);
         foreach ($finalRooms as $selectedRoom) {
             //create one booking

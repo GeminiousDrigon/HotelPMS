@@ -178,14 +178,7 @@ export default class GuestInfo extends Component {
         return (
             <>
                 <div style={{ width: "100%" }}>
-                    <div style={{ margin: "20px 0", display: "flex", justifyContent: "space-between" }}>
-                        <Typography>Additional Beds: {room.additional_beds}</Typography>
-                        {!this.props.view && (
-                            <Button variant="outlined" size="small" color="primary" onClick={this.handleAddBedDialog}>
-                                Add Bed
-                            </Button>
-                        )}
-                    </div>
+                   
                     <div style={{ display: "flex", flexWrap: "wrap" }}>
                         {guests.length === 0 ? (
                             <div style={{ width: "100%", textAlign: "center", padding: "10px 0" }}>
@@ -214,62 +207,6 @@ export default class GuestInfo extends Component {
                     </div>
                     {content}
                 </div>
-                <Dialog
-                    open={this.state.addBedDialog}
-                    onClose={this.handleCloseAddBedDialog}
-                    aria-labelledby="form-dialog-title"
-                    fullWidth
-                    maxWidth="sm"
-                    onEnter={this.getBedDetails}
-                >
-                    <Formik
-                        initialValues={{ beds: this.state.addBedValue }}
-                        onSubmit={(values, actions) => {
-                            this.submitAddBed(values);
-                        }}
-                        enableReinitialize
-                        render={({ values, touched, errors, handleChange, handleBlur, handleSubmit, isSubmitting }) => (
-                            <>
-                                <DialogTitle id="form-dialog-title">Additional Beds</DialogTitle>
-                                <DialogContent>
-                                    {this.state.fetchingAddBed ? (
-                                        <div style={{ width: "100%", textAlign: "center" }}>
-                                            <CircularProgress />
-                                        </div>
-                                    ) : (
-                                        <>
-                                            <DialogContentText>Please enter the number of beds.</DialogContentText>
-                                            <TextField
-                                                id="beds"
-                                                placeholder="Additional beds"
-                                                label="Additional beds"
-                                                variant="outlined"
-                                                type="number"
-                                                margin="dense"
-                                                fullWidth
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                value={values.beds}
-                                                helperText={touched.beds && errors.beds ? errors.beds : ""}
-                                                error={touched.beds && errors.beds ? true : false}
-                                                disabled={submittingAddBed}
-                                            />
-                                        </>
-                                    )}
-                                </DialogContent>
-                                <DialogActions>
-                                    <Button onClick={this.handleCloseAddBedDialog} color="primary" disabled={submittingAddBed}>
-                                        Cancel
-                                    </Button>
-                                    <Button onClick={handleSubmit} color="primary" disabled={submittingAddBed}>
-                                        Add
-                                        {submittingAddBed && <CircularProgress size={10} style={{ marginLeft: 10 }} />}
-                                    </Button>
-                                </DialogActions>
-                            </>
-                        )}
-                    />
-                </Dialog>
             </>
         );
     }
