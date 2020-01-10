@@ -278,7 +278,15 @@ class RoomTypeController extends Controller
                         $newRooms[] = $roomType->rooms[$i];
                     }
                 };
-                $roomType["availableRooms"] = $roomType->rooms()->count();
+                $availableRooms = array();
+                foreach ($roomType->rooms as $room) {
+                    if (!count($room->bookings) > 0) {
+
+                        $availableRooms[] = $room;
+                    }
+                }
+                $roomType["availableRooms"] =  sizeof($availableRooms);
+
                 unset($roomType["rooms"]);
                 if (!count($newRooms) == 0) {
                     // $roomType['rooms'] = $newRooms;
