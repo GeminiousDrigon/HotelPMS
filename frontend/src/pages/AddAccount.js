@@ -46,9 +46,6 @@ class AddAccount extends Component {
 		if (this.state.edit) {
 			this.getAccount();
 		}
-		this.setState({
-			labelWidth: this.inputLabel.offsetWidth
-		});
 	}
 
 	onSaveAccount = async (values, actions) => {
@@ -319,8 +316,8 @@ class AddAccount extends Component {
 																	name="role_id"
 																	value={values.role_id}
 																	onChange={handleSelectChange}
+																	labelWidth={35}
 																	onBlur={handleSelectChange}
-																	labelWidth={this.state.labelWidth}
 																	fullWidth
 																	style={{ width: "100%" }}
 																>
