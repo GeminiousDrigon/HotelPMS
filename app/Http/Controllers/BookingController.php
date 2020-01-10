@@ -731,9 +731,7 @@ class BookingController extends Controller
             'email' => $request->email,
             'role_id' => 1
         ], $userDetails);
-        if (!$user) {
-            $user->save();
-        }
+        $user->save();
         Mail::to($user)->send(new UserCreated($user, $password));
         //create the bookings;
         //from_date, to_date, status, user_id, room_type_id, room_id, price, with_breakfast
