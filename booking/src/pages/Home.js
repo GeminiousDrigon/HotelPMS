@@ -28,177 +28,181 @@ import ConfirmDialog from "../Dialog/ConfirmDialog";
 import { GET, POST, PUT, DELETE } from "../utils/restUtils";
 
 export default class Home extends Component {
-	constructor(props) {
-		super(props);
+  constructor(props) {
+    super(props);
 
-		this.state = {
-			fetching: true,
-			reservations: [],
-			anchorEl: null,
-			selectedReservation: null,
-			checkInStatus: false,
-			noShowStatus: false,
-			updating: false
-		};
-	}
+    this.state = {
+      fetching: true,
+      reservations: [],
+      anchorEl: null,
+      selectedReservation: null,
+      checkInStatus: false,
+      noShowStatus: false,
+      updating: false
+    };
+  }
 
-	componentDidMount() {
-		this.getReservedBookings();
-	}
+  componentDidMount() {
+    this.getReservedBookings();
+  }
 
-	getReservedBookings = async () => {
-		try {
-			if (!this.state.fetching) this.setState({ fetching: true });
-			let { id } = this.props.user;
-			let { data } = await GET(`/api/user/${id}/booking`);
-			data = data.map(reservation => {
-				reservation.total = reservation.billings.reduce((total, billing) => {
-					return total + billing.amount;
-				}, 0);
-				reservation.totalPrice = reservation.rooms.reduce((totalPrice, room) => {
-					if (room.additional_beds > 0) {
-						totalPrice = totalPrice + room.additional_beds * 100 + room.price;
-						return totalPrice;
-					} else {
-						return totalPrice + room.price;
-					}
-				}, 0);
-				return reservation;
-			});
-			console.log(data);
-			this.setState({
-				fetching: false,
-				reservations: data
-			});
-		} catch (err) {
-			console.log(err);
-			this.setState({ fetching: false });
-		}
-	};
+  getReservedBookings = async () => {
+    try {
+      if (!this.state.fetching) this.setState({ fetching: true });
+      let { id } = this.props.user;
+      let { data } = await GET(`/api/user/${id}/booking`);
+      data = data.map(reservation => {
+        reservation.total = reservation.billings.reduce((total, billing) => {
+          return total + billing.amount;
+        }, 0);
+        reservation.totalPrice = reservation.rooms.reduce((totalPrice, room) => {
+          if (room.additional_beds > 0) {
+            totalPrice = totalPrice + room.additional_beds * 100 + room.price;
+            return totalPrice;
+          } else {
+            return totalPrice + room.price;
+          }
+        }, 0);
+        return reservation;
+      });
+      console.log(data);
+      this.setState({
+        fetching: false,
+        reservations: data
+      });
+    } catch (err) {
+      console.log(err);
+      this.setState({ fetching: false });
+    }
+  };
 
-	// onMoreAction = (e, id) => {
-	//     this.setState({ anchorEl: e.currentTarget, selectedReservation: id });
-	// };
+  // onMoreAction = (e, id) => {
+  //     this.setState({ anchorEl: e.currentTarget, selectedReservation: id });
+  // };
 
-	// onCloseMoreAction = () => this.setState({ anchorEl: null, selectedReservation: null });
+  // onCloseMoreAction = () => this.setState({ anchorEl: null, selectedReservation: null });
 
-	// handleCloseCheckin = () => this.setState({ checkInStatus: false });
+  // handleCloseCheckin = () => this.setState({ checkInStatus: false });
 
-	// handleOpenCheckin = () => {
-	//     this.setState({ checkInStatus: true, anchorEl: null });
-	// };
+  // handleOpenCheckin = () => {
+  //     this.setState({ checkInStatus: true, anchorEl: null });
+  // };
 
-	// handleCloseNoShow = () => this.setState({ noShowStatus: false });
+  // handleCloseNoShow = () => this.setState({ noShowStatus: false });
 
-	// onConfirmCheckin = async () => {
-	//     //update the status of reservation
-	//     try {
-	//         let { selectedReservation } = this.state;
-	//         let { booking, room, room_type, ...allReservation } = selectedReservation;
-	//         await axios.put(`/api/bookroom/${selectedReservation.id}`, {
-	//             ...allReservation,
-	//             status: "CHECKEDIN"
-	//         });
-	//         this.setState({ selectedReservation: null, anchorEl: null, checkInStatus: false });
-	//         this.getReservedBookings();
-	//     } catch (err) {
-	//         console.log(err);
-	//     }
-	// };
+  // onConfirmCheckin = async () => {
+  //     //update the status of reservation
+  //     try {
+  //         let { selectedReservation } = this.state;
+  //         let { booking, room, room_type, ...allReservation } = selectedReservation;
+  //         await axios.put(`/api/bookroom/${selectedReservation.id}`, {
+  //             ...allReservation,
+  //             status: "CHECKEDIN"
+  //         });
+  //         this.setState({ selectedReservation: null, anchorEl: null, checkInStatus: false });
+  //         this.getReservedBookings();
+  //     } catch (err) {
+  //         console.log(err);
+  //     }
+  // };
 
-	// onConfirmNoShow = () => {
-	//     //update the status of reservation
-	// };
+  // onConfirmNoShow = () => {
+  //     //update the status of reservation
+  // };
 
-	viewReservation = id => {
-		console.log(id);
-		let hostname = window.location.hostname;
-		let port = window.location.port;
-		window.open(`http://${hostname}:${port}/bookings/view/${id}`);
-	};
+  viewReservation = id => {
+    console.log(id);
+    let hostname = window.location.hostname;
+    let port = window.location.port;
+    window.open(`http://${hostname}:${port}/bookings/view/${id}`);
+  };
 
-	render() {
-		const { anchorEl, checkInStatus, noShowStatus, updating } = this.state;
-		const open = Boolean(anchorEl);
-		return (
-			<AdminLayout {...this.props}>
-				<div
-					style={{
-						margin: "auto",
-						display: "flex",
-						justifyContent: "center",
-						flexDirection: "column",
-						padding: 25
-					}}
-				>
-					<Paper style={{ backgroundColor: "white", padding: 20 }}>
-						{updating && <LinearProgress />}
-						<Typography variant="h5">Reservation(s)</Typography>
-						{this.state.fetching ? (
-							<div style={{ width: "100%", textAlign: "center", padding: "50px 0" }}>
-								<CircularProgress />
-							</div>
-						) : (
-							<>
-								<Table>
-									<TableHead>
-										<TableRow>
-											<TableCell align="left">Reserve Date</TableCell>
-											<TableCell align="left">Status</TableCell>
-											<TableCell align="left">Name</TableCell>
-											<TableCell align="left">Email</TableCell>
-											<TableCell align="right">Contact No</TableCell>
-											<TableCell align="right">Number of Rooms</TableCell>
-											<TableCell align="right">Total Price</TableCell>
-											<TableCell align="right">Amount Paid</TableCell>
-											<TableCell align="left">Action</TableCell>
-										</TableRow>
-									</TableHead>
-									<TableBody>
-										{this.state.reservations.map((reservation, i, array) => {
-											const { user, rooms, id } = reservation;
-											return (
-												<TableRow key={reservation.id}>
-													<TableCell align="left">
-														{moment(reservation.from_date).format("MM/DD/YYYY") + " - " + moment(reservation.to_date).format("MM/DD/YYYY")}
-													</TableCell>
-													<TableCell align="left">{`${reservation.status[0]}${reservation.status.substring(1).toLowerCase()}`}</TableCell>
-													<TableCell align="left">{`${user.honorific}. ${user.firstname} ${user.middlename[0]}. ${user.lastname}`}</TableCell>
-													<TableCell align="left">{user.email}</TableCell>
-													<TableCell align="right">{user.contactno}</TableCell>
-													<TableCell align="right">{rooms.length}</TableCell>
-													<TableCell align="right" style={{ color: "blue" }}>
-														P{reservation.totalPrice.toFixed(2)}
-													</TableCell>
-													<TableCell align="right" style={{ color: "blue" }}>
-														P{reservation.total.toFixed(2)}
-													</TableCell>
-													<TableCell align="left">
-														<IconButton
-															aria-label="more"
-															aria-controls="long-menu"
-															aria-haspopup="true"
-															// onClick={e => this.onMoreAction(e, reservation)}
-															onClick={e => this.viewReservation(id)}
-															size="small"
-														>
-															<OpenInNewIcon style={{ fontSize: "1.25em" }} />
-														</IconButton>
-													</TableCell>
-												</TableRow>
-											);
-										})}
-									</TableBody>
-								</Table>
-								{/* <Menu id="long-menu" anchorEl={anchorEl} open={open} onClose={this.onCloseMoreAction}>
+  render() {
+    const { anchorEl, checkInStatus, noShowStatus, updating } = this.state;
+    const open = Boolean(anchorEl);
+    return (
+      <AdminLayout {...this.props}>
+        <div
+          style={{
+            margin: "auto",
+            display: "flex",
+            justifyContent: "center",
+            flexDirection: "column",
+            padding: 25
+          }}
+        >
+          <Paper style={{ backgroundColor: "white", padding: 20 }}>
+            {updating && <LinearProgress />}
+            <Typography variant="h5">BOOKING(s)</Typography>
+            {this.state.fetching ? (
+              <div style={{ width: "100%", textAlign: "center", padding: "50px 0" }}>
+                <CircularProgress />
+              </div>
+            ) : (
+              <>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell align="left">Reserve Date</TableCell>
+                      <TableCell align="left">Status</TableCell>
+                      <TableCell align="left">Name</TableCell>
+                      <TableCell align="left">Email</TableCell>
+                      <TableCell align="right">Contact No</TableCell>
+                      <TableCell align="right">Number of Rooms</TableCell>
+                      <TableCell align="right">Total Price</TableCell>
+                      <TableCell align="right">Amount Paid</TableCell>
+                      <TableCell align="left">Action</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {this.state.reservations.map((reservation, i, array) => {
+                      const { user, rooms, id } = reservation;
+                      return (
+                        <TableRow key={reservation.id}>
+                          <TableCell align="left">
+                            {moment(reservation.from_date).format("MM/DD/YYYY") +
+                              " - " +
+                              moment(reservation.to_date).format("MM/DD/YYYY")}
+                          </TableCell>
+                          <TableCell align="left">{`${reservation.status[0]}${reservation.status
+                            .substring(1)
+                            .toLowerCase()}`}</TableCell>
+                          <TableCell align="left">{`${user.honorific}. ${user.firstname} ${user.middlename[0]}. ${user.lastname}`}</TableCell>
+                          <TableCell align="left">{user.email}</TableCell>
+                          <TableCell align="right">{user.contactno}</TableCell>
+                          <TableCell align="right">{rooms.length}</TableCell>
+                          <TableCell align="right" style={{ color: "blue" }}>
+                            P{reservation.totalPrice.toFixed(2)}
+                          </TableCell>
+                          <TableCell align="right" style={{ color: "blue" }}>
+                            P{reservation.total.toFixed(2)}
+                          </TableCell>
+                          <TableCell align="left">
+                            <IconButton
+                              aria-label="more"
+                              aria-controls="long-menu"
+                              aria-haspopup="true"
+                              // onClick={e => this.onMoreAction(e, reservation)}
+                              onClick={e => this.viewReservation(id)}
+                              size="small"
+                            >
+                              <OpenInNewIcon style={{ fontSize: "1.25em" }} />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+                {/* <Menu id="long-menu" anchorEl={anchorEl} open={open} onClose={this.onCloseMoreAction}>
                                     <MenuItem onClick={this.handleOpenCheckin}>Check-in</MenuItem>
                                     <MenuItem>Mark as no-show</MenuItem>
                                 </Menu> */}
-							</>
-						)}
-					</Paper>
-				</div>
-				{/* <ConfirmDialog
+              </>
+            )}
+          </Paper>
+        </div>
+        {/* <ConfirmDialog
                     title="Are you sure?"
                     content="Are you sure you want to check in this reservation?"
                     open={checkInStatus}
@@ -212,7 +216,7 @@ export default class Home extends Component {
                     onConfirm={this.onConfirmNoShow}
                     handleClose={this.handleCloseNoShow}
                 /> */}
-			</AdminLayout>
-		);
-	}
+      </AdminLayout>
+    );
+  }
 }

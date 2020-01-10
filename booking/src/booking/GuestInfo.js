@@ -342,8 +342,19 @@ export default class GuestInfo extends Component {
 										type="number"
 									/>
 								</Grid>
+								{/* <Grid item xs={12} md={6}>
+								
+								</Grid> */}
 								<Grid item xs={12} md={6}>
-									<FormControl
+									<div
+										style={{
+											display: "flex",
+											flexDirection: "column"
+										}}
+									>
+										<Paper style={{ padding: "20px", backgroundColor: "#efefef", textAlign: "justify" }}>
+											<Typography style={{ fontSize: "14px" }}>Choose your payment method</Typography><br></br>
+                      <FormControl
 										variant="outlined"
 										error={(validateCalled || touched.payment_method) && errors.payment_method ? true : false}
 										fullWidth
@@ -369,17 +380,6 @@ export default class GuestInfo extends Component {
 											{(validateCalled || touched.payment_method) && errors.payment_method ? errors.payment_method : ""}
 										</FormHelperText>
 									</FormControl>
-								</Grid>
-								<Grid item xs={12} md={8}>
-									<div
-										style={{
-											display: "flex",
-											flexDirection: "column"
-										}}
-									>
-										<Paper style={{ padding: "20px", backgroundColor: "#efefef" }}>
-											<Typography style={{ fontSize: "14px" }}>Choose your payment method</Typography>
-
 											<div>
 												<img src={palawan} style={{ marginRight: "10px" }} width="18%"></img>
 												<img src={cebuana} style={{ marginRight: "10px" }} width="18%"></img>

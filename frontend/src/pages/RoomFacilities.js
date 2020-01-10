@@ -31,152 +31,133 @@ import axios from "axios";
 import { GET, DELETE } from "../utils/restUtils";
 
 const useStyles = makeStyles(theme => ({
-    fab: {
-        margin: theme.spacing(1)
-    },
-    extendedIcon: {
-        marginRight: theme.spacing(1)
-    }
+  fab: {
+    margin: theme.spacing(1)
+  },
+  extendedIcon: {
+    marginRight: theme.spacing(1)
+  }
 }));
 
 export default class RoomFacilities extends Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this.state = {
-            facilities: [],
-            anchorEl: null,
-            facilityId: null
-        };
+    this.state = {
+      facilities: [],
+      anchorEl: null,
+      facilityId: null
+    };
+  }
+
+  componentDidMount() {
+    this.getAllFacilities();
+  }
+
+  getAllFacilities = async () => {
+    try {
+      let { data } = await GET("/api/amenity");
+      console.log(data);
+      this.setState({ facilities: data });
+    } catch (err) {
+      console.log(err);
     }
+  };
 
-    componentDidMount() {
-        this.getAllFacilities();
+  deleteFacility = async () => {
+    try {
+      this.setState({ anchorEl: null });
+      let id = this.state.facilityId;
+      await DELETE(`/api/amenity/${id}`);
+
+      this.setState({ facilityId: null });
+      this.getAllFacilities();
+    } catch (err) {
+      console.log(err);
     }
+  };
 
-    getAllFacilities = async () => {
-        try {
-            let { data } = await GET("/api/amenity");
-            console.log(data);
-            this.setState({ facilities: data });
-        } catch (err) {
-            console.log(err);
-        }
-    };
+  handleClick = (e, id) =>
+    this.setState({
+      anchorEl: e.currentTarget,
+      facilityId: id
+    });
 
-    deleteFacility = async () => {
-        try {
-            this.setState({anchorEl: null})
-            let id = this.state.facilityId;
-            await DELETE(`/api/amenity/${id}`);
+  handleClose = () => {
+    this.setState({ anchorEl: null, facilityId: null });
+  };
 
-            this.setState({ facilityId: null });
-            this.getAllFacilities();
-        } catch (err) {
-            console.log(err);
-        }
-    };
+  editFacility = () => this.props.history.push(`/roomfacilities/${this.state.facilityId}`);
 
-    handleClick = (e, id) =>
-        this.setState({
-            anchorEl: e.currentTarget,
-            facilityId: id
-        });
+  addFacilities = () => this.props.history.push("/addfacilities");
 
-    handleClose = () => {
-        this.setState({ anchorEl: null, facilityId: null });
-    };
-
-    editFacility = () =>
-        this.props.history.push(`/roomfacilities/${this.state.facilityId}`);
-
-    addFacilities = () => this.props.history.push("/addfacilities");
-
-    render() {
-        let { anchorEl } = this.state;
-        let open = Boolean(anchorEl);
-        return (
-            <>
-                <div
-                    style={{
-                        margin: "auto",
-                        display: "flex",
-                        justifyContent: "center",
-                        flexDirection: "column",
-                        width: "50%"
-                    }}
-                >
-                    <Paper
-                        style={{
-                            backgroundColor: "white",
-                            padding: 20
-                        }}
-                    >
-                        <div
-                            style={{
-                                display: "flex",
-                                justifyContent: "space-between"
-                            }}
+  render() {
+    let { anchorEl } = this.state;
+    let open = Boolean(anchorEl);
+    return (
+      <>
+        <div
+          style={{
+            margin: "auto",
+            display: "flex",
+            justifyContent: "center",
+            flexDirection: "column",
+            width: "50%"
+          }}
+        >
+          <Paper
+            style={{
+              backgroundColor: "white",
+              padding: 20
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between"
+              }}
+            >
+              <Typography variant="h5">Amenities</Typography>
+              <Tooltip title="Add Facility">
+                <IconButton variant="contained" color="primary" onClick={this.addFacilities}>
+                  <Icon>add</Icon>
+                </IconButton>
+              </Tooltip>
+            </div>
+            <div style={{ width: "100%" }}>
+              <List>
+                {this.state.facilities.map((el, i, collection) => {
+                  return (
+                    <div key={el.id}>
+                      <ListItem>
+                        <Icon
+                          color="primary"
+                          style={{
+                            marginRight: 10
+                          }}
                         >
-                            <Typography variant="h5">Additionals</Typography>
-                            <Tooltip title="Add Facility">
-                                <IconButton
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={this.addFacilities}
-                                >
-                                    <Icon>add</Icon>
-                                </IconButton>
-                            </Tooltip>
-                        </div>
-                        <div style={{ width: "100%" }}>
-                            <List>
-                                {this.state.facilities.map(
-                                    (el, i, collection) => {
-                                        return (
-                                            <div key={el.id}>
-                                                <ListItem>
-                                                    <Icon
-                                                        color="primary"
-                                                        style={{
-                                                            marginRight: 10
-                                                        }}
-                                                    >
-                                                        {el.icon}
-                                                    </Icon>
-                                                    <ListItemText
-                                                        id={""}
-                                                        primary={el.name}
-                                                    />
-                                                    <ListItemSecondaryAction>
-                                                        <IconButton
-                                                            aria-label="more"
-                                                            aria-controls="long-menu"
-                                                            aria-haspopup="true"
-                                                            onClick={e =>
-                                                                this.handleClick(
-                                                                    e,
-                                                                    el.id
-                                                                )
-                                                            }
-                                                            size="small"
-                                                        >
-                                                            <Icon fontSize="inherit">
-                                                                more_vert
-                                                            </Icon>
-                                                        </IconButton>
-                                                    </ListItemSecondaryAction>
-                                                </ListItem>
-                                                {collection.length > i + 1 && (
-                                                    <Divider />
-                                                )}
-                                            </div>
-                                        );
-                                    }
-                                )}
-                            </List>
-                        </div>
-                        {/* <Table>
+                          {el.icon}
+                        </Icon>
+                        <ListItemText id={""} primary={el.name} />
+                        <ListItemSecondaryAction>
+                          <IconButton
+                            aria-label="more"
+                            aria-controls="long-menu"
+                            aria-haspopup="true"
+                            onClick={e => this.handleClick(e, el.id)}
+                            size="small"
+                          >
+                            <Icon fontSize="inherit">more_vert</Icon>
+                          </IconButton>
+                        </ListItemSecondaryAction>
+                      </ListItem>
+                      {collection.length > i + 1 && <Divider />}
+                    </div>
+                  );
+                })}
+              </List>
+            </div>
+            {/* <Table>
                             <TableHead>
                                 <TableRow>
                                     <TableCell align="left">ID</TableCell>
@@ -231,22 +212,13 @@ export default class RoomFacilities extends Component {
                                 })}
                             </TableBody>
                         </Table> */}
-                        <Menu
-                            anchorEl={anchorEl}
-                            keepMounted
-                            open={open}
-                            onClose={this.handleClose}
-                        >
-                            <MenuItem onClick={this.editFacility}>
-                                Edit
-                            </MenuItem>
-                            <MenuItem onClick={this.deleteFacility}>
-                                Delete
-                            </MenuItem>
-                        </Menu>
-                    </Paper>
-                </div>
-            </>
-        );
-    }
+            <Menu anchorEl={anchorEl} keepMounted open={open} onClose={this.handleClose}>
+              <MenuItem onClick={this.editFacility}>Edit</MenuItem>
+              <MenuItem onClick={this.deleteFacility}>Delete</MenuItem>
+            </Menu>
+          </Paper>
+        </div>
+      </>
+    );
+  }
 }
