@@ -556,7 +556,13 @@ export default class DetailsTab extends Component {
 		let open = Boolean(guestAnchorEl);
 		let openPayment = Boolean(paymentAnchorEl);
 		let openAdditional = Boolean(additionalAnchorEl);
-		let viewMode = booking.status === "CHECKEDOUT" || booking.status === "NOSHOW" ? true : false;
+		let viewMode =
+			booking.status === "CHECKEDOUT" ||
+			booking.status === "NOSHOW" ||
+			booking.status === "RESERVED" ||
+			booking.status === "CANCELED"
+				? true
+				: false;
 		return (
 			<>
 				<div>

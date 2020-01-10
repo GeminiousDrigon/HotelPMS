@@ -42,7 +42,7 @@ class Booking extends Component {
 		super(props);
 
 		this.state = {
-			activeStep: 2,
+			activeStep: 0,
 			selectedRoomsUnavailable: false,
 			datesFullyBooked: false,
 			snackBar: false,
