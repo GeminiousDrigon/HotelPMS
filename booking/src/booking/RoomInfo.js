@@ -556,6 +556,27 @@ export default class RoomInfo extends Component {
                         color: "gold"
                       }}
                     >
+                      Advance Payment (30%):
+                    </Typography>
+                    <Typography variant="h6" style={{ fontWeight: 300 }}>
+                      {/* P{this.props.totalCharge.toFixed(2)} */}
+                      &#8369;
+                      <NumeralComponent number={this.props.totalCharge*0.30} />
+                    </Typography>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between"
+                    }}
+                  >
+                    <Typography
+                      variant="h6"
+                      style={{
+                        fontWeight: 50,
+                        color: "gold"
+                      }}
+                    >
                       Total Charge
                     </Typography>
                     <Typography variant="h6" style={{ fontWeight: 300 }}>

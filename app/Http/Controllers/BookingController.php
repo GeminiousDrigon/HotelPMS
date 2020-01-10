@@ -421,7 +421,7 @@ class BookingController extends Controller
         }
         $totalAmount = $booking->rooms->sum('price') + $totalAdditional;
 
-        if ($totalPayed >= $totalAmount * (0.10) && $booking->status === "PENDING") {
+        if ($totalPayed >= $totalAmount * (0.30) && $booking->status === "PENDING") {
             $newBooking = Booking::with('billings')->find($id);
             foreach ($newBooking->billings as $billing) {
                 # code...
