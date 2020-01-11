@@ -32,6 +32,11 @@ import NotificationsIcon from "@material-ui/icons/Notifications";
 import { Badge } from "@material-ui/core";
 import { GET, POST } from "../utils/restUtils";
 import moment from "moment";
+import Fab from "@material-ui/core/Fab";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import PersonAddOutlinedIcon from "@material-ui/icons/PersonAddOutlined";
+import CalendarTodayOutlinedIcon from "@material-ui/icons/CalendarTodayOutlined";
+import ApartmentOutlinedIcon from "@material-ui/icons/ApartmentOutlined";
 
 const drawerWidth = 240;
 
@@ -174,42 +179,42 @@ export default function AdminLayout(props) {
 
   const menus = [
     {
-      name: "Calendar",
-      icon: <Icon>calendar_today</Icon>,
+      name: <Typography style={{ color: "#1093bd" }}>Calendar</Typography>,
+      icon: <CalendarTodayOutlinedIcon style={{ color: "c89553" }} />,
       path: "/calendar"
     },
     {
-      name: "Walk-in",
-      icon: <HotelTwoToneIcon />,
+      name: <Typography style={{ color: "#1093bd" }}>Walk-in</Typography>,
+      icon: <HotelTwoToneIcon style={{ color: "c89553" }} />,
       path: "/walkin"
     },
     {
-      name: "Bookings",
-      icon: <EventTwoToneIcon />,
+      name: <Typography style={{ color: "#1093bd" }}>Bookings</Typography>,
+      icon: <EventTwoToneIcon style={{ color: "c89553" }} />,
       path: "/bookings"
     },
     {
-      name: "Accounts",
-      icon: <GroupTwoToneIcon />,
+      name: <Typography style={{ color: "#1093bd" }}>Accounts</Typography>,
+      icon: <GroupTwoToneIcon style={{ color: "c89553" }} />,
       path: "/account"
     },
     {
-      name: "Property",
-      icon: <Icon>apartment</Icon>,
+      name: <Typography style={{ color: "#1093bd" }}>Property</Typography>,
+      icon: <ApartmentOutlinedIcon style={{ color: "c89553" }} />,
       path: "/property"
     },
     {
-      name: "Reports",
-      icon: <DescriptionTwoToneIcon />,
+      name: <Typography style={{ color: "#1093bd" }}>Reports</Typography>,
+      icon: <DescriptionTwoToneIcon style={{ color: "c89553" }} />,
       items: [
         {
-          name: "Summary",
-          icon: <PieChartIcon />,
+          name: <Typography style={{ color: "#1093bd" }}>Summary</Typography>,
+          icon: <PieChartIcon style={{ color: "c89553" }} />,
           path: "/reports/summary"
         },
         {
-          name: "Monthly Report",
-          icon: <CalendarViewDayIcon />,
+          name: <Typography style={{ color: "#1093bd" }}>Monthly Report</Typography>,
+          icon: <CalendarViewDayIcon style={{ color: "c89553" }} />,
           path: "/reports/yearly"
         }
       ]
@@ -218,18 +223,18 @@ export default function AdminLayout(props) {
 
   const receptionistMenu = [
     {
-      name: "Calendar",
-      icon: <Icon>calendar_today</Icon>,
+      name: <Typography style={{ color: "#1093bd" }}>Calendar</Typography>,
+      icon: <CalendarTodayOutlinedIcon style={{ color: "c89553" }} />,
       path: "/calendar"
     },
     {
-      name: "Walk-in",
-      icon: <HotelTwoToneIcon />,
+      name: <Typography style={{ color: "#1093bd" }}>Walk-in</Typography>,
+      icon: <HotelTwoToneIcon style={{ color: "c89553" }} />,
       path: "/walkin"
     },
     {
-      name: "Bookings",
-      icon: <EventTwoToneIcon />,
+      name: <Typography style={{ color: "#1093bd" }}>Bookings</Typography>,
+      icon: <EventTwoToneIcon style={{ color: "c89553" }} />,
       path: "/bookings"
     }
   ];
@@ -449,25 +454,50 @@ export default function AdminLayout(props) {
               height: 80,
               fontSize: "2.2em",
               marginBottom: 10,
-              backgroundColor: "#3f51b5"
+              backgroundColor: "#c89553"
             }}
           >{`${props.user.firstname[0] + props.user.lastname[0]}`}</Avatar>
-          <Typography variant="h5">{`${props.user.firstname} ${props.user.middlename[0]}. ${props.user.lastname}`}</Typography>
           <Typography>{props.user.role.name}</Typography>
+          <Typography
+            style={{ fontSize: "20px", fontStretch: "100%", color: "#1093bd" }}
+          >{`${props.user.firstname} ${props.user.middlename[0]}. ${props.user.lastname}`}</Typography>
+          <Typography style={{ color: "#5f6368" }}>{props.user.email}</Typography>
 
           <div
             style={{
               display: "flex",
               flexDirection: "column",
+              alignItems: "center",
               marginTop: 30
             }}
           >
             {/* <Button color="primary" onClick={onLogout} variant="text">
                             Change Password
                         </Button> */}
-            <Button color="primary" onClick={onLogout} variant="text">
-              Logout
-            </Button>
+
+            <Fab
+              onClick={onLogout}
+              variant="text"
+              style={{
+                width: "200px",
+                height: "30px",
+                marginBottom: "4px"
+              }}
+            >
+              SIGN OUT
+            </Fab>
+            <Fab
+              // onClick={onLogout}
+              href="../add/account"
+              variant="text"
+              style={{
+                width: "200px",
+                height: "30px"
+              }}
+            >
+              {/* <PersonAddOutlinedIcon style={{ color: "#c89553" }} /> */}
+              ADD ACCOUNT
+            </Fab>
           </div>
         </div>
       </Popover>

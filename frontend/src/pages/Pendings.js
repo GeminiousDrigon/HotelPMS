@@ -141,7 +141,7 @@ export default class Pendings extends Component {
         >
           <Paper style={{ backgroundColor: "white", padding: 20 }}>
             {updating && <LinearProgress />}
-            <Typography variant="h5">Reservation(s)</Typography>
+            <Typography variant="h5">Pending(s)</Typography>
             {this.state.fetching ? (
               <div
                 style={{
