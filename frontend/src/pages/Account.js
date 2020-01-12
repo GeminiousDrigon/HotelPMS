@@ -19,129 +19,129 @@ import { Typography } from "@material-ui/core";
 import { GET, PUT, POST, DELETE } from "../utils/restUtils";
 
 const useStyles = makeStyles(theme => ({
-    fab: {
-        margin: theme.spacing(1)
-    },
-    extendedIcon: {
-        marginRight: theme.spacing(1)
-    }
+  fab: {
+    margin: theme.spacing(1)
+  },
+  extendedIcon: {
+    marginRight: theme.spacing(1)
+  }
 }));
 
 export default class Account extends Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this.state = {
-            data: [],
-            fetching: true
-        };
-    }
-
-    componentDidMount() {
-        this.getGuestAccounts();
-    }
-
-    getGuestAccounts = async () => {
-        try {
-            let { data } = await GET("/api/user/admin");
-            this.setState({ data, fetching: false });
-        } catch (err) {
-            this.setState({ fetching: false });
-            console.log(err);
-        }
+    this.state = {
+      data: [],
+      fetching: true
     };
+  }
 
-    editAccount = id => {
-        this.props.history.push("/edit/account/" + id);
-    };
+  componentDidMount() {
+    this.getGuestAccounts();
+  }
 
-    render() {
-        return (
-            <AdminLayout {...this.props}>
-                <div
-                    style={{
-                        margin: "auto",
-                        display: "flex",
-                        justifyContent: "center",
-                        flexDirection: "column"
-                    }}
-                >
-                    <Paper style={{ backgroundColor: "white", padding: 20 }}>
-                        <div
+  getGuestAccounts = async () => {
+    try {
+      let { data } = await GET("/api/user/admin");
+      this.setState({ data, fetching: false });
+    } catch (err) {
+      this.setState({ fetching: false });
+      console.log(err);
+    }
+  };
+
+  editAccount = id => {
+    this.props.history.push("/edit/account/" + id);
+  };
+
+  render() {
+    return (
+      <AdminLayout {...this.props}>
+        <div
+          style={{
+            margin: "auto",
+            display: "flex",
+            justifyContent: "center",
+            flexDirection: "column"
+          }}
+        >
+          <Paper style={{ backgroundColor: "white", padding: 20 }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: 10
+              }}
+            >
+              <Typography variant="h5">Account(s)</Typography>
+              <Button variant="contained" color="primary" onClick={() => this.props.history.push("/add/account")}>
+                Add Account
+              </Button>
+            </div>
+
+            {this.state.fetching ? (
+              <div
+                style={{
+                  display: "flex",
+                  padding: "50px 0",
+                  justifyContent: "center"
+                }}
+              >
+                <CircularProgress />
+              </div>
+            ) : (
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell align="left">Firstname</TableCell>
+                    <TableCell align="left">Middlename</TableCell>
+                    <TableCell align="left">Lastname</TableCell>
+                    <TableCell align="left">Email address</TableCell>
+                    <TableCell align="left">Role</TableCell>
+                    <TableCell align="left">Contact number</TableCell>
+                    <TableCell align="left">Action</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {this.state.data.map((el, i) => {
+                    return (
+                      <TableRow key={el.id}>
+                        <TableCell align="left">{el.firstname}</TableCell>
+                        <TableCell align="left">{el.middlename}</TableCell>
+                        <TableCell align="left">{el.lastname}</TableCell>
+                        <TableCell align="left">{el.email}</TableCell>
+                        <TableCell align="left">{el.role.name}</TableCell>
+                        <TableCell align="left">{el.contactno}</TableCell>
+                        <TableCell align="left">
+                          <Fab
                             style={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                                alignItems: "center",
-                                marginBottom: 10
+                              marginRight: "10px"
                             }}
-                        >
-                            <Typography variant="h5">Account(s)</Typography>
-                            <Button variant="contained" color="primary" onClick={() => this.props.history.push("/add/account")}>
-                                Add Account
-                            </Button>
-                        </div>
-
-                        {this.state.fetching ? (
-                            <div
-                                style={{
-                                    display: "flex",
-                                    padding: "50px 0",
-                                    justifyContent: "center"
-                                }}
-                            >
-                                <CircularProgress />
-                            </div>
-                        ) : (
-                            <Table>
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell align="left">Firstname</TableCell>
-                                        <TableCell align="left">Middlename</TableCell>
-                                        <TableCell align="left">Lastname</TableCell>
-                                        <TableCell align="left">Email address</TableCell>
-                                        <TableCell align="left">Contact number</TableCell>
-                                        <TableCell align="left">Role</TableCell>
-                                        <TableCell align="left">Action</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {this.state.data.map((el, i) => {
-                                        return (
-                                            <TableRow key={el.id}>
-                                                <TableCell align="left">{el.firstname}</TableCell>
-                                                <TableCell align="left">{el.middlename}</TableCell>
-                                                <TableCell align="left">{el.lastname}</TableCell>
-                                                <TableCell align="left">{el.email}</TableCell>
-                                                <TableCell align="left">{el.role.name}</TableCell>
-                                                <TableCell align="left">{el.contactno}</TableCell>
-                                                <TableCell align="left">
-                                                    <Fab
-                                                        style={{
-                                                            marginRight: "10px"
-                                                        }}
-                                                        size="small"
-                                                        aria-label="add"
-                                                        onClick={() => this.editAccount(el.id)}
-                                                    >
-                                                        <EditIcon />
-                                                    </Fab>
-                                                    {/* <Fab
+                            size="small"
+                            aria-label="add"
+                            onClick={() => this.editAccount(el.id)}
+                          >
+                            <EditIcon />
+                          </Fab>
+                          {/* <Fab
                                                         size="small"
                                                         aria-label="delete"
                                                         color="secondary"
                                                     >
                                                         <DeleteIcon />
                                                     </Fab> */}
-                                                </TableCell>
-                                            </TableRow>
-                                        );
-                                    })}
-                                </TableBody>
-                            </Table>
-                        )}
-                    </Paper>
-                </div>
-            </AdminLayout>
-        );
-    }
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            )}
+          </Paper>
+        </div>
+      </AdminLayout>
+    );
+  }
 }

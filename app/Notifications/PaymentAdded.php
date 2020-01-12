@@ -69,7 +69,7 @@ class PaymentAdded extends Notification
         return [
             "type" => $this->payment["type"],
             "action_url" => "/bookings/view/" . $this->payment['booking_id'],
-            "message" => "A payment of " . $this->payment["amount"] . " for <b>" . $this->payment["type"] . "</b>has just been added!",
+            "message" => "A payment of " . $this->payment["amount"] . " for " . $this->payment["type"] . " has just been added!",
             "title" => "Payment added!"
         ];
     }

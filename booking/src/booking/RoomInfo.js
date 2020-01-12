@@ -561,7 +561,7 @@ export default class RoomInfo extends Component {
                     <Typography variant="h6" style={{ fontWeight: 300 }}>
                       {/* P{this.props.totalCharge.toFixed(2)} */}
                       &#8369;
-                      <NumeralComponent number={this.props.totalCharge*0.30} />
+                      <NumeralComponent number={this.props.totalCharge * 0.3} />
                     </Typography>
                   </div>
                   <div
