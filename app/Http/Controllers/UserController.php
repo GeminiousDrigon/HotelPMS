@@ -75,6 +75,9 @@ class UserController extends Controller
             if ($request->email) {
                 $user->email = $request->email;
             }
+            if ($request->role_id) {
+                $user->role_id = $request->role_id;
+            }
             $user->save();
             return response()->json($user, 200);
         }
@@ -154,7 +157,7 @@ class UserController extends Controller
         $notifications = $user->notifications;
         $unreadNotifications = $user->unreadNotifications;
         return response()->json([
-            "notifications" =>$notifications,
+            "notifications" => $notifications,
             "unreadNotifications" => count($unreadNotifications)
         ]);
     }

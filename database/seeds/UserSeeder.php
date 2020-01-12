@@ -20,7 +20,7 @@ class UserSeeder extends Seeder
             "email" => "mariapaz@gmail.com",
             "password" => '$2y$12$//7oZunML/cx3MaKOJemvepsuCSAVQP2TDE5PqmHd8TbSi4efayLu',
             "password_updated" => 1,
-            "contactno" => "+09217661951",
+            "contactno" => "+639217661951",
             "role_id" => 2
         ]);
     }

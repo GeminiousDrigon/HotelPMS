@@ -302,38 +302,36 @@ class AddAccount extends Component {
 																error={(validateCalled || touched.confirmPassword) && errors.confirmPassword ? true : false}
 															/>
 														</Grid>
-														<Grid item xs={6}>
-															<FormControl
-																variant="outlined"
-																style={{ width: "100%" }}
-																error={(validateCalled || touched.role_id) && errors.role_id ? true : false}
-															>
-																<InputLabel ref={el => (this.inputLabel = el)} id="demo-simple-select-outlined-label">
-																	Role
-																</InputLabel>
-																<Select
-																	id="role_id"
-																	name="role_id"
-																	value={values.role_id}
-																	onChange={handleSelectChange}
-																	labelWidth={35}
-																	onBlur={handleSelectChange}
-																	fullWidth
-																	style={{ width: "100%" }}
-																>
-																	<MenuItem value="">
-																		<em>None</em>
-																	</MenuItem>
-																	<MenuItem value={2}>Admin</MenuItem>
-																	<MenuItem value={3}>Receptionist</MenuItem>
-																</Select>
-																<FormHelperText>
-																	{(validateCalled || touched.role_id) && errors.role_id ? errors.role_id : ""}
-																</FormHelperText>
-															</FormControl>
-														</Grid>
 													</>
 												)}
+												<Grid item xs={6}>
+													<FormControl
+														variant="outlined"
+														style={{ width: "100%" }}
+														error={(validateCalled || touched.role_id) && errors.role_id ? true : false}
+													>
+														<InputLabel ref={el => (this.inputLabel = el)} id="demo-simple-select-outlined-label">
+															Role
+														</InputLabel>
+														<Select
+															id="role_id"
+															name="role_id"
+															value={values.role_id}
+															onChange={handleSelectChange}
+															labelWidth={35}
+															onBlur={handleSelectChange}
+															fullWidth
+															style={{ width: "100%" }}
+														>
+															<MenuItem value="">
+																<em>None</em>
+															</MenuItem>
+															<MenuItem value={2}>Admin</MenuItem>
+															<MenuItem value={3}>Receptionist</MenuItem>
+														</Select>
+														<FormHelperText>{(validateCalled || touched.role_id) && errors.role_id ? errors.role_id : ""}</FormHelperText>
+													</FormControl>
+												</Grid>
 											</Grid>
 
 											<div

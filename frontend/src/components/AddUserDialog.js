@@ -60,6 +60,7 @@ export default class AddUserDialog extends Component {
 
     submitUser = () => {
         let user = this.state.users[this.state.selectedUserIndex];
+        // user.contactno = user.contactno.substring(3)
         this.props.setUser(user);
         this.onClose();
     };
