@@ -220,7 +220,8 @@ export default class DetailsTab extends Component {
 				let { id } = this.props.match.params;
 				await POST(`/api/booking/${id}/billing`, {
 					amount,
-					type
+					type,
+					other
 				});
 				this.setState({ initialPayment: 0 });
 				this.onCloseAddBilling();
@@ -1056,8 +1057,8 @@ export default class DetailsTab extends Component {
 																	<TableCell component="th" scope="row">
 																		{i + 1}
 																	</TableCell>
-																	<TableCell>{row.type === "other" ? row.other : row.type}</TableCell>
 																	<TableCell>{moment(row.created_at).format("MMM DD, YYYY hh:mm A")}</TableCell>
+																	<TableCell>{row.type === "other" ? row.other : row.type}</TableCell>
 																	<TableCell align="right" component="th" scope="row">
 																		&#8369;
 																		<NumeralComponent number={row.amount} />

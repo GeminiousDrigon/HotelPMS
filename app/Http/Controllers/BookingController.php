@@ -409,6 +409,7 @@ class BookingController extends Controller
         Billing::create([
             'amount' => $request->input('amount'),
             'type' => $request->input('type'),
+            'other' => $request->input('other'),
             'booking_id' => $id
         ]);
 

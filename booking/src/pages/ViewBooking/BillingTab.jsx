@@ -891,8 +891,8 @@ export default class BillingTab extends Component {
 																	<TableCell component="th" scope="row">
 																		{i + 1}
 																	</TableCell>
-																	<TableCell>{row.type === "other" ? row.other : row.type}</TableCell>
 																	<TableCell>{moment(row.created_at).format("MMM DD, YYYY hh:mm A")}</TableCell>
+																	<TableCell>{row.type === "other" ? row.other : row.type}</TableCell>
 																	<TableCell align="right" component="th" scope="row">
 																		&#8369;
 																		<NumeralComponent number={row.amount} />

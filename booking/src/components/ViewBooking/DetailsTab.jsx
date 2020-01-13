@@ -574,7 +574,11 @@ export default class DetailsTab extends Component {
 											<div>
 												<Typography component="span">Status: </Typography>
 												<Typography component="span">
-													{status === "NOSHOW" ? "No show" : status === "CHECKEDOUT" ? "Checked-out" : booking.status === "PENDING" && "Pending"}
+													{status === "NOSHOW"
+														? "No show"
+														: status === "CHECKEDOUT"
+														? "Checked-out"
+														: booking.status === "PENDING" && "Pending"}
 												</Typography>
 											</div>
 										) : (
@@ -875,8 +879,8 @@ export default class DetailsTab extends Component {
 																	<TableCell component="th" scope="row">
 																		{i + 1}
 																	</TableCell>
-																	<TableCell>{row.type}</TableCell>
 																	<TableCell>{moment(row.created_at).format("MMM DD, YYYY hh:mm A")}</TableCell>
+																	<TableCell>{row.type === "other" ? row.other : row.type}</TableCell>
 																	<TableCell align="right" component="th" scope="row">
 																		&#8369;
 																		<NumeralComponent number={row.amount} />
