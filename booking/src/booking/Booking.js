@@ -231,7 +231,7 @@ class Booking extends Component {
 						{...this.props}
 						datesFullyBooked={this.state.datesFullyBooked}
 						validateCalled={this.state.validatedSteps[1]}
-						totalCharge={this.state.totalCharge || 0}
+						totalCharge={this.state.totalCharge + this.props.values.additional_beds * 100 || 0}
 					/>
 				);
 			case 2:
@@ -240,7 +240,7 @@ class Booking extends Component {
 						setStateValue={this.setStateValue}
 						{...this.props}
 						validateCalled={this.state.validatedSteps[2]}
-						totalCharge={this.state.totalCharge}
+						totalCharge={this.state.totalCharge + this.props.values.additional_beds * 100 || 0}
 					/>
 				);
 			case 3:
@@ -249,7 +249,7 @@ class Booking extends Component {
 						setStateValue={this.setStateValue}
 						{...this.props}
 						validateCalled={this.state.validatedSteps[3]}
-						totalCharge={this.state.totalCharge}
+						totalCharge={this.state.totalCharge + this.props.values.additional_beds * 100 || 0}
 					/>
 				);
 		}

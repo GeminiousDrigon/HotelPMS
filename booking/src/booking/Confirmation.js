@@ -4,13 +4,17 @@ import HotelOutlinedIcon from "@material-ui/icons/HotelOutlined";
 import PersonOutlinedIcon from "@material-ui/icons/PersonOutlined";
 import CheckOutlinedIcon from "@material-ui/icons/CheckOutlined";
 import Fab from "@material-ui/core/Fab";
-import Table from "@material-ui/core/Table";
 import BookingLayout from "../components/BookingLayout";
 import Paper from "@material-ui/core/Paper";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
+import Table from "@material-ui/core/Table";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
+import TableBody from "@material-ui/core/TableBody";
 import Grid from "@material-ui/core/Grid";
 import { Typography, ListItemSecondaryAction, Divider } from "@material-ui/core";
 import moment from "moment";
@@ -251,9 +255,46 @@ export default class Confirmation extends Component {
 									fontSize: 30
 								}}
 							/>
-							<Typography variant="h5">Selected Rooms</Typography>
+							<Typography variant="h5">Billing</Typography>
 						</div>
-						<Paper style={{ padding: 10 }}>
+						<Paper>
+							<Table aria-label="simple table">
+								<TableHead>
+									<TableRow>
+										<TableCell>Item</TableCell>
+										<TableCell align="right">Price</TableCell>
+									</TableRow>
+								</TableHead>
+								<TableBody>
+									{values.selectedRooms.map(room => (
+										<TableRow key={room.id}>
+											<TableCell>{`${room.name}—${room.rate.name} (${room.rate.adult}) Adult(s)`}</TableCell>
+											<TableCell align="right">
+												&#8369;
+												<NumeralComponent number={room.rate.price} />
+											</TableCell>
+										</TableRow>
+									))}
+									{values.additional_beds > 0 && (
+										<TableRow key={room.id}>
+											<TableCell>{values.additional_beds} Additional Beds &#8369;100.00</TableCell>
+											<TableCell align="right">
+												&#8369;
+												<NumeralComponent number={values.additional_beds * 100} />
+											</TableCell>
+										</TableRow>
+									)}
+									<TableRow key={room.id}>
+										<TableCell align="right">Total</TableCell>
+										<TableCell align="right">
+											&#8369;
+											<NumeralComponent number={this.props.totalCharge} />
+										</TableCell>
+									</TableRow>
+								</TableBody>
+							</Table>
+						</Paper>
+						{/* <Paper style={{ padding: 10 }}>
 							<div
 								style={{
 									display: "flex",
@@ -294,7 +335,7 @@ export default class Confirmation extends Component {
 								Total:&#8369;
 								<NumeralComponent number={this.props.totalCharge} />
 							</Typography>
-						</Paper>
+						</Paper> */}
 					</Grid>
 				</Grid>
 			</div>
