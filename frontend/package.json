@@ -22,7 +22,7 @@
     "js-datepicker": "^5.0.2",
     "moment": "^2.24.0",
     "numeral": "^2.0.6",
-    "qs": "^6.9.1",
+    "qs": "^6.9.7",
     "query-string": "^6.8.2",
     "react": "^16.8.6",
     "react-big-scheduler": "^0.2.7",
