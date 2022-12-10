@@ -14,7 +14,7 @@
     "bootstrap": "^4.3.1",
     "chart.js": "^2.8.0",
     "date-fns": "^2.0.0-beta.5",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "formik": "^1.5.8",
     "history": "^4.9.0",
     "http-proxy-middleware": "^0.20.0",
